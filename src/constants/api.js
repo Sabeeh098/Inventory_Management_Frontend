@@ -1,0 +1,1 @@
+export const adminApi = "http://localhost:4000/"
