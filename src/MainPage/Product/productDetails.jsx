@@ -8,7 +8,6 @@ import { useParams } from "react-router-dom/cjs/react-router-dom";
 const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  console.log(product);
 
   useEffect(() => {
     // Fetch the product details based on the loadId
@@ -20,7 +19,7 @@ const ProductDetails = () => {
       const response = await adminApiInstance.get(`/getLoadDetailsById/${id}`);
       setProduct(response.data);
     } catch (error) {
-      console.error('Error fetching product details:', error);
+      console.error("Error fetching product details:", error);
     }
   };
 
@@ -42,9 +41,11 @@ const ProductDetails = () => {
           <div className="col-lg-8 col-sm-12">
             <div className="card">
               <div className="card-body">
-                <div className="bar-code-view">
-                  <img src={product.barcodeImage} alt="barcode" />
-                </div>
+                {product.barcodeImage && (
+                  <div className="bar-code-view">
+                    <img src={product.barcodeImage} alt="barcode" />
+                  </div>
+                )}
                 <div className="productdetails">
                   <ul className="product-bar">
                     <li>
@@ -81,13 +82,43 @@ const ProductDetails = () => {
             </div>
           </div>
           <div className="col-lg-4 col-sm-12">
-            <div className="card">
-              <div className="card-body">
-                <div className="slider-product-details">
-                  {/* Add OwlCarousel here based on your product.images */}
+            {product.brands && (
+              <div className="card">
+                <div className="card-body">
+                  <div className="slider-product-details">
+                    {product.brands.map((item, key) => (
+                      <div key={key}>
+                        <div className="productdetails">
+                          <ul className="product-bar">
+                            <li>
+                              <h4>Brand Name</h4>
+                              <h6>{item.brandName}</h6>
+                            </li>
+                            <li>
+                              <h4>Pallets Count</h4>
+                              <h6>{item.brandPalletsCount}</h6>
+                            </li>
+                            <li>
+                              <h4>Total Price</h4>
+                              <h6>{item.brandTotalPrice}</h6>
+                            </li>
+                            <li>
+                              <h4>SKU Number</h4>
+                              <h6>{item.skuCode}</h6>
+                            </li>
+                            <li>
+                              <div className="bar-code-view">
+                                <img src={item.barcodeImage} alt="barcode" />
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
