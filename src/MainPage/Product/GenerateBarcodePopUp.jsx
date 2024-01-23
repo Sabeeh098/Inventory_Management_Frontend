@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Button, Modal } from "antd";
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
-import moment from 'moment';
-import PropTypes from 'prop-types';
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import moment from "moment";
+import PropTypes from "prop-types";
 
 const GenerateBarcodePopUp = ({ load, onClose }) => {
   const [count, setCount] = useState(1);
@@ -79,15 +79,28 @@ const GenerateBarcodePopUp = ({ load, onClose }) => {
           </select>
         </div>
       </form>
-      <div id="barcodes" className="d-flex flex-wrap justify-content-center m-1">
+      <div
+        id="barcodes"
+        className="d-flex flex-wrap justify-content-center m-1"
+      >
         {[...Array(count)].map((_, index) => (
           <div className="m-1" key={index}>
             {/* Display the base64-encoded barcode image for the specific load */}
-            <img
-              src={load.barcodeImage}
-              alt={`Barcode for Load ${load.loadNumber}`}
-              style={{ width: `${size}cm`, height: "auto" }}
-            />
+            {load.barcodeImage && (
+              <img
+                src={load.barcodeImage}
+                alt={`Barcode for Load ${load.loadNumber}`}
+                style={{ width: `${size}cm`, height: "auto" }}
+              />
+            )}
+            {load.brands.map((item, key) => (
+              <img
+                key={key}
+                src={item.barcodeImage}
+                alt={`Barcode for Load ${item.loadNumber}`}
+                style={{ width: `${size}cm`, height: "auto" }}
+              />
+            ))}
           </div>
         ))}
       </div>
