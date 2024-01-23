@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { adminApiInstance } from '../../api/axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -22,7 +22,11 @@ const AddProduct = () => {
     }],
   });
 
-  const barcodeRef = useRef(null);
+  const [generatedBarcodes, setGeneratedBarcodes] = useState([]);
+
+  useEffect(() => {
+    generateBarcodes();
+  }, [loadData.brands]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -44,23 +48,45 @@ const AddProduct = () => {
     return palletsCount !== 0 ? loadCost / palletsCount : 0;
   };
 
-  const convertBarcodeToImage = async () => {
+  const generateBarcodes = async () => {
     try {
-      const barcodeDiv = document.getElementById('barcode-container');
+      const barcodeValue = loadData.skuCode;
+      const barcodeContainerId = 'barcode-container';
+      const barcodeImageData = await convertBarcodeToImage(barcodeValue, barcodeContainerId);
 
-      if (barcodeDiv) {
-        const canvas = await html2canvas(barcodeDiv, {
-          width: 250,
-          height: 135,
-        });
-        const imageData = canvas.toDataURL('image/png');
-        return imageData;
-      }
+      setGeneratedBarcodes([barcodeImageData]);
     } catch (error) {
-      console.error('Error converting barcode to image:', error);
+      console.error('Error generating barcodes:', error);
     }
   };
 
+  const convertBarcodeToImage = async (barcodeValue, barcodeContainerId) => {
+    try {
+      const barcodeContainer = document.getElementById(barcodeContainerId);
+  
+      if (!barcodeContainer) {
+        console.error(`Barcode container with id ${barcodeContainerId} not found.`);
+        return null;
+      }
+  
+      console.log('Barcode Container ID:', barcodeContainerId);
+      console.log('Barcode Container:', barcodeContainer);
+  
+      const canvas = await html2canvas(barcodeContainer, {
+        width: 250,
+        height: 135,
+      });
+  
+      const imageData = canvas.toDataURL('image/png');
+      console.log('Image Data:', imageData);
+  
+      return imageData;
+    } catch (error) {
+      console.error('Error converting barcode to image:', error);
+      return null;
+    }
+  };
+  
   const addBrandField = () => {
     setLoadData((prevData) => ({
       ...prevData,
@@ -83,18 +109,34 @@ const AddProduct = () => {
     e.preventDefault();
     try {
       const perPalletPrice = calculatePerPalletPrice();
-      const barcodeImageData = await convertBarcodeToImage();
-      await adminApiInstance.post('/addloads', {
-        load: {
-          ...loadData,
-          perPalletPrice,
-        },
-        barcode: {
-          skuCode: loadData.skuCode,
-          imageData: barcodeImageData,
-        },
-      });
-
+      const barcodeValue = loadData.skuCode;
+      const barcodeImageData = await convertBarcodeToImage(barcodeValue);
+  
+      for (let i = 0; i < loadData.brands.length; i++) {
+        const brand = loadData.brands[i];
+  
+        console.log('Barcode Data:', {
+          barcodeValue,
+          barcodeImageData,
+        });
+  
+        // Assuming you have an API endpoint for adding loads with brand-specific data
+        await adminApiInstance.post('/addloads', {
+          load: {
+            ...loadData,
+            perPalletPrice,
+            brandName: brand.brandName,
+            brandTotalPrice: brand.brandTotalPrice,
+            brandPalletsCount: brand.brandPalletsCount,
+          },
+          barcode: {
+            skuCode: barcodeValue,
+            imageData: barcodeImageData,
+          },
+        });
+      }
+  
+      // Reset the form data
       setLoadData({
         loadNumber: '',
         loadCost: '',
@@ -113,6 +155,7 @@ const AddProduct = () => {
       console.error('Error:', error);
     }
   };
+  
 
   return (
     <div className="page-wrapper">
@@ -216,30 +259,26 @@ const AddProduct = () => {
                             placeholder={`Brand Name`}
                           />
                         </div>
-                        {loadData.brands.length > 1 && (
-                          <>
-                            <div className="flex-grow-1 me-2">
-                              <input
-                                type="text" 
-                                name={`brands[${index}].brandTotalPrice`}
-                                value={brand.brandTotalPrice}
-                                onChange={(e) => handleBrandChange(index, 'brandTotalPrice', e)}
-                                className="form-control"
-                                placeholder={`Total Price`}
-                              />
-                            </div>
-                            <div className="flex-grow-1 me-2">
-                              <input
-                                type="text" 
-                                name={`brands[${index}].brandPalletsCount`}
-                                value={brand.brandPalletsCount}
-                                onChange={(e) => handleBrandChange(index, 'brandPalletsCount', e)}
-                                className="form-control"
-                                placeholder={`Brand Pallets`}
-                              />
-                            </div>
-                          </>
-                        )}
+                        <div className="flex-grow-1 me-2">
+                          <input
+                            type="text"
+                            name={`brands[${index}].brandTotalPrice`}
+                            value={brand.brandTotalPrice}
+                            onChange={(e) => handleBrandChange(index, 'brandTotalPrice', e)}
+                            className="form-control"
+                            placeholder={`Total Price`}
+                          />
+                        </div>
+                        <div className="flex-grow-1 me-2">
+                          <input
+                            type="text"
+                            name={`brands[${index}].brandPalletsCount`}
+                            value={brand.brandPalletsCount}
+                            onChange={(e) => handleBrandChange(index, 'brandPalletsCount', e)}
+                            className="form-control"
+                            placeholder={`Brand Pallets`}
+                          />
+                        </div>
                         {loadData.brands.length > 1 && (
                           <button type="button" onClick={() => deleteBrandField(index)} className="btn btn-sm btn-danger">
                             <img src={DeleteIcon} alt="Delete" />
@@ -253,18 +292,33 @@ const AddProduct = () => {
                   </div>
                 </div>
               </div>
+
               {loadData.brands.length === 1 && (
-                <div className="col-lg-12">
-                  <div id="barcode-container">
-                    <Barcode value={loadData.skuCode} ref={barcodeRef} />
-                  </div>
-                </div>
-              )}
+  <div className="col-lg-12">
+    <div id="barcode-container">
+      <Barcode value={loadData.skuCode} />
+    </div>
+  </div>
+)}
+
               {loadData.brands.length === 1 && (
                 <div className="col-lg-12">
                   <p style={{ marginBottom: '10px' }}>Per Pallet Price: {calculatePerPalletPrice()}</p>
                 </div>
               )}
+
+              {loadData.brands.length > 1 && (
+                <div className="col-lg-12">
+                  <div>
+                    {generatedBarcodes.map((barcode, index) => (
+                      <div key={index}>
+                        <img src={barcode} alt={`Barcode ${index + 1}`} style={{ marginBottom: '10px' }} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="col-lg-12">
                 <button type="submit" className="btn btn-submit me-2">
                   Submit
