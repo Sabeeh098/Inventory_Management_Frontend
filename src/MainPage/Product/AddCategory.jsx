@@ -44,11 +44,19 @@ const AddCategory = () => {
         setScannedBarcode(scannedData);
 
         try {
-          // Fetch load details from the server based on the scanned SKU code
           const response = await adminApiInstance.get(`/getLoadDetailsBySkuCode/${scannedData}`);
           const details = response.data;
 
-          setLoadDetails(details);
+          if (details.isBrand) {
+            // If it's a brand SKU, fetch additional brand details
+            const brandResponse = await adminApiInstance.get(`/getBrandDetailsBySkuCode/${scannedData}`);
+            const brandDetails = brandResponse.data;
+
+            setLoadDetails(brandDetails);
+          } else {
+            // If it's a regular SKU, display regular load details
+            setLoadDetails(details);
+          }
         } catch (error) {
           console.error('Error fetching load details:', error);
         }
@@ -76,7 +84,11 @@ const AddCategory = () => {
   const handleSearch = async () => {
     try {
       const skuToSearch = scannedBarcode || '';
-      const foundLoad = allLoads.find((load) => load.skuNumber === skuToSearch);
+      const foundLoad = allLoads.find(
+        (load) =>
+          load.skuNumber === skuToSearch ||
+          (load.brands && load.brands.some((brand) => brand.skuCode === skuToSearch))
+      );
 
       if (foundLoad) {
         setLoadDetails(foundLoad);
@@ -102,8 +114,15 @@ const AddCategory = () => {
 
   const handleUpdateAndSubmit = async () => {
     try {
-      await adminApiInstance.patch(`/updatePalletsCount/${scannedBarcode}`, {
-        palletsCount: palletsCountToUse,
+      // Update the remaining pallets count in the Load model
+      await adminApiInstance.patch(`/updateRemainingPalletsCount/${loadDetails._id}`, {
+        remainingPalletsCount: loadDetails.palletsCount - palletsCountToUse,
+      });
+
+      // Update the UsedLoad model
+      await adminApiInstance.post('/updateUsedLoad', {
+        load: loadDetails._id,
+        usedPalletsCount: palletsCountToUse,
       });
 
       const response = await adminApiInstance.get(`/getLoadDetailsBySkuCode/${scannedBarcode}`);
@@ -143,11 +162,7 @@ const AddCategory = () => {
                         onChange={(e) => setScannedBarcode(e.target.value)}
                         value={scannedBarcode || ''}
                       />
-                      <button
-                        className="btn btn-submit"
-                        type="button"
-                        onClick={handleSearchIconClick}
-                      >
+                      <button type="button" onClick={handleSearchIconClick}>
                         <FeatherIcon icon="search" size="20" />
                       </button>
                     </div>
@@ -156,6 +171,17 @@ const AddCategory = () => {
                       Connect Scanner
                     </button>
                   )}
+                </div>
+
+                <div className="form-group mt-3">
+                  <label htmlFor="palletsCount">Enter Pallets Count:</label>
+                  <input
+                    type="number"
+                    id="palletsCount"
+                    className="form-control"
+                    value={palletsCountToUse}
+                    onChange={handlePalletsCountChange}
+                  />
                 </div>
               </div>
               <div className="col-lg-12"></div>
@@ -187,25 +213,30 @@ const AddCategory = () => {
                       <h6 className="manitorygreen">{loadDetails?.palletsCount || 'Loading...'}</h6>
                     </li>
                     <li>
+                      <h4>Balance Pallets</h4>
+                      <h6 className="manitorygreen">{loadDetails?.remainingPalletsCount || 'Loading...'}</h6>
+                    </li>
+                    <li>
                       <h4>Per Pallet Price</h4>
                       <h6 className="manitoryblue">{loadDetails?.perPalletPrice || 'Field optional'}</h6>
                     </li>
+                    {/* Additional details for brands */}
+                    {loadDetails?.brands && (
+                      <li>
+                        <h4>Brand Name</h4>
+                        <h6 className="manitoryblue">{loadDetails?.brands[0]?.brand || 'Brand not available'}</h6>
+                      </li>
+                    )}
                   </ul>
                 </div>
               </div>
               <div className="bar-code-view">
-                {scannedBarcode && <p>Scanned Barcode: {scannedBarcode}</p>}
+                {scannedBarcode && <p>Scanned Barcode: {scannedBarcode}</p>><br/>}
+                {/* Display the brand image here if available */}
+                {loadDetails?.brands[0]?.barcodeImage && (
+                  <img src={loadDetails?.brands[0]?.barcodeImage} alt="Brand Barcode" />
+                )}
                 <img src={loadDetails?.barcodeImage} alt="barcode" ref={barcodeRef} />
-                <div className="form-group mt-3">
-                  <label htmlFor="palletsCount">Enter Pallets Count:</label>
-                  <input
-                    type="number"
-                    id="palletsCount"
-                    className="form-control"
-                    value={palletsCountToUse}
-                    onChange={handlePalletsCountChange}
-                  />
-                </div>
               </div>
               <div className="col-lg-12">
                 <div className="form-group mb-0">
