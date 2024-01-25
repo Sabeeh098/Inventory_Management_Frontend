@@ -11,9 +11,9 @@ const AddProduct = () => {
     loadNumber: "",
     loadCost: "",
     palletsCount: 0,
-    perPalletPrice: 0,
     category: "",
     loadDate: "",
+    perPalletCost: 0,
     skuCode: "",
     isBrands: false,
     brands: [],
@@ -21,7 +21,24 @@ const AddProduct = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setLoadData({ ...loadData, [name]: value });
+    if (name == "loadCost") {
+      setLoadData({
+        ...loadData,
+        [name]: value,
+        perPalletCost: (loadData.palletsCount !== 0
+          ? value / loadData.palletsCount
+          : 0
+        ).toFixed(0),
+      });
+    } else if (name == "palletsCount") {
+      setLoadData({
+        ...loadData,
+        [name]: value,
+        perPalletCost: (value !== 0 ? loadData.loadCost / value : 0).toFixed(0),
+      });
+    } else {
+      setLoadData({ ...loadData, [name]: value });
+    }
   };
 
   const handleBrandChange = (index, field, e) => {
@@ -32,11 +49,6 @@ const AddProduct = () => {
 
   const handleDateChange = (date) => {
     setLoadData({ ...loadData, loadDate: date });
-  };
-
-  const calculatePerPalletPrice = () => {
-    const { loadCost, palletsCount } = loadData;
-    return palletsCount !== 0 ? loadCost / palletsCount : 0;
   };
 
   const convertBarcodeToImage = async (ID) => {
@@ -84,13 +96,11 @@ const AddProduct = () => {
       key = key + 1;
     }
     try {
-      const perPalletPrice = calculatePerPalletPrice();
       const barcodeImageData = await convertBarcodeToImage("barcode-container");
       await adminApiInstance.post("/addloads", {
         load: {
           ...loadData,
           barcodeImage: barcodeImageData,
-          perPalletPrice,
         },
       });
 
@@ -98,7 +108,7 @@ const AddProduct = () => {
         loadNumber: "",
         loadCost: "",
         palletsCount: 0,
-        perPalletPrice: 0,
+        perPalletCost: 0,
         category: "",
         loadDate: "",
         skuCode: "",
@@ -198,18 +208,31 @@ const AddProduct = () => {
                   </div>
                 </div>
                 {!loadData.isBrands && (
-                  <div className="col-lg-4 col-sm-6 col-12">
-                    <div className="form-group">
-                      <label>SKU Code</label>
-                      <input
-                        type="text"
-                        name="skuCode"
-                        value={loadData.skuCode}
-                        onChange={handleInputChange}
-                        className="form-control"
-                      />
+                  <>
+                    <div className="col-lg-2 col-sm-3 col-12">
+                      <div className="form-group">
+                        <label>SKU Code</label>
+                        <input
+                          type="text"
+                          name="skuCode"
+                          value={loadData.skuCode}
+                          onChange={handleInputChange}
+                          className="form-control"
+                        />
+                      </div>
                     </div>
-                  </div>
+                    <div className="col-lg-2 col-sm-2 col-12">
+                      <div className="form-group">
+                        <label>Per Pallet Cost</label>
+                        <input
+                          type="text"
+                          name="perPalletCost"
+                          value={loadData.perPalletCost}
+                          className="form-control"
+                        />
+                      </div>
+                    </div>
+                  </>
                 )}
                 {loadData.skuCode && !loadData.isBrands && (
                   <div className="col-lg-4 col-sm-6 col-12">
@@ -250,7 +273,7 @@ const AddProduct = () => {
                                 handleBrandChange(index, "brandTotalPrice", e)
                               }
                               className="form-control"
-                              placeholder={`Total Price`}
+                              placeholder={`Pallets Count`}
                             />
                           </div>
                           <div className="flex-grow-1 me-2">
@@ -262,7 +285,7 @@ const AddProduct = () => {
                                 handleBrandChange(index, "brandPalletsCount", e)
                               }
                               className="form-control"
-                              placeholder={`Brand Pallets`}
+                              placeholder={`Total Price`}
                             />
                           </div>
                           <div className="flex-grow-1 me-2">
@@ -302,13 +325,6 @@ const AddProduct = () => {
                       + Add Brand
                     </button>
                   </div>
-                </div>
-              )}
-              {loadData.brands.length === 1 && (
-                <div className="col-lg-12">
-                  <p style={{ marginBottom: "10px" }}>
-                    Per Pallet Price: {calculatePerPalletPrice()}
-                  </p>
                 </div>
               )}
               <div className="col-lg-12">
