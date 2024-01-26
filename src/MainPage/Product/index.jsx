@@ -11,11 +11,13 @@ import SubCategoryTable from './SubCategoryTable';
 import AddSubCategory from './AddSubCategory';
 import EditSubCategory from './EditSubCategory';
 import BrandList from './BrandList';
-import AddBrand from './AddBrand';
+
 import EditBrand from './EditBrand';
 import ImportProduct from './ImportProduct';
 import PrintBarcode from './PrintBarcode';
 import ProductDetails from './productDetails';
+import AddEmployee from './AddEmployee';
+import UserList from './UserList';
 
 const ProductRoute = ({ match }) => (
     <Switch>
@@ -24,6 +26,9 @@ const ProductRoute = ({ match }) => (
         <Route path={`${match.url}/list-loads`} component={ProductList} />
         <Route path={`${match.url}/add-pallets`} component={AddCategory} />
         <Route path={`${match.url}/printbarcode-pallets`} component={PrintBarcode} />
+        <Route path={`${match.url}/add-User`} component={AddEmployee} />
+        <Route path={`${match.url}/Users-List`} component={UserList} />
+
 
 
 
@@ -34,7 +39,6 @@ const ProductRoute = ({ match }) => (
         <Route path={`${match.url}/addsubcategory-product`} component={AddSubCategory} />
         <Route path={`${match.url}/editsubcategory-product`} component={EditSubCategory} />
         <Route path={`${match.url}/brandlist-product`} component={BrandList} />
-        <Route path={`${match.url}/addbrand-product`} component={AddBrand} />
         <Route path={`${match.url}/editbrand-product`} component={EditBrand} />
         <Route path={`${match.url}/importproduct-product`} component={ImportProduct} />
         <Route path={`${match.url}/product-details/:id`} component={ProductDetails} />

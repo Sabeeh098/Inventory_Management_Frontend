@@ -174,23 +174,34 @@ const Sidebar = (props) => {
                   <li className="submenu-open">
                     <h6 className="submenu-hdr">Users</h6>
                     <ul>
-                      <li
+                    <li
                         className={
-                          pathname.includes("purchaseorderreport")
-                            ? "active"
-                            : ""
+                          pathname.includes("add-User") ? "active" : ""
                         }
                       >
                         <Link
-                          to="/dream-pos/report/purchaseorderreport"
                           className={
-                            pathname.includes("purchaseorderreport")
-                              ? "active"
-                              : ""
+                            pathname.includes("add-User") ? "active" : ""
                           }
+                          to="/dream-pos/product/add-User"
                         >
-                          <FeatherIcon icon="file-minus" />
-                          <span>User List</span>
+                          <FeatherIcon icon="plus-square" />
+                          <span>Add Users</span>
+                        </Link>
+                      </li>
+                    <li
+                        className={
+                          pathname.includes("Users-List") ? "active" : ""
+                        }
+                      >
+                        <Link
+                          className={
+                            pathname.includes("Users-List") ? "active" : ""
+                          }
+                          to="/dream-pos/product/Users-List"
+                        >
+                          <FeatherIcon icon="users" />
+                          <span>Users List</span>
                         </Link>
                       </li>
                     </ul>
