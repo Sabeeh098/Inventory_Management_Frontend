@@ -8,30 +8,44 @@ import PropTypes from "prop-types";
 const GenerateBarcodePopUp = ({ load, onClose }) => {
   const [count, setCount] = useState(1);
   const [size, setSize] = useState("default");
+  const [brand, setBrand] = useState(load.brands && load.brands.length > 0 ? load.brands[0] : null); // Set the first brand as default if brands are available
 
   const handleChangeCount = (e) => setCount(parseInt(e.target.value, 10) || 1);
   const handleChangeSize = (e) => setSize(e.target.value);
+  const handleChangeBrand = (e) => {
+    const selectedBrand = load.brands.find(brand => brand.brandName === e.target.value);
+    setBrand(selectedBrand); // New handler for brand change
+  };
 
   const handlePrint = async () => {
     try {
-      const barcodesContainer = document.getElementById("barcodes");
-      const canvas = await html2canvas(barcodesContainer);
-
       const pdf = new jsPDF();
-      const imgData = canvas.toDataURL("image/png");
-
-      // Add image to PDF
-      pdf.addImage(imgData, "PNG", 10, 10);
-
+  
+      // Loop through each barcode and add it to the PDF
+      for (let i = 0; i < count; i++) {
+        // Generate a canvas for each barcode
+        const barcodeElement = document.getElementById(`barcode${i}`);
+        const canvas = await html2canvas(barcodeElement);
+        const imgData = canvas.toDataURL("image/png");
+  
+        // Calculate the position of the current barcode
+        const x = (i % 2) * (pdf.internal.pageSize.getWidth() / 2);
+        const y = Math.floor(i / 2) * (pdf.internal.pageSize.getHeight() / 2);
+  
+        // Add the barcode image to the PDF
+        pdf.addImage(imgData, "PNG", x, y, pdf.internal.pageSize.getWidth() / 4, pdf.internal.pageSize.getHeight() / 4);
+      }
+  
       // Save PDF
       const filename = `${moment().format("L")}_Barcodes.pdf`;
       pdf.save(filename);
-
+  
       onClose();
     } catch (error) {
       console.error("Error printing barcodes:", error);
     }
   };
+  
 
   return (
     <Modal
@@ -78,29 +92,43 @@ const GenerateBarcodePopUp = ({ load, onClose }) => {
             {/* Add additional size options here if needed */}
           </select>
         </div>
+        {load.brands && load.brands.length > 0 && (
+          <div className="mb-3">
+            <label htmlFor="brand" className="form-label me-3">
+              Select Brand:
+            </label>
+            <select
+              className="form-control"
+              id="brand"
+              value={brand.brandName}
+              onChange={handleChangeBrand}
+            >
+              {load.brands.map((item, key) => (
+                <option key={key} value={item.brandName}>
+                  {item.brandName}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </form>
       <div
         id="barcodes"
-        className="d-flex flex-wrap justify-content-center m-1"
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+        }}
       >
         {[...Array(count)].map((_, index) => (
-          <div className="m-1" key={index}>
-            {/* Display the base64-encoded barcode image for the specific load */}
-            {load.barcodeImage && (
-              <img
-                src={load.barcodeImage}
-                alt={`Barcode for Load ${load.loadNumber}`}
-                style={{ width: `${size}cm`, height: "auto" }}
-              />
-            )}
-            {load.brands.map((item, key) => (
-              <img
-                key={key}
-                src={item.barcodeImage}
-                alt={`Barcode for Load ${item.loadNumber}`}
-                style={{ width: `${size}cm`, height: "auto" }}
-              />
-            ))}
+          <div style={{ width: '45%', marginBottom: '10px' }} key={index}>
+            {/* Display the base64-encoded barcode image for the selected brand if available, otherwise for the load */}
+            <img
+              id={`barcode${index}`} // Assign a unique id to each barcode image
+              src={brand ? brand.barcodeImage : load.barcodeImage}
+              alt={`Barcode for ${brand ? brand.brandName : `Load ${load.loadNumber}`}`}
+              style={{ width: '100%', height: 'auto' }}
+            />
           </div>
         ))}
       </div>
