@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Quagga from 'quagga';
-import { adminApiInstance } from '../../api/axios';
-import FeatherIcon from 'feather-icons-react';
+import React, { useState, useEffect, useRef } from "react";
+import Quagga from "quagga";
+import { adminApiInstance } from "../../api/axios";
+import FeatherIcon from "feather-icons-react";
+import { toast } from "react-toastify";
 
 const AddCategory = () => {
   const [scannedBarcode, setScannedBarcode] = useState(null);
@@ -16,17 +17,17 @@ const AddCategory = () => {
       Quagga.init(
         {
           inputStream: {
-            name: 'Live',
-            type: 'LiveStream',
+            name: "Live",
+            type: "LiveStream",
             target: barcodeRef.current,
           },
           decoder: {
-            readers: ['code_128_reader'],
+            readers: ["code_128_reader"],
           },
         },
         (err) => {
           if (err) {
-            console.error('Error initializing Quagga:', err);
+            console.error("Error initializing Quagga:", err);
             return;
           }
 
@@ -44,12 +45,16 @@ const AddCategory = () => {
         setScannedBarcode(scannedData);
 
         try {
-          const response = await adminApiInstance.get(`/getLoadDetailsBySkuCode/${scannedData}`);
+          const response = await adminApiInstance.get(
+            `/getLoadDetailsBySkuCode/${scannedData}`
+          );
           const details = response.data;
 
           if (details.isBrand) {
             // If it's a brand SKU, fetch additional brand details
-            const brandResponse = await adminApiInstance.get(`/getBrandDetailsBySkuCode/${scannedData}`);
+            const brandResponse = await adminApiInstance.get(
+              `/getBrandDetailsBySkuCode/${scannedData}`
+            );
             const brandDetails = brandResponse.data;
 
             setLoadDetails(brandDetails);
@@ -58,17 +63,17 @@ const AddCategory = () => {
             setLoadDetails(details);
           }
         } catch (error) {
-          console.error('Error fetching load details:', error);
+          console.error("Error fetching load details:", error);
         }
       });
     };
 
     const fetchAllLoads = async () => {
       try {
-        const response = await adminApiInstance.get('/getloads');
+        const response = await adminApiInstance.get("/getloads");
         setAllLoads(response.data);
       } catch (error) {
-        console.error('Error fetching loads:', error);
+        console.error("Error fetching loads:", error);
       }
     };
 
@@ -83,20 +88,21 @@ const AddCategory = () => {
 
   const handleSearch = async () => {
     try {
-      const skuToSearch = scannedBarcode || '';
+      const skuToSearch = scannedBarcode || "";
       const foundLoad = allLoads.find(
         (load) =>
           load.skuNumber === skuToSearch ||
-          (load.brands && load.brands.some((brand) => brand.skuCode === skuToSearch))
+          (load.brands &&
+            load.brands.some((brand) => brand.skuCode === skuToSearch))
       );
 
       if (foundLoad) {
         setLoadDetails(foundLoad);
       } else {
-        console.error('Load not found for SKU code:', skuToSearch);
+        console.error("Load not found for SKU code:", skuToSearch);
       }
     } catch (error) {
-      console.error('Error searching for load details:', error);
+      console.error("Error searching for load details:", error);
     }
   };
 
@@ -114,18 +120,26 @@ const AddCategory = () => {
 
   const handleUpdateAndSubmit = async () => {
     try {
-      // Update the remaining pallets count in the Load model
-      await adminApiInstance.patch(`/updateRemainingPalletsCount/${loadDetails._id}`, {
-        remainingPalletsCount: loadDetails.palletsCount - palletsCountToUse,
-      });
+      if (
+        loadDetails.palletsCount <
+        loadDetails.remainingPalletsCount + Number(palletsCountToUse)
+      ) {
+        toast.error(
+          "Pallet Count should be less than Pallets and Balance Out Pallets"
+        );
+        return;
+      }
 
       // Update the UsedLoad model
-      await adminApiInstance.post('/updateUsedLoad', {
+      await adminApiInstance.post("/updateUsedLoad", {
         load: loadDetails._id,
+        remainingPalletsCount: loadDetails.remainingPalletsCount,
         usedPalletsCount: palletsCountToUse,
       });
 
-      const response = await adminApiInstance.get(`/getLoadDetailsBySkuCode/${scannedBarcode}`);
+      const response = await adminApiInstance.get(
+        `/getLoadDetailsBySkuCode/${scannedBarcode}`
+      );
       const updatedDetails = response.data;
 
       setLoadDetails(updatedDetails);
@@ -133,9 +147,9 @@ const AddCategory = () => {
       setScannedBarcode(null);
       setPalletsCountToUse(0);
 
-      console.log('Pallets count updated successfully!');
+      console.log("Pallets count updated successfully!");
     } catch (error) {
-      console.error('Error updating pallets count:', error);
+      console.error("Error updating pallets count:", error);
     }
   };
 
@@ -160,14 +174,17 @@ const AddCategory = () => {
                         className="form-control"
                         placeholder="Search by SKU Code"
                         onChange={(e) => setScannedBarcode(e.target.value)}
-                        value={scannedBarcode || ''}
+                        value={scannedBarcode || ""}
                       />
                       <button type="button" onClick={handleSearchIconClick}>
                         <FeatherIcon icon="search" size="20" />
                       </button>
                     </div>
                   ) : (
-                    <button className="btn btn-submit w-100" onClick={handleConnectScanner}>
+                    <button
+                      className="btn btn-submit w-100"
+                      onClick={handleConnectScanner}
+                    >
                       Connect Scanner
                     </button>
                   )}
@@ -190,53 +207,84 @@ const AddCategory = () => {
                   <ul className="product-bar">
                     <li>
                       <h4>Load Number</h4>
-                      <h6 className="manitorygreen">{loadDetails?.loadNumber || 'Loading...'}</h6>
+                      <h6 className="manitorygreen">
+                        {loadDetails?.loadNumber || "Loading..."}
+                      </h6>
                     </li>
                     <li>
                       <h4>Category</h4>
-                      <h6 className="manitorygreen">{loadDetails?.category || 'Loading...'}</h6>
+                      <h6 className="manitorygreen">
+                        {loadDetails?.category || "Loading..."}
+                      </h6>
                     </li>
                     <li>
                       <h4>SKU code</h4>
-                      <h6 className="manitorygreen">{loadDetails?.skuNumber || 'Loading...'}</h6>
+                      <h6 className="manitorygreen">
+                        {loadDetails?.skuNumber || "Loading..."}
+                      </h6>
                     </li>
                     <li>
                       <h4>Load Cost</h4>
-                      <h6 className="manitorygreen">{loadDetails?.loadCost || 'Loading...'}</h6>
+                      <h6 className="manitorygreen">
+                        {loadDetails?.loadCost || "Loading..."}
+                      </h6>
                     </li>
                     <li>
                       <h4>Load Date</h4>
-                      <h6 className="manitorygreen">{loadDetails?.loadDate || 'Loading...'}</h6>
+                      <h6 className="manitorygreen">
+                        {loadDetails?.loadDate || "Loading..."}
+                      </h6>
                     </li>
                     <li>
                       <h4>Pallets</h4>
-                      <h6 className="manitorygreen">{loadDetails?.palletsCount || 'Loading...'}</h6>
+                      <h6 className="manitorygreen">
+                        {loadDetails?.palletsCount || "Loading..."}
+                      </h6>
                     </li>
                     <li>
-                      <h4>Balance Pallets</h4>
-                      <h6 className="manitorygreen">{loadDetails?.remainingPalletsCount || 'Loading...'}</h6>
+                      <h4>Balance Out Pallets</h4>
+                      <h6 className="manitorygreen">
+                        {loadDetails?.remainingPalletsCount || 0}
+                      </h6>
                     </li>
                     <li>
                       <h4>Per Pallet Price</h4>
-                      <h6 className="manitoryblue">{loadDetails?.perPalletPrice || 'Field optional'}</h6>
+                      <h6 className="manitoryblue">
+                        {loadDetails?.perPalletCost || "Field optional"}
+                      </h6>
                     </li>
                     {/* Additional details for brands */}
                     {loadDetails?.brands && (
                       <li>
                         <h4>Brand Name</h4>
-                        <h6 className="manitoryblue">{loadDetails?.brands[0]?.brand || 'Brand not available'}</h6>
+                        <h6 className="manitoryblue">
+                          {loadDetails?.brands[0]?.brand ||
+                            "Brand not available"}
+                        </h6>
                       </li>
                     )}
                   </ul>
                 </div>
               </div>
               <div className="bar-code-view">
-                {scannedBarcode && <p>Scanned Barcode: {scannedBarcode}</p>><br/>}
+                {scannedBarcode &&
+                  <p>Scanned Barcode: {scannedBarcode}</p> > <br />}
                 {/* Display the brand image here if available */}
                 {loadDetails?.brands[0]?.barcodeImage && (
-                  <img src={loadDetails?.brands[0]?.barcodeImage} alt="Brand Barcode" />
+                  <img
+                    src={loadDetails?.brands[0]?.barcodeImage}
+                    alt="Brand Barcode"
+                  />
                 )}
-                <img src={loadDetails?.barcodeImage} alt="barcode" ref={barcodeRef} />
+                <img
+                  src={
+                    loadDetails?.barcodeImage
+                      ? loadDetails?.barcodeImage
+                      : "/barcode1.png"
+                  }
+                  alt="barcode"
+                  ref={barcodeRef}
+                />
               </div>
               <div className="col-lg-12">
                 <div className="form-group mb-0">

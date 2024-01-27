@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Barcode from "react-barcode";
 import html2canvas from "html2canvas";
 import { DeleteIcon } from "../../EntryFile/imagePath";
+import { toast } from "react-toastify";
 
 const AddProduct = () => {
   const [loadData, setLoadData] = useState({
@@ -28,13 +29,13 @@ const AddProduct = () => {
         perPalletCost: (loadData.palletsCount !== 0
           ? value / loadData.palletsCount
           : 0
-        ).toFixed(0),
+        ).toFixed(2),
       });
     } else if (name == "palletsCount") {
       setLoadData({
         ...loadData,
         [name]: value,
-        perPalletCost: (value !== 0 ? loadData.loadCost / value : 0).toFixed(0),
+        perPalletCost: (value !== 0 ? loadData.loadCost / value : 0).toFixed(2),
       });
     } else {
       setLoadData({ ...loadData, [name]: value });
@@ -43,6 +44,11 @@ const AddProduct = () => {
 
   const handleBrandChange = (index, field, e) => {
     const updatedBrands = [...loadData.brands];
+    if (field == "totalPallet") {
+      updatedBrands[index]["totalPrice"] =
+        (Number(loadData.loadCost) / Number(loadData.palletsCount)) *
+        Number(e.target.value);
+    }
     updatedBrands[index][field] = e.target.value;
     setLoadData({ ...loadData, brands: updatedBrands });
   };
@@ -74,8 +80,10 @@ const AddProduct = () => {
         ...prevData.brands,
         {
           brandName: "",
-          brandTotalPrice: "",
-          brandPalletsCount: "",
+          palletNumbers: "",
+          totalPallet: "",
+          totalPrice: "",
+          skuCode: "",
         },
       ],
       skuCode: "", // Reset SKU code when adding a new brand
@@ -90,10 +98,29 @@ const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let palletsCounts = 0;
     let key = 0;
+    if (
+      !(
+        loadData.loadNumber &&
+        loadData.loadCost &&
+        loadData.palletsCount &&
+        loadData.category &&
+        loadData.loadDate
+      )
+    ) {
+      toast.error("Invalid values");
+      return;
+    }
     for (let item of loadData.brands) {
+      palletsCounts = palletsCounts + Number(item.totalPallet ?? 0);
+      item["palletNumbers"] = `${key + 1}-${loadData.palletsCount}`;
       item["barcodeImage"] = await convertBarcodeToImage(`barcode_${key}`);
       key = key + 1;
+    }
+    if (!(palletsCounts == 0 || palletsCounts == loadData.palletsCount)) {
+      toast.error("In Brand Total Pallet Count must be same as Pellets Count");
+      return;
     }
     try {
       const barcodeImageData = await convertBarcodeToImage("barcode-container");
@@ -266,24 +293,30 @@ const AddProduct = () => {
                           </div>
                           <div className="flex-grow-1 me-2">
                             <input
-                              type="number"
-                              name={`brands[${index}].brandTotalPrice`}
-                              value={brand.brandTotalPrice}
-                              onChange={(e) =>
-                                handleBrandChange(index, "brandTotalPrice", e)
-                              }
+                              type="text"
+                              name={`brands[${index}].palletNumbers`}
+                              value={`${index + 1}-${loadData.palletsCount}`}
                               className="form-control"
-                              placeholder={`Pallets Count`}
+                              placeholder={`Pallet Number`}
                             />
                           </div>
                           <div className="flex-grow-1 me-2">
                             <input
                               type="number"
-                              name={`brands[${index}].brandPalletsCount`}
-                              value={brand.brandPalletsCount}
+                              name={`brands[${index}].totalPallet`}
+                              value={brand.totalPallet}
                               onChange={(e) =>
-                                handleBrandChange(index, "brandPalletsCount", e)
+                                handleBrandChange(index, "totalPallet", e)
                               }
+                              className="form-control"
+                              placeholder={`Total Pallet`}
+                            />
+                          </div>
+                          <div className="flex-grow-1 me-2">
+                            <input
+                              type="number"
+                              name={`brands[${index}].totalPrice`}
+                              value={brand.totalPrice}
                               className="form-control"
                               placeholder={`Total Price`}
                             />

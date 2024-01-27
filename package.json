@@ -84,6 +84,7 @@
     "react-sweetalert2": "^0.5.2",
     "react-tag-input-component": "^2.0.2",
     "react-to-print": "^2.14.15",
+    "react-toastify": "^10.0.4",
     "react-tooltip": "^5.18.0",
     "slick-carousel": "^1.8.1",
     "source-map-loader": "^4.0.1",

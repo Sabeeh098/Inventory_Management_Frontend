@@ -4,58 +4,11 @@ import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 import { adminApiInstance } from "../../api/axios";
 import { useParams } from "react-router-dom/cjs/react-router-dom";
-import { useReactToPrint } from 'react-to-print';
-import PropTypes from "prop-types";
-
-// BrandDetails component with display name and propTypes
-const BrandDetails = React.forwardRef(({ item }, ref) => (
-  <div className="productdetails" ref={ref}>
-    <ul className="product-bar">
-      <li>
-        <h4>Brand Name</h4>
-        <h6>{item.brandName}</h6>
-      </li>
-      <li>
-        <h4>Pallets Count</h4>
-        <h6>{item.brandPalletsCount}</h6>
-      </li>
-      <li>
-        <h4>Total Price</h4>
-        <h6>{item.brandTotalPrice}</h6>
-      </li>
-      <li>
-        <h4>SKU Number</h4>
-        <h6>{item.skuCode}</h6>
-      </li>
-      <li>
-        <div className="bar-code-view">
-          <img src={item.barcodeImage} alt="barcode" />
-        </div>
-      </li>
-    </ul>
-  </div>
-));
-
-BrandDetails.displayName = 'BrandDetails'; // Add display name
-
-BrandDetails.propTypes = {
-  item: PropTypes.shape({
-    brandName: PropTypes.string.isRequired,
-    brandPalletsCount: PropTypes.number.isRequired,
-    brandTotalPrice: PropTypes.number.isRequired,
-    skuCode: PropTypes.string.isRequired,
-    barcodeImage: PropTypes.string.isRequired,
-  }).isRequired,
-};
+import BrandDetails from "./BrandDetails";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const brandDetailsRef = React.useRef();
-
-  const handlePrintBrand = useReactToPrint({
-    content: () => brandDetailsRef.current,
-  });
 
   useEffect(() => {
     // Fetch the product details based on the loadId
@@ -118,7 +71,7 @@ const ProductDetails = () => {
                     </li>
                     <li>
                       <h4>Per Pallet Price</h4>
-                      <h6>{product.perPalletPrice}</h6>
+                      <h6>{product.perPalletCost}</h6>
                     </li>
                     <li>
                       <h4>SKU Number</h4>
@@ -137,10 +90,8 @@ const ProductDetails = () => {
                   <div className="slider-product-details">
                     {product.brands.map((item, key) => (
                       <div key={key} id={`brand-details-${item.skuCode}`}>
-                        <BrandDetails item={product.brands[0]} ref={brandDetailsRef} />
-           
-                <button onClick={handlePrintBrand}>Print</button>
-              </div>
+                        <BrandDetails item={item}  />
+                      </div>
                     ))}
                   </div>
                 </div>
