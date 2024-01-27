@@ -4,6 +4,7 @@ import { adminApiInstance } from "../../api/axios";
 import FeatherIcon from "feather-icons-react";
 import { toast } from "react-toastify";
 
+
 const AddCategory = () => {
   const [scannedBarcode, setScannedBarcode] = useState(null);
   const [loadDetails, setLoadDetails] = useState(null);

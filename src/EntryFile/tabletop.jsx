@@ -11,9 +11,19 @@ import {
     Pdf,
     Printer,
     Search
-  } from "../EntryFile/imagePath";
+} from "../EntryFile/imagePath";
 
-const Tabletop = ({inputfilter,togglefilter}) => {
+const Tabletop = ({ inputfilter, togglefilter, onSearch }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearch = () => {
+    onSearch(searchTerm);
+  };
+
+  const handleInputChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
   return (
     <div className="table-top">
       <div className="search-set">
@@ -36,8 +46,10 @@ const Tabletop = ({inputfilter,togglefilter}) => {
             className="form-control form-control-sm search-icon"
             type="search"
             placeholder="Search..."
+            value={searchTerm}
+            onChange={handleInputChange}
           />
-          <Link to="#" className="btn btn-searchset">
+          <Link to="#" className="btn btn-searchset" onClick={handleSearch}>
             <img src={Search} alt="img" />
           </Link>
         </div>

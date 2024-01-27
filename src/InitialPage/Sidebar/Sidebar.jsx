@@ -158,7 +158,7 @@ const Sidebar = (props) => {
                         }
                       >
                         <Link
-                          to="/dream-pos/report/purchaseorderreport"
+                          to="/dream-pos/product/purchaseorderreport"
                           className={
                             pathname.includes("purchaseorderreport")
                               ? "active"
@@ -211,13 +211,13 @@ const Sidebar = (props) => {
                     <ul>
                     <li
                         className={
-                          pathname.includes("inventoryreport") ? "active" : ""
+                          pathname.includes("InventoryIndicators") ? "active" : ""
                         }
                       >
                         <Link
-                          to="/dream-pos/report/inventoryreport"
+                          to="/dream-pos/product/InventoryIndicators"
                           className={
-                            pathname.includes("inventoryreport") ? "active" : ""
+                            pathname.includes("InventoryIndicators") ? "active" : ""
                           }
                         >
                           {/* <i data-feather="credit-card" /> */}
@@ -227,11 +227,11 @@ const Sidebar = (props) => {
                       </li>
                       <li
                         className={
-                          pathname.includes("salesreport") ? "active" : ""
+                          pathname.includes("/ScanInScanOut") ? "active" : ""
                         }
                       >
                         <Link
-                          to="/dream-pos/report/salesreport"
+                          to="/dream-pos/product/ScanInScanOut"
                           className={
                             pathname.includes("salesreport") ? "active" : ""
                           }

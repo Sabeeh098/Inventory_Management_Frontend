@@ -18,6 +18,9 @@ import PrintBarcode from './PrintBarcode';
 import ProductDetails from './productDetails';
 import AddEmployee from './AddEmployee';
 import UserList from './UserList';
+import Purchaseorder from './purchaseorder';
+import ScanInScanOut from './ScanInScanOut';
+import Inventory from './Inventory';
 
 const ProductRoute = ({ match }) => (
     <Switch>
@@ -28,6 +31,11 @@ const ProductRoute = ({ match }) => (
         <Route path={`${match.url}/printbarcode-pallets`} component={PrintBarcode} />
         <Route path={`${match.url}/add-User`} component={AddEmployee} />
         <Route path={`${match.url}/Users-List`} component={UserList} />
+
+
+        <Route path={`${match.url}/purchaseorderreport`} component={Purchaseorder} />
+        <Route path={`${match.url}/ScanInScanOut`} component={ScanInScanOut} />
+        <Route path={`${match.url}/InventoryIndicators`} component={Inventory} />
 
 
 
