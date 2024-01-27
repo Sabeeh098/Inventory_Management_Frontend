@@ -5,12 +5,16 @@ import PropTypes from "prop-types";
 const EditModal = ({ employee, visible, onClose, onSaveChanges }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [permissions, setPermissions] = useState([]);
 
   useEffect(() => {
     // Update state when the employee prop changes
     if (employee) {
       setName(employee.name || "");
       setEmail(employee.email || "");
+      if (employee.role == "employee") {
+        setPermissions(employee.permissions);
+      }
     }
   }, [employee]);
 
@@ -22,9 +26,20 @@ const EditModal = ({ employee, visible, onClose, onSaveChanges }) => {
       ...employee,
       name,
       email,
+      permissions,
     };
 
     onSaveChanges(updatedEmployee);
+  };
+
+  const updatePermission = (name, target, value) => {
+    const idx = permissions.findIndex((x) => x.name === name);
+    if (idx > -1) {
+      const __item = permissions[idx];
+      __item[target] = value.checked;
+      permissions[idx] = __item;
+      setPermissions(permissions);
+    }
   };
 
   return (
@@ -67,6 +82,28 @@ const EditModal = ({ employee, visible, onClose, onSaveChanges }) => {
           />
         </div>
         {/* Add more form fields as needed */}
+        {permissions &&
+          permissions.map((item, idx) => (
+            <div className="py-3" key={idx}>
+              <div className="form-check-inline">
+                <h6 className="text-primary">{item.name}</h6>
+              </div>
+              <div className="form-check form-switch form-check-inline">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id={idx + "view"}
+                  defaultChecked={item.view}
+                  onChange={(e) =>
+                    updatePermission(item.name, "view", e.target)
+                  }
+                />
+                <label className="form-check-label" htmlFor={idx + "view"}>
+                  View
+                </label>
+              </div>
+            </div>
+          ))}
       </form>
     </Modal>
   );

@@ -63,7 +63,10 @@ const UserList = () => {
 
   const saveChanges = async (updatedEmployee) => {
     try {
-      const response = await adminApiInstance.patch(`/editEmployee/${updatedEmployee._id}`, updatedEmployee);
+      const response = await adminApiInstance.patch(
+        `/editEmployee/${updatedEmployee._id}`,
+        updatedEmployee
+      );
 
       if (response.status === 200) {
         console.log("Employee edited successfully");

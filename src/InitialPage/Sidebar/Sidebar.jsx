@@ -5,11 +5,29 @@ import { withRouter, useHistory, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Scrollbars } from "react-custom-scrollbars";
 import FeatherIcon from "feather-icons-react";
+import { useStorage } from "../../constants/storage.tsx";
 
 const Sidebar = (props) => {
+  const { getItem } = useStorage();
   const [isSideMenu, setSideMenu] = useState("");
-  const [path, setPath] = useState("");
+  const [role, setRole] = useState("");
+  const [permissions, setPermissions] = useState("");
   const history = useHistory();
+
+  useEffect(() => {
+    getItem("user").then((value) => {
+      if (value) {
+        setRole(value.role);
+        let permissions = {};
+        for (let item of value.permissions) {
+          permissions[item.name] = item.view;
+        }
+        setPermissions(permissions);
+      } else {
+        history.push(`/signIn`);
+      }
+    });
+  }, []);
 
   const toggleSidebar = (value) => {
     setSideMenu(value);
@@ -63,26 +81,28 @@ const Sidebar = (props) => {
                 onMouseLeave={expandMenu}
               >
                 <ul>
-                  <li className="submenu-open">
-                    <h6 className="submenu-hdr">Main</h6>
-                    <ul>
-                      <li
-                        className={
-                          pathname.includes("dashboard") ? "active" : ""
-                        }
-                      >
-                        <Link to="/dream-pos/dashboard">
-                          {/* <i data-feather="grid" /> */}
-                          <FeatherIcon icon="grid" />
-                          <span>Dashboard</span>
-                        </Link>
-                      </li>
-                    </ul>
-                  </li>
+                  {role == "admin" && (
+                    <li className="submenu-open">
+                      <h6 className="submenu-hdr">Main</h6>
+                      <ul>
+                        <li
+                          className={
+                            pathname.includes("dashboard") ? "active" : ""
+                          }
+                        >
+                          <Link to="/dream-pos/dashboard">
+                            {/* <i data-feather="grid" /> */}
+                            <FeatherIcon icon="grid" />
+                            <span>Dashboard</span>
+                          </Link>
+                        </li>
+                      </ul>
+                    </li>
+                  )}
                   <li className="submenu-open">
                     <h6 className="submenu-hdr">Products</h6>
                     <ul>
-                      <li
+                    {(role == "admin" || permissions.loads) && (<li
                         className={
                           pathname.includes("add-loads") ? "active" : ""
                         }
@@ -96,8 +116,8 @@ const Sidebar = (props) => {
                           <FeatherIcon icon="plus-square" />
                           <span>Add Loads</span>
                         </Link>
-                      </li>
-                      <li
+                      </li>)}
+                      {(role == "admin" || permissions.loads) && (<li
                         className={
                           pathname.includes("list-loads") ? "active" : ""
                         }
@@ -111,8 +131,8 @@ const Sidebar = (props) => {
                           <FeatherIcon icon="box" />
                           <span>List Loads</span>
                         </Link>
-                      </li>
-                      <li
+                      </li>)}
+                      {(role == "admin" || permissions.pallets) && (<li
                         className={
                           pathname.includes("add-pallets") ? "active" : ""
                         }
@@ -126,7 +146,7 @@ const Sidebar = (props) => {
                           <FeatherIcon icon="codepen" />
                           <span>Scan Barcode</span>
                         </Link>
-                      </li>
+                      </li>)}
                       <li
                         className={
                           pathname.includes("importproduct-product")
@@ -147,7 +167,7 @@ const Sidebar = (props) => {
                       </li>
                     </ul>
                   </li>
-                  <li className="submenu-open">
+                  {(role == "admin" || permissions.purchase) && (<li className="submenu-open">
                     <h6 className="submenu-hdr">Purchases</h6>
                     <ul>
                       <li
@@ -170,11 +190,11 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                     </ul>
-                  </li>
-                  <li className="submenu-open">
+                  </li>)}
+                  {(role == "admin" || permissions.users) && (<li className="submenu-open">
                     <h6 className="submenu-hdr">Users</h6>
                     <ul>
-                    <li
+                      <li
                         className={
                           pathname.includes("add-User") ? "active" : ""
                         }
@@ -189,7 +209,7 @@ const Sidebar = (props) => {
                           <span>Add Users</span>
                         </Link>
                       </li>
-                    <li
+                      <li
                         className={
                           pathname.includes("Users-List") ? "active" : ""
                         }
@@ -205,11 +225,11 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                     </ul>
-                  </li>
-                  <li className="submenu-open">
+                  </li>)}
+                  {(role == "admin" || permissions.reports) && (<li className="submenu-open">
                     <h6 className="submenu-hdr">Reports</h6>
                     <ul>
-                    <li
+                      <li
                         className={
                           pathname.includes("inventoryreport") ? "active" : ""
                         }
@@ -242,120 +262,123 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                     </ul>
-                  </li>
-                  <li className="submenu-open">
-                    <h6 className="submenu-hdr">Settings</h6>
-                    <ul>
-                      <li className="submenu">
-                        <Link
-                          to="#"
-                          className={
-                            pathname.includes("/dream-pos/settings")
-                              ? "subdrop active"
-                              : "" || isSideMenu == "Settings"
-                              ? "subdrop active"
-                              : ""
-                          }
-                          onClick={() =>
-                            toggleSidebar(
-                              isSideMenu == "Settings" ? "" : "Settings"
-                            )
-                          }
-                        >
-                          {/* <img src={settings} alt="img" /> */}
-                          <FeatherIcon icon="settings" />
-                          <span> Settings</span> <span className="menu-arrow" />
-                        </Link>
-                        {isSideMenu == "Settings" ? (
-                          <ul>
-                            <li>
-                              <Link
-                                to="/dream-pos/settings/generalsettings"
-                                className={
-                                  pathname.includes("generalsettings")
-                                    ? "active"
-                                    : ""
-                                }
-                              >
-                                General Settings
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to="/dream-pos/settings/emailsettings"
-                                className={
-                                  pathname.includes("emailsettings")
-                                    ? "active"
-                                    : ""
-                                }
-                              >
-                                Email Settings
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to="/dream-pos/settings/paymentsettings"
-                                className={
-                                  pathname.includes("paymentsettings")
-                                    ? "active"
-                                    : ""
-                                }
-                              >
-                                Payment Settings
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to="/dream-pos/settings/currencysettings"
-                                className={
-                                  pathname.includes("currencysettings")
-                                    ? "active"
-                                    : ""
-                                }
-                              >
-                                Currency Settings
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to="/dream-pos/settings/grouppermissions"
-                                className={
-                                  pathname.includes("permission")
-                                    ? "active"
-                                    : ""
-                                }
-                              >
-                                Group Permissions
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to="/dream-pos/settings/taxrates"
-                                className={
-                                  pathname.includes("taxrates") ? "active" : ""
-                                }
-                              >
-                                Tax Rates
-                              </Link>
-                            </li>
-                          </ul>
-                        ) : (
-                          ""
-                        )}
-                      </li>
-                      <li>
-                        <Link
-                          to="/signIn"
-                          className={
-                            pathname.includes("signIn") ? "active" : ""
-                          }
-                        >
-                          <FeatherIcon icon="log-out" />
-                          <span>Logout</span>{" "}
-                        </Link>
-                      </li>
-                    </ul>
-                  </li>
+                  </li>)}
+                    <li className="submenu-open">
+                      <h6 className="submenu-hdr">Settings</h6>
+                      <ul>
+                        <li className="submenu">
+                          <Link
+                            to="#"
+                            className={
+                              pathname.includes("/dream-pos/settings")
+                                ? "subdrop active"
+                                : "" || isSideMenu == "Settings"
+                                ? "subdrop active"
+                                : ""
+                            }
+                            onClick={() =>
+                              toggleSidebar(
+                                isSideMenu == "Settings" ? "" : "Settings"
+                              )
+                            }
+                          >
+                            {/* <img src={settings} alt="img" /> */}
+                            <FeatherIcon icon="settings" />
+                            <span> Settings</span>{" "}
+                            <span className="menu-arrow" />
+                          </Link>
+                          {isSideMenu == "Settings" ? (
+                            <ul>
+                              <li>
+                                <Link
+                                  to="/dream-pos/settings/generalsettings"
+                                  className={
+                                    pathname.includes("generalsettings")
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  General Settings
+                                </Link>
+                              </li>
+                              <li>
+                                <Link
+                                  to="/dream-pos/settings/emailsettings"
+                                  className={
+                                    pathname.includes("emailsettings")
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  Email Settings
+                                </Link>
+                              </li>
+                              <li>
+                                <Link
+                                  to="/dream-pos/settings/paymentsettings"
+                                  className={
+                                    pathname.includes("paymentsettings")
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  Payment Settings
+                                </Link>
+                              </li>
+                              <li>
+                                <Link
+                                  to="/dream-pos/settings/currencysettings"
+                                  className={
+                                    pathname.includes("currencysettings")
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  Currency Settings
+                                </Link>
+                              </li>
+                              <li>
+                                <Link
+                                  to="/dream-pos/settings/grouppermissions"
+                                  className={
+                                    pathname.includes("permission")
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  Group Permissions
+                                </Link>
+                              </li>
+                              <li>
+                                <Link
+                                  to="/dream-pos/settings/taxrates"
+                                  className={
+                                    pathname.includes("taxrates")
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  Tax Rates
+                                </Link>
+                              </li>
+                            </ul>
+                          ) : (
+                            ""
+                          )}
+                        </li>
+                        <li>
+                          <Link
+                            to="/signIn"
+                            className={
+                              pathname.includes("signIn") ? "active" : ""
+                            }
+                          >
+                            <FeatherIcon icon="log-out" />
+                            <span>Logout</span>{" "}
+                          </Link>
+                        </li>
+                      </ul>
+                    </li>
                 </ul>
               </div>
             </div>
