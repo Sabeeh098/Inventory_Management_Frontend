@@ -2,19 +2,19 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Tooltip as ReactTooltip } from 'react-tooltip';
+import { Tooltip as ReactTooltip } from "react-tooltip";
 
 import {
-    ClosesIcon,
-    Excel,
-    Filter,
-    Pdf,
-    Printer,
-    Search
+  ClosesIcon,
+  Excel,
+  Filter,
+  Pdf,
+  Printer,
+  Search,
 } from "../EntryFile/imagePath";
 
 const Tabletop = ({ inputfilter, togglefilter, onSearch }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = () => {
     onSearch(searchTerm);
@@ -26,7 +26,8 @@ const Tabletop = ({ inputfilter, togglefilter, onSearch }) => {
 
   return (
     <div className="table-top">
-      <div className="search-set">
+      <div className="search-set"></div>
+      <div className="search-set none">
         <div className="search-path">
           <a
             className={` btn ${

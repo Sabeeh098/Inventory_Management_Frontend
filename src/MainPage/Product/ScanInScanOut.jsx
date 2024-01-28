@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Table from "../../EntryFile/datatable";
 import { Link } from "react-router-dom";
-import { EditIcon, DeleteIcon, PlusIcon } from "../../EntryFile/imagePath";
+import { PlusIcon } from "../../EntryFile/imagePath";
 import { adminApiInstance } from "../../api/axios";
 import { BsUpcScan } from "react-icons/bs";
 
@@ -13,7 +13,7 @@ const ScanInScanOut = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await adminApiInstance.get('/getLoads');
+        const response = await adminApiInstance.get("/getLoads?type=scans");
         setData(response.data);
       } catch (error) {
         console.error(error);
@@ -67,13 +67,13 @@ const ScanInScanOut = () => {
       title: "Action",
       render: () => (
         <>
-       <Link className="me-3 mb-2" to="/dream-pos/purchase/editpurchase-purchase">
-    <BsUpcScan size="26" color="#0dcaf0"/>
-  </Link>
-        <Link className="confirm-text" to="#">
-          <img src={DeleteIcon} alt="img" />
-        </Link>
-      </>
+          <Link
+            className="me-3 mb-2"
+            to="/dream-pos/purchase/editpurchase-purchase"
+          >
+            <BsUpcScan size="26" color="#0dcaf0" />
+          </Link>
+        </>
       ),
     },
   ];

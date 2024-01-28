@@ -1,40 +1,53 @@
 /* eslint-disable no-dupe-keys */
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
-import Table from '../../EntryFile/datatable';
-import Tabletop from '../../EntryFile/tabletop';
-import { Link } from 'react-router-dom';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import Select2 from 'react-select2-wrapper';
-import 'react-select2-wrapper/css/select2.css';
-import moment from 'moment';
-import {
-  Calendar,
-  search_whites,
-} from "../../EntryFile/imagePath";
-import { adminApiInstance } from '../../api/axios';
+import React, { useState, useEffect } from "react";
+import Table from "../../EntryFile/datatable";
+import Tabletop from "../../EntryFile/tabletop";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import Select2 from "react-select2-wrapper";
+import "react-select2-wrapper/css/select2.css";
+import moment from "moment";
+import { Calendar, search_whites } from "../../EntryFile/imagePath";
+import { adminApiInstance } from "../../api/axios";
 
 const Purchaseorder = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [startDate1, setStartDate1] = useState(new Date());
   const [inputfilter, setInputfilter] = useState(false);
   const [data, setData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchData = async () => {
     try {
-      console.log("Fetching data with searchTerm:", searchTerm);
-    const response = await adminApiInstance.get('/fetchPurschaseOrder', {
-      params: {
-        searchTerm: searchTerm,
-      },
-    });
-      console.log("Response data:", response.data);
-      setData(response.data);
+      const response = await adminApiInstance.get("/fetchPurschaseOrder", {
+        params: {
+          searchTerm: searchTerm,
+        },
+      });
+      const groupDataByWeek = () => {
+        return response.data.reduce((acc, item) => {
+          const weekNumber = moment(item.addedAt).isoWeek();
+          if (!acc[weekNumber]) {
+            acc[weekNumber] = [];
+          }
+          acc[weekNumber].push(item);
+          return acc;
+        }, {});
+      };
+
+      // const groupedData = response.data.reduce((acc, item) => {
+      //   const date = item.addedAt;
+      //   if (!acc[date]) {
+      //     acc[date] = [];
+      //   }
+      //   acc[date].push(item);
+      //   return acc;
+      // }, {});
+      setData(groupDataByWeek);
     } catch (error) {
-      console.error('Error fetching data:', error);
-      console.log('Error response:', error.response);
+      console.error("Error fetching data:", error);
+      console.log("Error response:", error.response);
     }
   };
 
@@ -43,8 +56,8 @@ const Purchaseorder = () => {
   }, [searchTerm]);
 
   const options = [
-    { id: 1, text: 'Choose Supplier', text: 'Choose Product' },
-    { id: 2, text: 'Supplier', text: 'Supplier' },
+    { id: 1, text: "Choose Supplier", text: "Choose Product" },
+    { id: 2, text: "Supplier", text: "Supplier" },
   ];
 
   const togglefilter = (value) => {
@@ -53,24 +66,24 @@ const Purchaseorder = () => {
 
   const columns = [
     {
-      title: 'Load Number',
-      dataIndex: 'loadNumber',
+      title: "Load Number",
+      dataIndex: "loadNumber",
       sorter: (a, b) => a.loadNumber.length - b.loadNumber.length,
     },
     {
-      title: 'Load Cost',
-      dataIndex: 'loadCost',
+      title: "Load Cost",
+      dataIndex: "loadCost",
       sorter: (a, b) => a.loadCost - b.loadCost,
     },
     {
-      title: 'Pallets Out',
-      dataIndex: 'palletsOut',
+      title: "Pallets Out",
+      dataIndex: "palletsOut",
       sorter: (a, b) => a.palletsOut - b.palletsOut,
     },
     {
-      title: 'Added At',
-      dataIndex: 'addedAt',
-      render: (text) => moment(text).format('YYYY-MM-DD HH:mm:ss'), // Format date as needed
+      title: "Added At",
+      dataIndex: "addedAt",
+      render: (text) => moment(text).format("YYYY-MM-DD"), // Format date as needed
       sorter: (a, b) => moment(a.addedAt).unix() - moment(b.addedAt).unix(),
     },
   ];
@@ -87,12 +100,16 @@ const Purchaseorder = () => {
         {/* /product list */}
         <div className="card">
           <div className="card-body">
-          <Tabletop inputfilter={inputfilter} togglefilter={togglefilter} onSearch={fetchData} />
+            <Tabletop
+              inputfilter={inputfilter}
+              togglefilter={togglefilter}
+              onSearch={fetchData}
+            />
             {/* /Filter */}
             <div
-              className={`card mb-0 ${inputfilter ? 'toggleCls' : ''}`}
+              className={`card mb-0 ${inputfilter ? "toggleCls" : ""}`}
               id="filter_inputs"
-              style={{ display: inputfilter ? 'block' : 'none' }}
+              style={{ display: inputfilter ? "block" : "none" }}
             >
               <div className="card-body pb-0">
                 <div className="row">
@@ -139,14 +156,17 @@ const Purchaseorder = () => {
                         className="select"
                         data={options}
                         options={{
-                          placeholder: 'Choose Suppliers',
+                          placeholder: "Choose Suppliers",
                         }}
                       />
                     </div>
                   </div>
                   <div className="col-lg-1 col-sm-6 col-12 ms-auto">
                     <div className="form-group">
-                      <a className="btn btn-filters ms-auto" onClick={() => fetchData()}>
+                      <a
+                        className="btn btn-filters ms-auto"
+                        onClick={() => fetchData()}
+                      >
                         <img src={search_whites} alt="img" />
                       </a>
                     </div>
@@ -156,7 +176,18 @@ const Purchaseorder = () => {
             </div>
             {/* /Filter */}
             <div className="table-responsive">
-              <Table columns={columns} dataSource={data} rowKey={(record) => record.loadNumber} />
+              {Object.keys(data).map((item, key) => {
+                return (
+                  <div key={key}>
+                    <h2>{`Week ${item}`}</h2>
+                    <Table
+                      columns={columns}
+                      dataSource={data[item]}
+                      rowKey={(record) => record.loadNumber}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
