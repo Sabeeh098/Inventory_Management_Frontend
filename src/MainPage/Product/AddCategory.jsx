@@ -268,25 +268,29 @@ const AddCategory = () => {
                 </div>
               </div>
               <div className="bar-code-view">
-                {scannedBarcode &&
-                  <p>Scanned Barcode: {scannedBarcode}</p> > <br />}
-                {/* Display the brand image here if available */}
-                {loadDetails?.brands[0]?.barcodeImage && (
-                  <img
-                    src={loadDetails?.brands[0]?.barcodeImage}
-                    alt="Brand Barcode"
-                  />
-                )}
-                <img
-                  src={
-                    loadDetails?.barcodeImage
-                      ? loadDetails?.barcodeImage
-                      : "/barcode1.png"
-                  }
-                  alt="barcode"
-                  ref={barcodeRef}
-                />
-              </div>
+  {scannedBarcode && <p>Scanned Barcode: {scannedBarcode}</p>}
+  {/* Display the brand image here if available */}
+  {loadDetails?.brands[0]?.barcodeImage && (
+    <img
+      src={loadDetails?.brands[0]?.barcodeImage}
+      alt="Brand Barcode"
+    />
+  )}
+  {!loadDetails?.barcodeImage && (
+    <img
+      src="https://t4.ftcdn.net/jpg/02/28/23/91/240_F_228239110_4eEmhcqbUpZG8y1x1aazFBQMVmbGjoce.jpg"  // Replace with the actual path to your dummy barcode image
+      alt="Dummy Barcode"
+      ref={barcodeRef}
+    />
+  )}
+  {loadDetails?.barcodeImage && (
+    <img
+      src={loadDetails?.barcodeImage}
+      alt="barcode"
+      ref={barcodeRef}
+    />
+  )}
+</div>
               <div className="col-lg-12">
                 <div className="form-group mb-0">
                   <button

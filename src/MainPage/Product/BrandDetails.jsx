@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import PropTypes from "prop-types";
+import { TfiPrinter } from "react-icons/tfi";
 
 // eslint-disable-next-line react/prop-types
 const BrandDetails = ({ item }) => {
@@ -16,7 +17,7 @@ const BrandDetails = ({ item }) => {
 
   return (
     <div className="productdetails">
-      <ul className="product-bar" ref={brandDetailsRef}>
+      <ul className="product-bar" ref={brandDetailsRef} style={{ listStyle: "none", padding: 0 }}>
         <li>
           <h4>Brand Name</h4>
           <h6>{item.brandName}</h6>
@@ -43,15 +44,33 @@ const BrandDetails = ({ item }) => {
           </div>
         </li>
       </ul>
-      <div>
+      <div style={{ marginTop: "10px", display: "flex", alignItems: "center" }}>
         <input
           checked={barcodeOnly}
           onChange={() => setBarcodeOnly(!barcodeOnly)}
           type="checkbox"
         />
-        Print Barcode Only
+        <label style={{ marginLeft: "5px" }}>Print Barcode Only</label>
+        <div style={{ marginLeft: "auto" }}>
+          <button
+            onClick={handlePrintBrand}
+            style={{
+              border: "1px solid #3498db", // Add border with color
+              borderRadius: "5px", // Add border-radius for rounded corners
+              background: "#3498db", // Set background color
+              color: "#fff", // Set text color
+              cursor: "pointer", // Set cursor to pointer
+              display: "flex",
+              alignItems: "center", // Align the icon vertically
+              padding: "5px 10px",
+              marginBottom: "5px",
+            }}
+          >
+            <TfiPrinter style={{ marginRight: "5px" }} />
+            Print
+          </button>
+        </div>
       </div>
-      <button onClick={handlePrintBrand}>Print</button>
     </div>
   );
 };
@@ -68,3 +87,5 @@ BrandDetails.propTypes = {
 };
 
 export default BrandDetails;
+
+

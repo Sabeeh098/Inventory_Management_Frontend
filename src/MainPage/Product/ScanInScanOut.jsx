@@ -6,9 +6,12 @@ import { Link } from "react-router-dom";
 import { PlusIcon } from "../../EntryFile/imagePath";
 import { adminApiInstance } from "../../api/axios";
 import { BsUpcScan } from "react-icons/bs";
+import UpdateDetailsModal from "./UpdateDetailsModal";
 
 const ScanInScanOut = () => {
   const [data, setData] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedLoad, setSelectedLoad] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,18 +68,43 @@ const ScanInScanOut = () => {
     },
     {
       title: "Action",
-      render: () => (
+      render: (_, record) => (
         <>
-          <Link
+          <button
             className="me-3 mb-2"
-            to="/dream-pos/purchase/editpurchase-purchase"
+            style={{ border: "none", background: "none", cursor: "pointer" }}
+            onClick={() => {
+              setSelectedLoad(record);
+              setIsModalVisible(true);
+            }}
           >
             <BsUpcScan size="26" color="#0dcaf0" />
-          </Link>
+          </button>
         </>
       ),
     },
   ];
+
+  const handleUpdatePalletsCount = async (loadId, newPalletsCount) => {
+    try {
+      // Update the pallets count for the selected load using an API call
+      await adminApiInstance.post("/updatePalletsCount", {
+        loadId,
+        newPalletsCount,
+      });
+
+      // Fetch updated data after the update
+      const response = await adminApiInstance.get("/getLoads?type=scans");
+      setData(response.data);
+    } catch (error) {
+      console.error("Error updating pallets count:", error);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+    setSelectedLoad(null);
+  };
 
   return (
     <>
@@ -97,10 +125,8 @@ const ScanInScanOut = () => {
               </Link>
             </div>
           </div>
-          {/* /product list */}
           <div className="card">
             <div className="card-body">
-              {/* /Filter */}
               <div className="table-responsive">
                 <Table
                   columns={columns}
@@ -111,9 +137,17 @@ const ScanInScanOut = () => {
               </div>
             </div>
           </div>
-          {/* /product list */}
         </div>
       </div>
+      {isModalVisible && selectedLoad && (
+        <UpdateDetailsModal
+          visible={isModalVisible}
+          onCancel={handleCloseModal}
+          onUpdate={handleUpdatePalletsCount}
+          currentPalletsCount={selectedLoad.palletsCount}
+          selectedLoadId={selectedLoad._id}
+        />
+      )}
     </>
   );
 };
