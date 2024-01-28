@@ -16,7 +16,13 @@ const Inventory = () => {
   const fetchLoads = async () => {
     try {
       const response = await adminApiInstance.get("/getLoads?type=indicators");
-      setLoads(response.data);
+      let data = [];
+      for (let item of response.data) {
+        if (item.palletsCount - item.remainingPalletsCount < 6) {
+          data.push(item);
+        }
+      }
+      setLoads(data);
     } catch (error) {
       console.error("Error fetching loads:", error);
     }
