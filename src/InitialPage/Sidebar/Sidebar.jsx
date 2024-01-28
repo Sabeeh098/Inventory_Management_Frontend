@@ -6,6 +6,16 @@ import { Link } from "react-router-dom";
 import { Scrollbars } from "react-custom-scrollbars";
 import FeatherIcon from "feather-icons-react";
 import { useStorage } from "../../constants/storage.tsx";
+import { MdDashboardCustomize, MdOutlineImportExport } from "react-icons/md";
+import { AiFillDashboard } from "react-icons/ai";
+import { ImBoxAdd } from "react-icons/im";
+import { FaClipboardList } from "react-icons/fa";
+import { BsAppIndicator, BsUpcScan } from "react-icons/bs";
+import { TbReport, TbScan, TbScanEye } from "react-icons/tb";
+import { IoMdPersonAdd, IoMdSettings } from "react-icons/io";
+import { PiUserListBold } from "react-icons/pi";
+import { TbZoomScan } from "react-icons/tb";
+import { LuLogOut } from "react-icons/lu";
 
 const Sidebar = (props) => {
   const { getItem } = useStorage();
@@ -92,7 +102,7 @@ const Sidebar = (props) => {
                         >
                           <Link to="/dream-pos/dashboard">
                             {/* <i data-feather="grid" /> */}
-                            <FeatherIcon icon="grid" />
+                            <AiFillDashboard color="FFFF00" size="50" />
                             <span>Dashboard</span>
                           </Link>
                         </li>
@@ -113,7 +123,7 @@ const Sidebar = (props) => {
                           }
                           to="/dream-pos/product/add-loads"
                         >
-                          <FeatherIcon icon="plus-square" />
+                          <ImBoxAdd color="65B741" size="50"/>
                           <span>Add Loads</span>
                         </Link>
                       </li>)}
@@ -128,7 +138,7 @@ const Sidebar = (props) => {
                           }
                           to="/dream-pos/product/list-loads"
                         >
-                          <FeatherIcon icon="box" />
+                          <FaClipboardList color="65B741" size="50" />
                           <span>List Loads</span>
                         </Link>
                       </li>)}
@@ -143,7 +153,7 @@ const Sidebar = (props) => {
                           }
                           to="/dream-pos/product/add-pallets"
                         >
-                          <FeatherIcon icon="codepen" />
+                          <BsUpcScan color="65B741" size="50"  />
                           <span>Scan Barcode</span>
                         </Link>
                       </li>)}
@@ -161,7 +171,7 @@ const Sidebar = (props) => {
                           to="/dream-pos/product/importproduct-product"
                         >
                           {/* <i data-feather="minimize-2" /> */}
-                          <FeatherIcon icon="minimize-2" />
+                          <MdOutlineImportExport color="65B741" size="50" />
                           <span>Import Products</span>
                         </Link>
                       </li>
@@ -185,7 +195,7 @@ const Sidebar = (props) => {
                               : ""
                           }
                         >
-                          <FeatherIcon icon="file-minus" />
+                          <TbReport color="65B741" size="3em"/>
                           <span>Purchase Order</span>
                         </Link>
                       </li>
@@ -205,7 +215,7 @@ const Sidebar = (props) => {
                           }
                           to="/dream-pos/product/add-User"
                         >
-                          <FeatherIcon icon="plus-square" />
+                          <IoMdPersonAdd color="65B741" size="3em" />
                           <span>Add Users</span>
                         </Link>
                       </li>
@@ -220,7 +230,7 @@ const Sidebar = (props) => {
                           }
                           to="/dream-pos/product/Users-List"
                         >
-                          <FeatherIcon icon="users" />
+                          <PiUserListBold color="65B741" size="3em"/>
                           <span>Users List</span>
                         </Link>
                       </li>
@@ -241,7 +251,7 @@ const Sidebar = (props) => {
                           }
                         >
                           {/* <i data-feather="credit-card" /> */}
-                          <FeatherIcon icon="credit-card" />
+                          <BsAppIndicator color="65B741" size="3em"/>
                           <span>Inventory Indicators</span>
                         </Link>
                       </li>
@@ -257,7 +267,7 @@ const Sidebar = (props) => {
                           }
                         >
                           {/* <i data-feather="bar-chart-2" /> */}
-                          <FeatherIcon icon="bar-chart-2" />
+                          <TbScanEye color="65B741" size="3em"/>
                           <span>Scan In & Scan Out</span>
                         </Link>
                       </li>
@@ -283,7 +293,7 @@ const Sidebar = (props) => {
                             }
                           >
                             {/* <img src={settings} alt="img" /> */}
-                            <FeatherIcon icon="settings" />
+                            <IoMdSettings color="65B741" size="3em"/>
                             <span> Settings</span>{" "}
                             <span className="menu-arrow" />
                           </Link>
@@ -373,7 +383,7 @@ const Sidebar = (props) => {
                               pathname.includes("signIn") ? "active" : ""
                             }
                           >
-                            <FeatherIcon icon="log-out" />
+                            <LuLogOut color="65B741" size="3em"/>
                             <span>Logout</span>{" "}
                           </Link>
                         </li>
