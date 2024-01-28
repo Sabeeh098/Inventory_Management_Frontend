@@ -130,7 +130,7 @@ const AddProduct = () => {
           barcodeImage: barcodeImageData,
         },
       });
-
+      toast.success("Load added successfully");
       setLoadData({
         loadNumber: "",
         loadCost: "",
