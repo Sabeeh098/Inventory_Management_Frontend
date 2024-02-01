@@ -88,8 +88,8 @@ const ScanInScanOut = () => {
   const handleUpdatePalletsCount = async (loadId, newPalletsCount) => {
     try {
       await adminApiInstance.post("/updateUsedLoad", {
-        load: loadDetails._id,
-        remainingPalletsCount: loadDetails.remainingPalletsCount,
+        load: loadId,
+        remainingPalletsCount: loadId.remainingPalletsCount,
         usedPalletsCount: newPalletsCount,
       });
 

@@ -1,3 +1,7 @@
+import React, { useState } from "react";
+import { Modal, Button } from "antd";
+import PropTypes from "prop-types";
+
 const UpdateDetailsModal = ({
   visible,
   onCancel,
@@ -26,13 +30,27 @@ const UpdateDetailsModal = ({
         </Button>,
       ]}
     >
-      <label htmlFor="palletsCount">New Pallets Count:</label>
-      <input
-        type="number"
-        id="palletsCount"
-        value={newPalletsCount}
-        onChange={(e) => setNewPalletsCount(parseInt(e.target.value, 10) || 0)}
-      />
+       <div style={{ marginBottom: '10px' }}>
+        <label htmlFor="palletsCount">New Pallets Count:</label>
+      </div>
+      <div>
+        <input
+          type="number"
+          id="palletsCount"
+          value={newPalletsCount}
+          onChange={(e) => setNewPalletsCount(parseInt(e.target.value, 10) || 0)}
+        />
+      </div>
     </Modal>
   );
 };
+
+UpdateDetailsModal.propTypes = {
+  visible: PropTypes.bool.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired,
+  currentPalletsCount: PropTypes.number.isRequired,
+  selectedLoadId: PropTypes.string.isRequired,
+};
+
+export default UpdateDetailsModal;
