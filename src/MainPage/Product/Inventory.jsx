@@ -16,17 +16,19 @@ const Inventory = () => {
   const fetchLoads = async () => {
     try {
       const response = await adminApiInstance.get("/getLoads?type=indicators");
-      let data = [];
-      for (let item of response.data) {
-        if (item.palletsCount - item.remainingPalletsCount < 6) {
-          data.push(item);
-        }
-      }
-      setLoads(data);
+      
+     
+      const filteredLoads = response.data.filter(
+        (item) => item.palletsCount <= 5 && item.remainingPalletsCount <= 5
+      );
+  
+      setLoads(filteredLoads);
+      console.log(filteredLoads, "filtered data");
     } catch (error) {
       console.error("Error fetching loads:", error);
     }
   };
+  
 
   const columns = [
     {

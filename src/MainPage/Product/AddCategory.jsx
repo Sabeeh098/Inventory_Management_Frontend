@@ -270,26 +270,31 @@ const AddCategory = () => {
               <div className="bar-code-view">
   {scannedBarcode && <p>Scanned Barcode: {scannedBarcode}</p>}
   {/* Display the brand image here if available */}
-  {loadDetails?.brands[0]?.barcodeImage && (
-    <img
-      src={loadDetails?.brands[0]?.barcodeImage}
-      alt="Brand Barcode"
-    />
-  )}
-  {!loadDetails?.barcodeImage && (
-    <img
-      src="https://t4.ftcdn.net/jpg/02/28/23/91/240_F_228239110_4eEmhcqbUpZG8y1x1aazFBQMVmbGjoce.jpg"  // Replace with the actual path to your dummy barcode image
-      alt="Dummy Barcode"
-      ref={barcodeRef}
-    />
-  )}
   {loadDetails?.barcodeImage && (
-    <img
-      src={loadDetails?.barcodeImage}
-      alt="barcode"
-      ref={barcodeRef}
-    />
-  )}
+  <img
+    src={loadDetails?.barcodeImage}
+    alt="Barcode"
+    ref={barcodeRef}
+  />
+)}
+
+{/* Display the brand image if available */}
+{loadDetails?.brands[0]?.barcodeImage && (
+  <img
+    src={loadDetails?.brands[0]?.barcodeImage}
+    alt="Brand Barcode"
+    ref={barcodeRef}
+  />
+)}
+
+{/* Display the dummy barcode image if no actual or brand barcode image is available */}
+{!loadDetails?.barcodeImage && !loadDetails?.brands[0]?.barcodeImage && (
+  <img
+    src="https://t4.ftcdn.net/jpg/02/28/23/91/240_F_228239110_4eEmhcqbUpZG8y1x1aazFBQMVmbGjoce.jpg"  // Replace with the actual path to your dummy barcode image
+    alt="Dummy Barcode"
+    ref={barcodeRef}
+  />
+)}
 </div>
               <div className="col-lg-12">
                 <div className="form-group mb-0">

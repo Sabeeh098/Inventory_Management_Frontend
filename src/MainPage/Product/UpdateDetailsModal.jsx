@@ -1,7 +1,3 @@
-import React, { useState } from "react";
-import { Modal, Button } from "antd";
-import PropTypes from "prop-types";
-
 const UpdateDetailsModal = ({
   visible,
   onCancel,
@@ -40,13 +36,3 @@ const UpdateDetailsModal = ({
     </Modal>
   );
 };
-
-UpdateDetailsModal.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  onUpdate: PropTypes.func.isRequired,
-  currentPalletsCount: PropTypes.number.isRequired,
-  selectedLoadId: PropTypes.string.isRequired,
-};
-
-export default UpdateDetailsModal;

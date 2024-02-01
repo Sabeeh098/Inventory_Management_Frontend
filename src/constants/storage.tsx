@@ -3,6 +3,7 @@ export const useStorage = () => {
     const getItem = async (key: any) => {
         try {
             const value = await sessionStorage.getItem(key);
+            console.log(value);
             return value ? JSON.parse(value) : undefined;
         } catch (error) {
             // console.error('AsyncStorage getItem error:', error);

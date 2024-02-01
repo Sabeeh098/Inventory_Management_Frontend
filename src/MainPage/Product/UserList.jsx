@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import Table from "../../EntryFile/datatable";
 import { adminApiInstance } from "../../api/axios";
-import { EyeIcon, EditIcon, DeleteIcon } from "../../EntryFile/imagePath";
+import { EditIcon, DeleteIcon } from "../../EntryFile/imagePath";
 import EditModal from "./EditModal";
 
 const UserList = () => {
@@ -102,9 +102,7 @@ const UserList = () => {
       title: "Action",
       render: (text, record) => (
         <>
-          <Link className="me-3" to={`/view/${record._id}`}>
-            <img src={EyeIcon} alt="View" />
-          </Link>
+         
           <Link className="me-3" to="#" onClick={() => openEditModal(record)}>
             <img src={EditIcon} alt="Edit" />
           </Link>

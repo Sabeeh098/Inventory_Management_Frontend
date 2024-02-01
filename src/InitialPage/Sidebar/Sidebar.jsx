@@ -10,12 +10,14 @@ import { MdDashboardCustomize, MdOutlineImportExport } from "react-icons/md";
 import { AiFillDashboard } from "react-icons/ai";
 import { ImBoxAdd } from "react-icons/im";
 import { FaClipboardList } from "react-icons/fa";
-import { BsAppIndicator, BsUpcScan } from "react-icons/bs";
+import { BsAppIndicator } from "react-icons/bs";
 import { TbReport, TbScan, TbScanEye } from "react-icons/tb";
 import { IoMdPersonAdd, IoMdSettings } from "react-icons/io";
 import { PiUserListBold } from "react-icons/pi";
 import { TbZoomScan } from "react-icons/tb";
 import { LuLogOut } from "react-icons/lu";
+import { BsDatabaseFillAdd } from "react-icons/bs";
+import { FaThList } from "react-icons/fa";
 
 const Sidebar = (props) => {
   const { getItem } = useStorage();
@@ -73,6 +75,8 @@ const Sidebar = (props) => {
     return "";
   }
 
+  const iconSize = "3em"; // Set the desired size here
+
   return (
     <>
       <div
@@ -101,8 +105,7 @@ const Sidebar = (props) => {
                           }
                         >
                           <Link to="/dream-pos/dashboard">
-                            {/* <i data-feather="grid" /> */}
-                            <AiFillDashboard color="FFFF00" size="50" />
+                            <AiFillDashboard color="FFFF00" size={iconSize} />
                             <span>Dashboard</span>
                           </Link>
                         </li>
@@ -112,51 +115,57 @@ const Sidebar = (props) => {
                   <li className="submenu-open">
                     <h6 className="submenu-hdr">Products</h6>
                     <ul>
-                    {(role == "admin" || permissions.loads) && (<li
-                        className={
-                          pathname.includes("add-loads") ? "active" : ""
-                        }
-                      >
-                        <Link
+                      {(role == "admin" || permissions.loads) && (
+                        <li
                           className={
-                            pathname.includes("add-loads-") ? "active" : ""
+                            pathname.includes("add-loads") ? "active" : ""
                           }
-                          to="/dream-pos/product/add-loads"
                         >
-                          <ImBoxAdd color="65B741" size="50"/>
-                          <span>Add Loads</span>
-                        </Link>
-                      </li>)}
-                      {(role == "admin" || permissions.loads) && (<li
-                        className={
-                          pathname.includes("list-loads") ? "active" : ""
-                        }
-                      >
-                        <Link
+                          <Link
+                            className={
+                              pathname.includes("add-loads-") ? "active" : ""
+                            }
+                            to="/dream-pos/product/add-loads"
+                          >
+                            <BsDatabaseFillAdd color="FFFF00" size={iconSize} />
+                            <span>Add Loads</span>
+                          </Link>
+                        </li>
+                      )}
+                      {(role == "admin" || permissions.loads) && (
+                        <li
                           className={
-                            pathname.includes("list-loads-") ? "active" : ""
+                            pathname.includes("list-loads") ? "active" : ""
                           }
-                          to="/dream-pos/product/list-loads"
                         >
-                          <FaClipboardList color="65B741" size="50" />
-                          <span>List Loads</span>
-                        </Link>
-                      </li>)}
-                      {(role == "admin" || permissions.pallets) && (<li
-                        className={
-                          pathname.includes("add-pallets") ? "active" : ""
-                        }
-                      >
-                        <Link
+                          <Link
+                            className={
+                              pathname.includes("list-loads-") ? "active" : ""
+                            }
+                            to="/dream-pos/product/list-loads"
+                          >
+                            <FaThList color="FFFF00" size={iconSize} />
+                            <span>List Loads</span>
+                          </Link>
+                        </li>
+                      )}
+                      {(role == "admin" || permissions.pallets) && (
+                        <li
                           className={
-                            pathname.includes("add-pallets-") ? "active" : ""
+                            pathname.includes("add-pallets") ? "active" : ""
                           }
-                          to="/dream-pos/product/add-pallets"
                         >
-                          <BsUpcScan color="65B741" size="50"  />
-                          <span>Scan Barcode</span>
-                        </Link>
-                      </li>)}
+                          <Link
+                            className={
+                              pathname.includes("add-pallets-") ? "active" : ""
+                            }
+                            to="/dream-pos/product/add-pallets"
+                          >
+                            <TbScan color="FFFF00" size={iconSize} />
+                            <span>Scan Barcode</span>
+                          </Link>
+                        </li>
+                      )}
                       <li
                         className={
                           pathname.includes("importproduct-product")
@@ -170,225 +179,172 @@ const Sidebar = (props) => {
                           }
                           to="/dream-pos/product/importproduct-product"
                         >
-                          {/* <i data-feather="minimize-2" /> */}
-                          <MdOutlineImportExport color="65B741" size="50" />
+                          <MdOutlineImportExport color="FFFF00" size={iconSize} />
                           <span>Import Products</span>
                         </Link>
                       </li>
                     </ul>
                   </li>
-                  {(role == "admin" || permissions.purchase) && (<li className="submenu-open">
-                    <h6 className="submenu-hdr">Purchases</h6>
-                    <ul>
-                      <li
-                        className={
-                          pathname.includes("purchaseorderreport")
-                            ? "active"
-                            : ""
-                        }
-                      >
-                        <Link
-                          to="/dream-pos/product/purchaseorderreport"
+                  {(role == "admin" || permissions.purchase) && (
+                    <li className="submenu-open">
+                      <h6 className="submenu-hdr">Purchases</h6>
+                      <ul>
+                        <li
                           className={
                             pathname.includes("purchaseorderreport")
                               ? "active"
                               : ""
                           }
                         >
-                          <TbReport color="65B741" size="3em"/>
-                          <span>Purchase Order</span>
-                        </Link>
-                      </li>
-                    </ul>
-                  </li>)}
-                  {(role == "admin" || permissions.users) && (<li className="submenu-open">
-                    <h6 className="submenu-hdr">Users</h6>
-                    <ul>
-                      <li
-                        className={
-                          pathname.includes("add-User") ? "active" : ""
-                        }
-                      >
-                        <Link
-                          className={
-                            pathname.includes("add-User") ? "active" : ""
-                          }
-                          to="/dream-pos/product/add-User"
-                        >
-                          <IoMdPersonAdd color="65B741" size="3em" />
-                          <span>Add Users</span>
-                        </Link>
-                      </li>
-                      <li
-                        className={
-                          pathname.includes("Users-List") ? "active" : ""
-                        }
-                      >
-                        <Link
-                          className={
-                            pathname.includes("Users-List") ? "active" : ""
-                          }
-                          to="/dream-pos/product/Users-List"
-                        >
-                          <PiUserListBold color="65B741" size="3em"/>
-                          <span>Users List</span>
-                        </Link>
-                      </li>
-                    </ul>
-                  </li>)}
-                  {(role == "admin" || permissions.reports) && (<li className="submenu-open">
-                    <h6 className="submenu-hdr">Reports</h6>
-                    <ul>
-                      <li
-                        className={
-                          pathname.includes("InventoryIndicators") ? "active" : ""
-                        }
-                      >
-                        <Link
-                          to="/dream-pos/product/InventoryIndicators"
-                          className={
-                            pathname.includes("InventoryIndicators") ? "active" : ""
-                          }
-                        >
-                          {/* <i data-feather="credit-card" /> */}
-                          <BsAppIndicator color="65B741" size="3em"/>
-                          <span>Inventory Indicators</span>
-                        </Link>
-                      </li>
-                      <li
-                        className={
-                          pathname.includes("/ScanInScanOut") ? "active" : ""
-                        }
-                      >
-                        <Link
-                          to="/dream-pos/product/ScanInScanOut"
-                          className={
-                            pathname.includes("salesreport") ? "active" : ""
-                          }
-                        >
-                          {/* <i data-feather="bar-chart-2" /> */}
-                          <TbScanEye color="65B741" size="3em"/>
-                          <span>Scan In & Scan Out</span>
-                        </Link>
-                      </li>
-                    </ul>
-                  </li>)}
-                    <li className="submenu-open">
-                      <h6 className="submenu-hdr">Settings</h6>
-                      <ul>
-                        <li className="submenu">
                           <Link
-                            to="#"
+                            to="/dream-pos/product/purchaseorderreport"
                             className={
-                              pathname.includes("/dream-pos/settings")
-                                ? "subdrop active"
-                                : "" || isSideMenu == "Settings"
-                                ? "subdrop active"
+                              pathname.includes("purchaseorderreport")
+                                ? "active"
                                 : ""
                             }
-                            onClick={() =>
-                              toggleSidebar(
-                                isSideMenu == "Settings" ? "" : "Settings"
-                              )
-                            }
                           >
-                            {/* <img src={settings} alt="img" /> */}
-                            <IoMdSettings color="65B741" size="3em"/>
-                            <span> Settings</span>{" "}
-                            <span className="menu-arrow" />
-                          </Link>
-                          {isSideMenu == "Settings" ? (
-                            <ul>
-                              <li>
-                                <Link
-                                  to="/dream-pos/settings/generalsettings"
-                                  className={
-                                    pathname.includes("generalsettings")
-                                      ? "active"
-                                      : ""
-                                  }
-                                >
-                                  General Settings
-                                </Link>
-                              </li>
-                              <li>
-                                <Link
-                                  to="/dream-pos/settings/emailsettings"
-                                  className={
-                                    pathname.includes("emailsettings")
-                                      ? "active"
-                                      : ""
-                                  }
-                                >
-                                  Email Settings
-                                </Link>
-                              </li>
-                              <li>
-                                <Link
-                                  to="/dream-pos/settings/paymentsettings"
-                                  className={
-                                    pathname.includes("paymentsettings")
-                                      ? "active"
-                                      : ""
-                                  }
-                                >
-                                  Payment Settings
-                                </Link>
-                              </li>
-                              <li>
-                                <Link
-                                  to="/dream-pos/settings/currencysettings"
-                                  className={
-                                    pathname.includes("currencysettings")
-                                      ? "active"
-                                      : ""
-                                  }
-                                >
-                                  Currency Settings
-                                </Link>
-                              </li>
-                              <li>
-                                <Link
-                                  to="/dream-pos/settings/grouppermissions"
-                                  className={
-                                    pathname.includes("permission")
-                                      ? "active"
-                                      : ""
-                                  }
-                                >
-                                  Group Permissions
-                                </Link>
-                              </li>
-                              <li>
-                                <Link
-                                  to="/dream-pos/settings/taxrates"
-                                  className={
-                                    pathname.includes("taxrates")
-                                      ? "active"
-                                      : ""
-                                  }
-                                >
-                                  Tax Rates
-                                </Link>
-                              </li>
-                            </ul>
-                          ) : (
-                            ""
-                          )}
-                        </li>
-                        <li>
-                          <Link
-                            to="/signIn"
-                            className={
-                              pathname.includes("signIn") ? "active" : ""
-                            }
-                          >
-                            <LuLogOut color="65B741" size="3em"/>
-                            <span>Logout</span>{" "}
+                            <TbReport color="FFFF00" size={iconSize} />
+                            <span>Purchase Order</span>
                           </Link>
                         </li>
                       </ul>
                     </li>
+                  )}
+                  {(role == "admin" || permissions.users) && (
+                    <li className="submenu-open">
+                      <h6 className="submenu-hdr">Users</h6>
+                      <ul>
+                        <li
+                          className={
+                            pathname.includes("add-User") ? "active" : ""
+                          }
+                        >
+                          <Link
+                            className={
+                              pathname.includes("add-User") ? "active" : ""
+                            }
+                            to="/dream-pos/product/add-User"
+                          >
+                            <IoMdPersonAdd color="FFFF00" size={iconSize} />
+                            <span>Add Users</span>
+                          </Link>
+                        </li>
+                        <li
+                          className={
+                            pathname.includes("Users-List") ? "active" : ""
+                          }
+                        >
+                          <Link
+                            className={
+                              pathname.includes("Users-List") ? "active" : ""
+                            }
+                            to="/dream-pos/product/Users-List"
+                          >
+                            <PiUserListBold color="FFFF00" size={iconSize} />
+                            <span>Users List</span>
+                          </Link>
+                        </li>
+                      </ul>
+                    </li>
+                  )}
+                  {(role == "admin" || permissions.reports) && (
+                    <li className="submenu-open">
+                      <h6 className="submenu-hdr">Reports</h6>
+                      <ul>
+                        <li
+                          className={
+                            pathname.includes("InventoryIndicators")
+                              ? "active"
+                              : ""
+                          }
+                        >
+                          <Link
+                            to="/dream-pos/product/InventoryIndicators"
+                            className={
+                              pathname.includes("InventoryIndicators")
+                                ? "active"
+                                : ""
+                            }
+                          >
+                            <BsAppIndicator color="FFFF00" size={iconSize} />
+                            <span>Inventory Indicators</span>
+                          </Link>
+                        </li>
+                        <li
+                          className={
+                            pathname.includes("/ScanInScanOut") ? "active" : ""
+                          }
+                        >
+                          <Link
+                            to="/dream-pos/product/ScanInScanOut"
+                            className={
+                              pathname.includes("salesreport") ? "active" : ""
+                            }
+                          >
+                            <TbScanEye color="FFFF00" size={iconSize} />
+                            <span>Scan In & Scan Out</span>
+                          </Link>
+                        </li>
+                      </ul>
+                    </li>
+                  )}
+                  <li className="submenu-open">
+                    <h6 className="submenu-hdr">Settings</h6>
+                    <ul>
+                      <li className="submenu">
+                        <Link
+                          to="#"
+                          className={
+                            pathname.includes("/dream-pos/settings")
+                              ? "subdrop active"
+                              : "" || isSideMenu == "Settings"
+                              ? "subdrop active"
+                              : ""
+                          }
+                          onClick={() =>
+                            toggleSidebar(
+                              isSideMenu == "Settings" ? "" : "Settings"
+                            )
+                          }
+                        >
+                          <IoMdSettings color="FFFF00" size={iconSize} />
+                          <span> Settings</span>{" "}
+                          <span className="menu-arrow" />
+                        </Link>
+                        {isSideMenu == "Settings" ? (
+                          <ul>
+                            <li>
+                              <Link
+                                to="/dream-pos/settings/generalsettings"
+                                className={
+                                  pathname.includes("generalsettings")
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                General Settings
+                              </Link>
+                            </li>
+                            {/* Add similar list items for other settings */}
+                          </ul>
+                        ) : (
+                          ""
+                        )}
+                      </li>
+                      <li>
+                        <Link
+                          to="/signIn"
+                          className={
+                            pathname.includes("signIn") ? "active" : ""
+                          }
+                        >
+                          <LuLogOut color="FFFF00" size={iconSize} />
+                          <span>Logout</span>{" "}
+                        </Link>
+                      </li>
+                    </ul>
+                  </li>
                 </ul>
               </div>
             </div>

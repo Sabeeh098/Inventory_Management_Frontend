@@ -1,8 +1,9 @@
 import React from "react";
-import { Link } from 'react-router-dom'
-import {Bruklin,Profile3,Profile4,Profile5} from "../EntryFile/imagePath";
+import PropTypes from "prop-types";
 
-const Activities = () => {
+const Activities = ({ location }) => {
+  const notifications = location.state ? location.state.notifications : [];
+
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -16,112 +17,28 @@ const Activities = () => {
         <div className="activity">
           <div className="activity-box">
             <ul className="activity-list">
-              <li>
-                <div className="activity-user">
-                  <Link
-                    to="/dream-pos/profile/user-profile"
-                    title=""
-                    data-toggle="tooltip"
-                    data-original-title="Lesley Grauer"
-                  >
-                    <img
-                      alt="Lesley Grauer"
-                      src={Profile3}
-                      className=" img-fluid"
-                    />
-                  </Link>
-                </div>
-                <div className="activity-content">
-                  <div className="timeline-content">
-                    <Link to="/dream-pos/profile/user-profile" className="name">
-                      Elwis Mathew{" "}
-                    </Link>{" "}
-                    added a new product{" "}
-                    <Link to="#">Redmi Pro 7 Mobile</Link>
-                    <span className="time">4 mins ago</span>
+              {notifications.map((notification, index) => (
+                <li key={index}>
+                  <div className="media-body flex-grow-1">
+                    <p className="noti-details">
+                      <span className="noti-title" style={{ color: "green" }}>
+                        Load Number: {notification.loadNumber}
+                      </span>
+                      <br />
+                      <span className="noti-title">
+                        Remaining Pallets:{" "}
+                        <span style={{ color: "red" }}>
+                          {notification.remainingPalletsCount}
+                        </span>
+                        <br />
+                        <span style={{ color: "red" }}>
+                          Please Reorder this Load
+                        </span>
+                      </span>
+                    </p>
                   </div>
-                </div>
-              </li>
-              <li>
-                <div className="activity-user">
-                  <Link
-                    to="/dream-pos/profile/user-profile"
-                    title=""
-                    data-toggle="tooltip"
-                    data-original-title="Lesley Grauer"
-                  >
-                    <img
-                      alt="Lesley Grauer"
-                      src={Profile4}
-                      className=" img-fluid"
-                    />
-                  </Link>
-                </div>
-                <div className="activity-content">
-                  <div className="timeline-content">
-                    <Link to="/dream-pos/profile/user-profile" className="name">
-                      Elizabeth Olsen
-                    </Link>{" "}
-                    added a new product category{" "}
-                    <Link to="#">Desktop Computers</Link>
-                    <span className="time">6 mins ago</span>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div className="activity-user">
-                  <Link
-                    to="/dream-pos/profile/user-profile"
-                    title=""
-                    data-toggle="tooltip"
-                    data-original-title="Lesley Grauer"
-                  >
-                    <img
-                      alt="Lesley Grauer"
-                      src={Profile5}
-                      className=" img-fluid"
-                    />
-                  </Link>
-                </div>
-                <div className="activity-content">
-                  <div className="timeline-content">
-                    <div className="timeline-content">
-                      <Link to="/dream-pos/profile/user-profile" className="name">
-                        William Smith
-                      </Link>{" "}
-                      added a new sales list for
-                      <Link to="#">January Month</Link>
-                      <span className="time">12 mins ago</span>
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div className="activity-user">
-                  <Link
-                    to="/dream-pos/profile/user-profile"
-                    title=""
-                    data-toggle="tooltip"
-                    data-original-title="Lesley Grauer"
-                  >
-                    <img
-                      alt="Lesley Grauer"
-                      src={Bruklin}
-                      className=" img-fluid"
-                    />
-                  </Link>
-                </div>
-                <div className="activity-content">
-                  <div className="timeline-content">
-                    <Link to="/dream-pos/profile/user-profile" className="name">
-                      Lesley Grauer
-                    </Link>{" "}
-                    has updated invoice{" "}
-                    <Link to="#">#987654</Link>
-                    <span className="time">4 mins ago</span>
-                  </div>
-                </div>
-              </li>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -129,6 +46,14 @@ const Activities = () => {
       </div>
     </div>
   );
+};
+
+Activities.propTypes = {
+  location: PropTypes.shape({
+    state: PropTypes.shape({
+      notifications: PropTypes.array,
+    }),
+  }),
 };
 
 export default Activities;

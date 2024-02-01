@@ -23,8 +23,11 @@ import {
 } from "../../EntryFile/imagePath";
 import { Link } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
+import { adminApiInstance } from "../../api/axios";
 
 const Header = (props) => {
+  const [notifications, setNotifications] = useState([]);
+  console.log(notifications.loadNumber,"Load nnumber is nnot coming?");
   const [searchBar, SetSearchBar] = useState(false);
   const [toggle, SetToggle] = useState(false);
 
@@ -117,6 +120,19 @@ const Header = (props) => {
     }
   };
 
+  useEffect(() => {
+    fetchNotifications()
+  }, []);
+
+  const fetchNotifications = async () => {
+    try {
+      const response = await adminApiInstance.get("/getNotifications");
+      console.log(response.data);
+      setNotifications(response.data);
+    } catch (error) {
+      console.log("Error fetching Notificatios", error);
+    }
+  };
   return (
     <>
       <div className="header">
@@ -126,9 +142,9 @@ const Header = (props) => {
           onMouseLeave={expandMenu}
           onMouseOver={expandMenuOpen}
         >
-         <Link to="/dream-pos/dashboard" className="logo logo-normal">
-         <img src={Logo} alt="" />
-</Link>
+          <Link to="/dream-pos/dashboard" className="logo logo-normal">
+            <img src={Logo} alt="" />
+          </Link>
 
           <Link to="/dream-pos/dashboard" className="logo logo-white">
             <img src={LogoWhite} alt="" />
@@ -225,160 +241,70 @@ const Header = (props) => {
               <FeatherIcon icon="maximize" />
             </Link>
           </li>
-          <li className="nav-item nav-item-box">
-            <Link to="/dream-pos/application/email">
-              {/* <i data-feather="mail" /> */}
-              <FeatherIcon icon="mail" />
-              <span className="badge rounded-pill">1</span>
+          
+         {/* Notifications */}
+<li className="nav-item dropdown nav-item-box">
+  <Link
+    to="#"
+    className="dropdown-toggle nav-link"
+    data-bs-toggle="dropdown"
+  >
+    <FeatherIcon icon="bell" />
+    <span className="badge rounded-pill">{notifications.length}</span>
+  </Link>
+  <div className="dropdown-menu notifications">
+    <div className="topnav-dropdown-header">
+      <span className="notification-title">Notifications</span>
+      <Link to="#" className="clear-noti">
+        {" "}
+        Clear All{" "}
+      </Link>
+    </div>
+    <div className="noti-content">
+      <ul className="notification-list">
+        {notifications.map((notification, index) => (
+          <li key={index} className="notification-message active">
+            <Link to="/dream-pos/activities">
+              <div className="media d-flex">
+                <div className="media-body flex-grow-1">
+                  <p className="noti-details">
+                    <span className="noti-title" style={{ color: "green" }}>
+                      Load Number: {notification.loadNumber}
+                    </span>
+                    <br />
+                    <span className="noti-title">
+                      Remaining Pallets:{" "}
+                      <span style={{ color: "red" }}>
+                        {notification.remainingPalletsCount}
+                      </span>
+                      <br />
+                      <span style={{ color: "red" }}>
+                        Please Reorder this Load
+                      </span>
+                    </span>
+                  </p>
+                </div>
+              </div>
             </Link>
           </li>
-          {/* Notifications */}
-          <li className="nav-item dropdown nav-item-box">
-            <Link
-              to="#"
-              className="dropdown-toggle nav-link"
-              data-bs-toggle="dropdown"
-            >
-              {/* <i data-feather="bell" /> */}
-              <FeatherIcon icon="bell" />
-              <span className="badge rounded-pill">2</span>
-            </Link>
-            <div className="dropdown-menu notifications">
-              <div className="topnav-dropdown-header">
-                <span className="notification-title">Notifications</span>
-                <Link to="#" className="clear-noti">
-                  {" "}
-                  Clear All{" "}
-                </Link>
-              </div>
-              <div className="noti-content">
-                <ul className="notification-list">
-                  <li className="notification-message active">
-                    <Link to="/dream-pos/activities">
-                      <div className="media d-flex">
-                        <span className="avatar flex-shrink-0">
-                          <img alt="" src={Avatar2} />
-                        </span>
-                        <div className="media-body flex-grow-1">
-                          <p className="noti-details">
-                            <span className="noti-title">John Doe</span> added
-                            new task{" "}
-                            <span className="noti-title">
-                              Patient appointment booking
-                            </span>
-                          </p>
-                          <p className="noti-time">
-                            <span className="notification-time">
-                              4 mins ago
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                  </li>
-                  <li className="notification-message">
-                    <Link to="/dream-pos/activities">
-                      <div className="media d-flex">
-                        <span className="avatar flex-shrink-0">
-                          <img alt="" src={Avatar3} />
-                        </span>
-                        <div className="media-body flex-grow-1">
-                          <p className="noti-details">
-                            <span className="noti-title">Tarah Shropshire</span>{" "}
-                            changed the task name{" "}
-                            <span className="noti-title">
-                              Appointment booking with payment gateway
-                            </span>
-                          </p>
-                          <p className="noti-time">
-                            <span className="notification-time">
-                              6 mins ago
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                  </li>
-                  <li className="notification-message">
-                    <Link to="/dream-pos/activities">
-                      <div className="media d-flex">
-                        <span className="avatar flex-shrink-0">
-                          <img alt="" src={Avatar6} />
-                        </span>
-                        <div className="media-body flex-grow-1">
-                          <p className="noti-details">
-                            <span className="noti-title">Misty Tison</span>{" "}
-                            added{" "}
-                            <span className="noti-title">Domenic Houston</span>{" "}
-                            and <span className="noti-title">Claire Mapes</span>{" "}
-                            to project{" "}
-                            <span className="noti-title">
-                              Doctor available module
-                            </span>
-                          </p>
-                          <p className="noti-time">
-                            <span className="notification-time">
-                              8 mins ago
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                  </li>
-                  <li className="notification-message">
-                    <Link to="/dream-pos/activities">
-                      <div className="media d-flex">
-                        <span className="avatar flex-shrink-0">
-                          <img alt="" src={Avatar17} />
-                        </span>
-                        <div className="media-body flex-grow-1">
-                          <p className="noti-details">
-                            <span className="noti-title">Rolland Webber</span>{" "}
-                            completed task{" "}
-                            <span className="noti-title">
-                              Patient and Doctor video conferencing
-                            </span>
-                          </p>
-                          <p className="noti-time">
-                            <span className="notification-time">
-                              12 mins ago
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                  </li>
-                  <li className="notification-message">
-                    <Link to="/dream-pos/activities">
-                      <div className="media d-flex">
-                        <span className="avatar flex-shrink-0">
-                          <img alt="" src={Avatar13} />
-                        </span>
-                        <div className="media-body flex-grow-1">
-                          <p className="noti-details">
-                            <span className="noti-title">Bernardo Galaviz</span>{" "}
-                            added new task{" "}
-                            <span className="noti-title">
-                              Private chat module
-                            </span>
-                          </p>
-                          <p className="noti-time">
-                            <span className="notification-time">
-                              2 days ago
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-              <div className="topnav-dropdown-footer">
-                <Link to="/dream-pos/activities">View all Notifications</Link>
-              </div>
-            </div>
-          </li>
-          {/* /Notifications */}
+        ))}
+      </ul>
+    </div>
+    <div className="topnav-dropdown-footer">
+    <Link
+  to={{
+    pathname: "/dream-pos/activities",
+    state: { notifications },
+  }}
+>
+  View all Notifications
+</Link>
+
+    </div>
+  </div>
+</li>
+{/* /Notifications */}
+
           <li className="nav-item nav-item-box">
             <Link to="/dream-pos/settings/generalsettings">
               {/* <i data-feather="settings" /> */}
@@ -392,12 +318,12 @@ const Header = (props) => {
               data-bs-toggle="dropdown"
             >
               <span className="user-info">
-                <span className="user-letter">
-                  <img src={Avatar1} alt="" className="img-fluid" />
-                </span>
+                {/* <span className="user-letter">
+                  {/* <img src={Avatar1} alt="" className="img-fluid" /> */}
+                {/* </span>  */}
                 <span className="user-detail">
-                  <span className="user-name">John Smilga</span>
-                  <span className="user-role">Super Admin</span>
+                  <span className="user-name">Admin</span>
+                  {/* <span className="user-role">Admin</span> */}
                 </span>
               </span>
             </Link>
@@ -409,8 +335,8 @@ const Header = (props) => {
                     <span className="status online" />
                   </span>
                   <div className="profilesets">
-                    <h6>John Smilga</h6>
-                    <h5>Super Admin</h5>
+                    <h6>Admin</h6>
+                    <h5></h5>
                   </div>
                 </div>
                 <hr className="m-0" />
