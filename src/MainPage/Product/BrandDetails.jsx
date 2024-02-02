@@ -16,35 +16,45 @@ const BrandDetails = ({ item }) => {
   });
 
   return (
-    <div className="productdetails">
-      <ul className="product-bar" ref={brandDetailsRef} style={{ listStyle: "none", padding: 0 }}>
-        <li>
-          <h4>Brand Name</h4>
-          <h6>{item.brandName}</h6>
-        </li>
-        <li>
-          <h4>Pallet Number</h4>
-          <h6>{item.palletNumbers}</h6>
-        </li>
-        <li>
-          <h4>Total Pallet</h4>
-          <h6>{item.totalPallet}</h6>
-        </li>
-        <li>
-          <h4>Total Price</h4>
-          <h6>{item.totalPrice}</h6>
-        </li>
-        <li>
-          <h4>SKU Number</h4>
-          <h6>{item.skuCode}</h6>
-        </li>
-        <li>
-          <div className="bar-code-view" ref={brandBarcodeRef}>
-            <img src={item.barcodeImage} alt="barcode" />
-          </div>
-        </li>
-      </ul>
-      <div style={{ marginTop: "10px", display: "flex", alignItems: "center" }}>
+    <>
+      <div className="productdetails print_single" ref={brandDetailsRef}>
+        <ul className="product-bar">
+          <li>
+            <h4>Brand Name</h4>
+            <h6>{item.brandName}</h6>
+          </li>
+          <li>
+            <h4>Pallet Number</h4>
+            <h6>{item.palletNumbers}</h6>
+          </li>
+          <li>
+            <h4>Total Pallet</h4>
+            <h6>{item.totalPallet}</h6>
+          </li>
+          <li>
+            <h4>Total Price</h4>
+            <h6>{item.totalPrice}</h6>
+          </li>
+          <li>
+            <h4>SKU Number</h4>
+            <h6>{item.skuCode}</h6>
+          </li>
+        </ul>
+        <div
+          className="bar-code-view print_single_barcode"
+          ref={brandBarcodeRef}
+        >
+          <img src={item.barcodeImage} alt="barcode" />
+        </div>
+      </div>
+      <div
+        style={{
+          marginTop: "10px",
+          padding: "0 10px",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
         <input
           checked={barcodeOnly}
           onChange={() => setBarcodeOnly(!barcodeOnly)}
@@ -71,7 +81,7 @@ const BrandDetails = ({ item }) => {
           </button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
@@ -87,5 +97,3 @@ BrandDetails.propTypes = {
 };
 
 export default BrandDetails;
-
-
