@@ -1,5 +1,5 @@
 // SignIn, Forgetpassword and Signup pages icons
-export { default as LoginImage } from '../assets/img/login.jpeg'
+export { default as LoginImage } from '../assets/img/login.jpg'
 export { default as Logo } from '../assets/img/logo.jpeg'
 export { default as LogoWhite } from '../assets/img/logo-white.png'
 export { default as MailIcon } from '../assets/img/icons/mail.svg'
