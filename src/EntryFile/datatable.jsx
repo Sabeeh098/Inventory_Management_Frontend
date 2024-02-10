@@ -5,7 +5,8 @@ import { Table } from "antd";
 import "./antd.css";
 import { itemRender, onShowSizeChange } from "../components/pagination";
 
-const Datatable = ({ props, columns, dataSource }) => {
+const Datatable = ({ props, columns, dataSource, total }) => {
+  console.log(total)
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const onSelectChange = (newSelectedRowKeys) => {
     console.log("selectedRowKeys changed: ", selectedRowKeys);
@@ -21,6 +22,7 @@ const Datatable = ({ props, columns, dataSource }) => {
       key={props}
       className="table datanew dataTable no-footer"
       rowSelection={rowSelection}
+      total = {total}
       columns={columns}
       dataSource={dataSource}
       pagination={{

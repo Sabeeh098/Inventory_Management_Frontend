@@ -9,7 +9,7 @@ import moment from "moment";
 import { Calendar, search_whites } from "../../EntryFile/imagePath";
 import { adminApiInstance } from "../../api/axios";
 
-const Purchaseorder = () => {
+const LoadReport = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [startDate1, setStartDate1] = useState(new Date());
   const [inputfilter, setInputfilter] = useState(false);
@@ -71,8 +71,9 @@ const Purchaseorder = () => {
     return { totalLoadCost, totalPallets };
   };
 
+
   const columns = [
-     {
+    {
       title: "Added At",
       dataIndex: "addedAt",
       render: (text) => moment(text).format("YYYY-MM-DD"), // Format date as needed
@@ -83,16 +84,15 @@ const Purchaseorder = () => {
       dataIndex: "loadNumber",
       sorter: (a, b) => a.loadNumber.length - b.loadNumber.length,
     },
-  
     {
       title: "Total Pallets",
       dataIndex: "palletsCount",
       sorter: (a, b) => a.palletsCount - b.palletsCount,
     },
     {
-      title: "Load Cost",
-      dataIndex: "loadCost",
-      sorter: (a, b) => a.loadCost - b.loadCost,
+      title: "Pallets Out",
+      dataIndex: "palletsOut",
+      sorter: (a, b) => a.palletsOut - b.palletsOut,
     },
     {
       title: "Per Pallets Cost",
@@ -100,8 +100,11 @@ const Purchaseorder = () => {
       sorter: (a, b) => a.perPalletCost - b.perPalletCost,
     },
    
-   
-   
+    {
+      title: "Load Cost",
+      dataIndex: "loadCost",
+      sorter: (a, b) => a.loadCost - b.loadCost,
+    },
   ];
 
   return (
@@ -109,8 +112,8 @@ const Purchaseorder = () => {
       <div className="content">
         <div className="page-header">
           <div className="page-title">
-            <h4>Purchase order report</h4>
-            <h6>Manage your Purchase order report</h6>
+            <h4>Pallet Out Reports</h4>
+            <h6>Manage Pallet Out Report</h6>
           </div>
         </div>
         {/* /product list */}
@@ -196,13 +199,14 @@ const Purchaseorder = () => {
                 const { totalLoadCost, totalPallets } = calculateTotalLoadCostAndPallets(data[weekRange]);
                 return (
                   <div key={key}>
-                    <h2 style={{ fontSize: '1rem', fontWeight: 'bold' }}>{`${weekRange}`} </h2>
+                                       <h2 style={{ fontSize: '1rem', fontWeight: 'bold' }}>{`${weekRange}`} </h2>
+
                     <Table
                       columns={columns}
                       dataSource={data[weekRange]}
                       rowKey={(record) => record.loadNumber}
                     />
-                     <div style={{ display: 'flex' }}>
+                      <div style={{ display: 'flex' }}>
         <p style={{ marginRight: '10px' }}>Total Load Cost: <span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}>{totalLoadCost}</span></p>
         <p>Total Pallets: <span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}>{totalPallets}</span></p>
       </div>
@@ -218,4 +222,4 @@ const Purchaseorder = () => {
   );
 };
 
-export default Purchaseorder;
+export default LoadReport;

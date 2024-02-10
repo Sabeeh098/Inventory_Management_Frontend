@@ -208,6 +208,25 @@ const Sidebar = (props) => {
                             <span>Purchase Order</span>
                           </Link>
                         </li>
+                        <li
+                          className={
+                            pathname.includes("Load-Report")
+                              ? "active"
+                              : ""
+                          }
+                        >
+                          <Link
+                            to="/dream-pos/product/Load-Report"
+                            className={
+                              pathname.includes("Load-Report")
+                                ? "active"
+                                : ""
+                            }
+                          >
+                            <TbReport color="FFFF00" size={iconSize} />
+                            <span>Pallet Out Report</span>
+                          </Link>
+                        </li>
                       </ul>
                     </li>
                   )}

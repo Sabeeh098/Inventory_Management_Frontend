@@ -21,6 +21,7 @@ import UserList from './UserList';
 import Purchaseorder from './purchaseorder';
 import ScanInScanOut from './ScanInScanOut';
 import Inventory from './Inventory';
+import LoadReport from './LoadReport';
 
 const ProductRoute = ({ match }) => (
     <Switch>
@@ -34,6 +35,7 @@ const ProductRoute = ({ match }) => (
 
 
         <Route path={`${match.url}/purchaseorderreport`} component={Purchaseorder} />
+        <Route path={`${match.url}/Load-Report`} component={LoadReport} />
         <Route path={`${match.url}/ScanInScanOut`} component={ScanInScanOut} />
         <Route path={`${match.url}/InventoryIndicators`} component={Inventory} />
 
