@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import PropTypes from "prop-types";
 import { TfiPrinter } from "react-icons/tfi";
+import "./printStyles.css"; 
 
 // eslint-disable-next-line react/prop-types
 const BrandDetails = ({ item }) => {
@@ -41,7 +42,7 @@ const BrandDetails = ({ item }) => {
           </li>
         </ul>
         <div
-          className="bar-code-view print_single_barcode"
+          className="bar-code-view bar-code-image print_single_barcode"
           ref={brandBarcodeRef}
         >
           <img src={item.barcodeImage} alt="barcode" />

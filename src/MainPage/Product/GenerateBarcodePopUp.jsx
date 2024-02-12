@@ -1,16 +1,13 @@
-import React, { useState } from "react";
-import { Button, Modal } from "antd";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import moment from "moment";
-import PropTypes from "prop-types";
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types"; // Import PropTypes
+import { Button, Form, Input, Modal } from "antd"; // Import Modal from Ant Design
 
 const GenerateBarcodePopUp = ({ load, onClose }) => {
   const [count, setCount] = useState(1);
   const [size, setSize] = useState(150);
   const [brand, setBrand] = useState(
     load.brands && load.brands.length > 0 ? load.brands[0] : null
-  ); // Set the first brand as default if brands are available
+  );
 
   const handleChangeCount = (e) => setCount(parseInt(e.target.value, 10) || 1);
   const handleChangeSize = (e) => setSize(e.target.value);
@@ -21,40 +18,36 @@ const GenerateBarcodePopUp = ({ load, onClose }) => {
     setBrand(selectedBrand);
   };
 
-  const handlePrint = async () => {
-    try {
-      const pdf = new jsPDF();
-
-      // Generate a canvas for the current barcode
-      const barcodeElement = document.getElementById("barcode");
-      const canvas = await html2canvas(barcodeElement);
-      const imgData = canvas.toDataURL("image/png");
-
-      // Loop through each barcode and add it to the PDF
-      for (let i = 0; i < count; i++) {
-        // Calculate the position of the current barcode
-        const x = (i % 2) * (pdf.internal.pageSize.getWidth() / 2);
-        const y = Math.floor(i / 2) * (pdf.internal.pageSize.getHeight() / 2);
-
-        // Add the barcode image to the PDF
-        pdf.addImage(
-          imgData,
-          "PNG",
-          x,
-          y,
-          pdf.internal.pageSize.getWidth() / 4,
-          pdf.internal.pageSize.getHeight() / 4
-        );
-      }
-
-      // Save PDF
-      const filename = `${moment().format("L")}_Barcodes.pdf`;
-      pdf.save(filename);
-
-      onClose();
-    } catch (error) {
-      console.error("Error printing barcodes:", error);
+  useEffect(() => {
+    if (load.brands && load.brands.length > 0) {
+      setBrand(load.brands[0]);
     }
+  }, [load]);
+
+  // Function to print barcode images
+  const handlePrint = () => {
+    const printableContent = document.getElementById("printable-barcodes").innerHTML;
+    const newWindow = window.open('', '_blank');
+    newWindow.document.write(`
+      <html>
+        <head>
+          <title>Print Barcode</title>
+          <style>
+            .barcode-row {
+              display: flex;
+              flex-wrap: wrap;
+              justify-content: center;
+            }
+            .barcode-item {
+              margin: 5px;
+            }
+          </style>
+        </head>
+        <body>${printableContent}</body>
+      </html>
+    `);
+    newWindow.document.close();
+    newWindow.print();
   };
 
   return (
@@ -71,24 +64,16 @@ const GenerateBarcodePopUp = ({ load, onClose }) => {
         </Button>,
       ]}
     >
-      <form>
-        <div className="mb-3">
-          <label htmlFor="count" className="form-label me-3">
-            Number of Barcodes:
-          </label>
-          <input
+      <Form layout="vertical">
+        <Form.Item label="Number of Barcodes:">
+          <Input
             type="number"
             min={1}
-            className="form-control"
-            id="count"
             value={count}
             onChange={handleChangeCount}
           />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="size" className="form-label me-3">
-            Barcode Size:
-          </label>
+        </Form.Item>
+        <Form.Item label="Barcode Size:">
           <select
             className="form-control"
             id="size"
@@ -101,16 +86,13 @@ const GenerateBarcodePopUp = ({ load, onClose }) => {
             <option value="200">Large</option>
             {/* Add additional size options here if needed */}
           </select>
-        </div>
+        </Form.Item>
         {load.brands && load.brands.length > 0 && (
-          <div className="mb-3">
-            <label htmlFor="brand" className="form-label me-3">
-              Select Brand:
-            </label>
+          <Form.Item label="Select Brand:">
             <select
               className="form-control"
               id="brand"
-              value={brand.brandName}
+              value={brand ? brand.brandName : ""}
               onChange={handleChangeBrand}
             >
               {load.brands.map((item, key) => (
@@ -119,35 +101,40 @@ const GenerateBarcodePopUp = ({ load, onClose }) => {
                 </option>
               ))}
             </select>
-          </div>
+          </Form.Item>
         )}
-      </form>
-      <div
-        id="barcodes"
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-        }}
-      >
-        {/* Display only one barcode for UI */}
-        <div style={{ width: "45%", marginBottom: "10px" }}>
-          <img
-            id="barcode" // Assign a unique id to the barcode image
-            src={brand ? brand.barcodeImage : load.barcodeImage}
-            alt={`Barcode for ${
-              brand ? brand.brandName : `Load ${load.loadNumber}`
-            }`}
-            style={{ width: size + "px", height: "auto" }}
-          />
+      </Form>
+      <div id="printable-barcodes" style={{ display: "none" }}>
+        <div className="barcode-row">
+          {[...Array(count)].map((_, i) => (
+            <div key={i} className="barcode-item" style={{ width: size + "px", height: "auto" }}>
+              <img
+                src={brand ? brand.barcodeImage : load.barcodeImage}
+                alt={`Barcode for ${
+                  brand ? brand.brandName : `Load ${load.loadNumber}`
+                }`}
+                style={{ width: size + "px", height: "auto" }}
+              />
+            </div>
+          ))}
         </div>
       </div>
     </Modal>
   );
 };
 
+// PropTypes validation
 GenerateBarcodePopUp.propTypes = {
-  load: PropTypes.object.isRequired,
+  load: PropTypes.shape({
+    brands: PropTypes.arrayOf(
+      PropTypes.shape({
+        brandName: PropTypes.string.isRequired,
+        barcodeImage: PropTypes.string.isRequired,
+      })
+    ),
+    loadNumber: PropTypes.string.isRequired,
+    barcodeImage: PropTypes.string.isRequired,
+  }),
   onClose: PropTypes.func.isRequired,
 };
 
