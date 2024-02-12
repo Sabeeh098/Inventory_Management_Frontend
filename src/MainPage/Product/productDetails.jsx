@@ -62,7 +62,7 @@ const ProductDetails = () => {
                   >
                     <img src={product.barcodeImage} alt="barcode" />
                   </div>
-                )}
+                )} 
 
                 <div className="productdetails">
                   <ul className="product-bar">

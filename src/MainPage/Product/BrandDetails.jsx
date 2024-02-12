@@ -42,10 +42,10 @@ const BrandDetails = ({ item }) => {
           </li>
         </ul>
         <div
-          className="bar-code-view bar-code-image print_single_barcode"
+          className="bar-code-image"
           ref={brandBarcodeRef}
         >
-          <img src={item.barcodeImage} alt="barcode" />
+          <img  src={item.barcodeImage} alt="barcode" />
         </div>
       </div>
       <div
