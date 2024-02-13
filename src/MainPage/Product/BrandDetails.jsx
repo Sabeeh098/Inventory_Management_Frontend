@@ -1,20 +1,22 @@
-/* eslint-disable react/no-unescaped-entities */
 import React, { useState } from "react";
-import { useReactToPrint } from "react-to-print";
 import PropTypes from "prop-types";
+import { useReactToPrint } from "react-to-print";
 import { TfiPrinter } from "react-icons/tfi";
+import BulkBarcode from "./BulkBarocde"; 
 import "./printStyles.css"; 
 
-// eslint-disable-next-line react/prop-types
 const BrandDetails = ({ item }) => {
   const [barcodeOnly, setBarcodeOnly] = useState(false);
+  const [bulkBarcodeModalVisible, setBulkBarcodeModalVisible] = useState(false);
   const brandDetailsRef = React.useRef();
-  const brandBarcodeRef = React.useRef();
 
   const handlePrintBrand = useReactToPrint({
-    content: () =>
-      barcodeOnly ? brandBarcodeRef.current : brandDetailsRef.current,
+    content: () => (barcodeOnly ? null : brandDetailsRef.current),
   });
+
+  const handlePrintBarcodeOnly = () => {
+    setBulkBarcodeModalVisible(true);
+  };
 
   return (
     <>
@@ -41,11 +43,8 @@ const BrandDetails = ({ item }) => {
             <h6>{item.skuCode}</h6>
           </li>
         </ul>
-        <div
-          className="bar-code-image"
-          ref={brandBarcodeRef}
-        >
-          <img  src={item.barcodeImage} alt="barcode" />
+        <div className="bar-code-image" ref={brandDetailsRef}>
+          <img src={item.barcodeImage} alt="barcode" />
         </div>
       </div>
       <div
@@ -64,15 +63,15 @@ const BrandDetails = ({ item }) => {
         <label style={{ marginLeft: "5px" }}>Print Barcode Only</label>
         <div style={{ marginLeft: "auto" }}>
           <button
-            onClick={handlePrintBrand}
+            onClick={barcodeOnly ? handlePrintBarcodeOnly : handlePrintBrand}
             style={{
-              border: "1px solid #3498db", // Add border with color
-              borderRadius: "5px", // Add border-radius for rounded corners
-              background: "#3498db", // Set background color
-              color: "#fff", // Set text color
-              cursor: "pointer", // Set cursor to pointer
+              border: "1px solid #3498db",
+              borderRadius: "5px",
+              background: "#3498db",
+              color: "#fff",
+              cursor: "pointer",
               display: "flex",
-              alignItems: "center", // Align the icon vertically
+              alignItems: "center",
               padding: "5px 10px",
               marginBottom: "5px",
             }}
@@ -82,6 +81,13 @@ const BrandDetails = ({ item }) => {
           </button>
         </div>
       </div>
+      {/* Render the BulkBarcode directly without Modal */}
+      {bulkBarcodeModalVisible && (
+        <BulkBarcode 
+          barcodeImage={item.barcodeImage} 
+          onClose={() => setBulkBarcodeModalVisible(false)} 
+        />
+      )}
     </>
   );
 };

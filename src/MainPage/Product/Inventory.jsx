@@ -55,10 +55,21 @@ const Inventory = () => {
       title: "Remaining Pallets Count",
       dataIndex: "remainingPalletsCount",
       sorter: (a, b) => a.remainingPalletsCount - b.remainingPalletsCount,
+      render: (text, record) => {
+        if (record.remainingPalletsCount <= 5) {
+          return (
+            <span style={{ color: 'red' }}>
+              {text} (Please reorder this load)
+            </span>
+          );
+        }
+        return text;
+      }
     },
     // Include other fields based on your requirements
     // Add more columns as needed
   ];
+  
 
   return (
     <div className="page-wrapper">
