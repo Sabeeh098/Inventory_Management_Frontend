@@ -111,15 +111,7 @@ const ScanInScanOut = () => {
               <h4>Purchase List</h4>
               <h6>Manage your Purchase</h6>
             </div>
-            <div className="page-btn">
-              <Link
-                to="/dream-pos/purchase/addpurchase-purchase"
-                className="btn btn-added"
-              >
-                <img src={PlusIcon} alt="img" className="me-1" />
-                Add New Purchase
-              </Link>
-            </div>
+           
           </div>
           <div className="card">
             <div className="card-body">
