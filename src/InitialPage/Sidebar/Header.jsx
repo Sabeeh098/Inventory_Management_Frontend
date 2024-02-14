@@ -204,14 +204,14 @@ const Header = (props) => {
           </li>
           {/* /Search */}
           {/* Flag */}
-          <li className="nav-item dropdown has-arrow flag-nav nav-item-box">
+          {/* <li className="nav-item dropdown has-arrow flag-nav nav-item-box">
             <Link
               className="nav-link dropdown-toggle"
               data-bs-toggle="dropdown"
               to="#"
               role="button"
             >
-              {/* <i data-feather="globe" /> */}
+             
               <FeatherIcon icon="globe" />
             </Link>
             <div className="dropdown-menu dropdown-menu-right">
@@ -228,8 +228,8 @@ const Header = (props) => {
                 <img src={FlagDE} alt="" height={16} /> German
               </Link>
             </div>
-          </li>
-          {/* /Flag */}
+          </li> */}
+          
           <li className="nav-item nav-item-box">
             <Link
               to="#"

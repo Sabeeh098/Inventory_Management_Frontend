@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types"; // Import PropTypes
-import { Button, Form, Input, Modal } from "antd"; // Import Modal from Ant Design
+import PropTypes from "prop-types";
+import { Button, Form, Input, Modal, Checkbox } from "antd";
 
 const GenerateBarcodePopUp = ({ load, onClose }) => {
   const [count, setCount] = useState(1);
@@ -8,6 +9,7 @@ const GenerateBarcodePopUp = ({ load, onClose }) => {
   const [brand, setBrand] = useState(
     load.brands && load.brands.length > 0 ? load.brands[0] : null
   );
+  const [printVertically, setPrintVertically] = useState(false); // State for vertical printing
 
   const handleChangeCount = (e) => setCount(parseInt(e.target.value, 10) || 1);
   const handleChangeSize = (e) => setSize(e.target.value);
@@ -24,7 +26,6 @@ const GenerateBarcodePopUp = ({ load, onClose }) => {
     }
   }, [load]);
 
-  // Function to print barcode images
   const handlePrint = () => {
     const printableContent = document.getElementById("printable-barcodes").innerHTML;
     const newWindow = window.open('', '_blank');
@@ -35,8 +36,10 @@ const GenerateBarcodePopUp = ({ load, onClose }) => {
           <style>
             .barcode-row {
               display: flex;
-              flex-wrap: wrap;
+              flex-direction: ${printVertically ? "column" : "row"};
+              align-items: center;
               justify-content: center;
+              flex-wrap: wrap;
             }
             .barcode-item {
               margin: 5px;
@@ -48,6 +51,10 @@ const GenerateBarcodePopUp = ({ load, onClose }) => {
     `);
     newWindow.document.close();
     newWindow.print();
+  };
+
+  const handleCheckboxChange = (e) => {
+    setPrintVertically(e.target.checked);
   };
 
   return (
@@ -84,7 +91,6 @@ const GenerateBarcodePopUp = ({ load, onClose }) => {
             <option value="50">Small</option>
             <option value="100">Medium</option>
             <option value="200">Large</option>
-            {/* Add additional size options here if needed */}
           </select>
         </Form.Item>
         {load.brands && load.brands.length > 0 && (
@@ -103,6 +109,9 @@ const GenerateBarcodePopUp = ({ load, onClose }) => {
             </select>
           </Form.Item>
         )}
+        <Form.Item label="Print Vertically:">
+          <Checkbox checked={printVertically} onChange={handleCheckboxChange} />
+        </Form.Item>
       </Form>
       <div id="printable-barcodes" style={{ display: "none" }}>
         <div className="barcode-row">
@@ -123,7 +132,6 @@ const GenerateBarcodePopUp = ({ load, onClose }) => {
   );
 };
 
-// PropTypes validation
 GenerateBarcodePopUp.propTypes = {
   load: PropTypes.shape({
     brands: PropTypes.arrayOf(

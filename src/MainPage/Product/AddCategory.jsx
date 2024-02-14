@@ -4,7 +4,6 @@ import { adminApiInstance } from "../../api/axios";
 import FeatherIcon from "feather-icons-react";
 import { toast } from "react-toastify";
 
-
 const AddCategory = () => {
   const [scannedBarcode, setScannedBarcode] = useState(null);
   const [loadDetails, setLoadDetails] = useState(null);
@@ -21,6 +20,9 @@ const AddCategory = () => {
             name: "Live",
             type: "LiveStream",
             target: barcodeRef.current,
+            constraints: {
+              facingMode: "environment" // This line sets the camera to use the rear camera (if available)
+            }
           },
           decoder: {
             readers: ["code_128_reader"],
@@ -31,11 +33,12 @@ const AddCategory = () => {
             console.error("Error initializing Quagga:", err);
             return;
           }
-
+      
           setScannerConnected(true);
           Quagga.start();
         }
       );
+      
 
       // Fetch all loads when the component mounts
       fetchAllLoads();
@@ -170,17 +173,26 @@ const AddCategory = () => {
                 <div className="form-group">
                   {isScannerConnected ? (
                     <div className="input-group">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Search by SKU Code"
-                        onChange={(e) => setScannedBarcode(e.target.value)}
-                        value={scannedBarcode || ""}
-                      />
+                     <input
+  type="text"
+  className="form-control"
+  placeholder="Search by SKU Code"
+  onChange={(e) => setScannedBarcode(e.target.value)}
+  onKeyPress={(e) => {
+    if (e.key === 'Enter') {
+      handleSearch(); // Trigger search when Enter key is pressed
+    }
+  }}
+  value={scannedBarcode || ""}
+/>
+
+
                       <button type="button" onClick={handleSearchIconClick}>
                         <FeatherIcon icon="search" size="20" />
                       </button>
+                      
                     </div>
+                    
                   ) : (
                     <button
                       className="btn btn-submit w-100"
@@ -190,7 +202,11 @@ const AddCategory = () => {
                     </button>
                   )}
                 </div>
-
+                <div>
+                      <span style={{ fontSize: '12px', color: 'gray' }}>
+    Press Enter after typing to search
+  </span>
+  </div>
                 <div className="form-group mt-3">
                   <label htmlFor="palletsCount">Enter Pallets Count:</label>
                   <input
@@ -268,34 +284,35 @@ const AddCategory = () => {
                 </div>
               </div>
               <div className="bar-code-view">
-  {scannedBarcode && <p>Scanned Barcode: {scannedBarcode}</p>}
-  {/* Display the brand image here if available */}
-  {loadDetails?.barcodeImage && (
-  <img
-    src={loadDetails?.barcodeImage}
-    alt="Barcode"
-    ref={barcodeRef}
-  />
-)}
+                {scannedBarcode && <p>Scanned Barcode: {scannedBarcode}</p>}
+                {/* Display the brand image here if available */}
+                {loadDetails?.barcodeImage && (
+                  <img
+                    src={loadDetails?.barcodeImage}
+                    alt="Barcode"
+                    ref={barcodeRef}
+                  />
+                )}
 
-{/* Display the brand image if available */}
-{loadDetails?.brands[0]?.barcodeImage && (
-  <img
-    src={loadDetails?.brands[0]?.barcodeImage}
-    alt="Brand Barcode"
-    ref={barcodeRef}
-  />
-)}
+                {/* Display the brand image if available */}
+                {loadDetails?.brands[0]?.barcodeImage && (
+                  <img
+                    src={loadDetails?.brands[0]?.barcodeImage}
+                    alt="Brand Barcode"
+                    ref={barcodeRef}
+                  />
+                )}
 
-{/* Display the dummy barcode image if no actual or brand barcode image is available */}
-{!loadDetails?.barcodeImage && !loadDetails?.brands[0]?.barcodeImage && (
-  <img
-    src="https://t4.ftcdn.net/jpg/02/28/23/91/240_F_228239110_4eEmhcqbUpZG8y1x1aazFBQMVmbGjoce.jpg"  // Replace with the actual path to your dummy barcode image
-    alt="Dummy Barcode"
-    ref={barcodeRef}
-  />
-)}
-</div>
+                {/* Display the dummy barcode image if no actual or brand barcode image is available */}
+                {!loadDetails?.barcodeImage &&
+                  !loadDetails?.brands[0]?.barcodeImage && (
+                    <img
+                      src="https://t4.ftcdn.net/jpg/02/28/23/91/240_F_228239110_4eEmhcqbUpZG8y1x1aazFBQMVmbGjoce.jpg" // Replace with the actual path to your dummy barcode image
+                      alt="Dummy Barcode"
+                      ref={barcodeRef}
+                    />
+                  )}
+              </div>
               <div className="col-lg-12">
                 <div className="form-group mb-0">
                   <button
