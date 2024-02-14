@@ -10,6 +10,13 @@ const UpdateDetailsModal = ({
 }) => {
   const [count, setCount] = useState(data?.palletsCount ?? 0);
 
+  const handleCountChange = (e) => {
+    const value = e.target.value;
+    // Remove leading zeros if the value is not empty or zero
+    const newValue = value === "" || parseInt(value, 10) === 0 ? value : parseInt(value, 10) || "";
+    setCount(newValue);
+  };
+
   const handleUpdate = () => {
     if (Number(count) > Number(data?.palletsCount)) return toast.error("Pallet Count should be less than Pallets and Balance Out Pallets");
     onUpdate(data, count);
@@ -38,7 +45,7 @@ const UpdateDetailsModal = ({
           type="number"
           id="palletsCount"
           value={count}
-          onChange={(e) => setCount(parseInt(e.target.value, 10) || 0)}
+          onChange={handleCountChange}
         />
       </div>
     </Modal>

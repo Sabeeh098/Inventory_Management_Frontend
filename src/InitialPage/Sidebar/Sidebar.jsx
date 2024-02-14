@@ -311,7 +311,7 @@ const Sidebar = (props) => {
                   <li className="submenu-open">
                     <h6 className="submenu-hdr">Settings</h6>
                     <ul>
-                      <li className="submenu">
+                      {/* <li className="submenu">
                         <Link
                           to="#"
                           className={
@@ -331,26 +331,26 @@ const Sidebar = (props) => {
                           <span> Settings</span>{" "}
                           <span className="menu-arrow" />
                         </Link>
-                        {isSideMenu == "Settings" ? (
-                          <ul>
-                            <li>
-                              <Link
-                                to="/dream-pos/settings/generalsettings"
-                                className={
-                                  pathname.includes("generalsettings")
-                                    ? "active"
-                                    : ""
-                                }
-                              >
-                                General Settings
-                              </Link>
-                            </li>
-                            {/* Add similar list items for other settings */}
-                          </ul>
-                        ) : (
-                          ""
-                        )}
-                      </li>
+                        {/* {isSideMenu == "Settings" ? (
+                          // <ul>
+                          //   {/* <li>
+                          //     <Link
+                          //       to="/dream-pos/settings/generalsettings"
+                          //       className={
+                          //         pathname.includes("generalsettings")
+                          //           ? "active"
+                          //           : ""
+                          //       }
+                          //     >
+                          //       General Settings
+                          //     </Link>
+                          //   </li> */}
+                             {/* Add similar list items for other settings */}
+                          {/* // </ul> */}
+                        {/* ) : ( */}
+                       
+                        {/* )} */} 
+                      {/* </li> */}
                       <li>
                         <Link
                           to="/signIn"

@@ -1,14 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
-import {
-  LoginImage,
-  Logo,
-  MailIcon,
-  GoogleIcon,
-  FacebookIcon,
-} from "../EntryFile/imagePath";
-import { Link } from "react-router-dom";
+import { LoginImage, Logo, MailIcon } from "../EntryFile/imagePath";
 import { Helmet } from "react-helmet";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -17,11 +10,12 @@ import { adminApiInstance } from "../api/axios";
 import { useStorage } from "../constants/storage.tsx";
 
 const SignInPage = (props) => {
-  const [eye, seteye] = useState(true);
+  const [eye, setEye] = useState(true);
+  const [loading, setLoading] = useState(false); // State variable for loading
   const { setItem } = useStorage();
 
   const onEyeClick = () => {
-    seteye(!eye);
+    setEye(!eye);
   };
 
   const validationSchema = Yup.object().shape({
@@ -42,6 +36,7 @@ const SignInPage = (props) => {
 
   const onSubmit = async (data) => {
     try {
+      setLoading(true); // Start loading
       // Make API request to your login endpoint using adminApiInstance
       const response = await adminApiInstance.post("/login", data);
       if (response.data) {
@@ -50,6 +45,8 @@ const SignInPage = (props) => {
       }
     } catch (error) {
       console.error(error.response.data.errMsg);
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -64,7 +61,7 @@ const SignInPage = (props) => {
     <>
       <div className="main-wrapper">
         <Helmet>
-          <title>SignIn - Dream POS</title>
+          <title>SignIn</title>
           <meta name="description" content="SignIn page" />
         </Helmet>
         <div className="account-content">
@@ -114,46 +111,14 @@ const SignInPage = (props) => {
                       </div>
                     </div>
                   </div>
+                  
                   <div className="form-login">
-                    <div className="alreadyuser">
-                      <h4>
-                        <Link to="/forgetPassword" className="hover-a">
-                          Forgot Password?
-                        </Link>
-                      </h4>
-                    </div>
-                  </div>
-                  <div className="form-login">
-                    <button className="btn btn-login">Sign In</button>
+                    <button className="btn btn-login" disabled={loading}>
+                      {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>}
+                      Sign In
+                    </button>
                   </div>
                 </form>
-                <div className="signinform text-center">
-                  <h4>
-                    Don’t have an account?{" "}
-                    <Link to="/signUp" className="hover-a">
-                      Sign Up
-                    </Link>
-                  </h4>
-                </div>
-                <div className="form-setlogin">
-                  <h4>Or sign up with</h4>
-                </div>
-                <div className="form-sociallink">
-                  <ul>
-                    <li>
-                      <Link to="/signin">
-                        <img src={GoogleIcon} className="me-2" alt="google" />
-                        Sign Up using Google
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/signin">
-                        <img src={FacebookIcon} className="me-2" alt="google" />
-                        Sign Up using Facebook
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
               </div>
             </div>
             <div className="login-img">

@@ -339,21 +339,7 @@ const Header = (props) => {
                     <h5></h5>
                   </div>
                 </div>
-                <hr className="m-0" />
-                <Link
-                  className="dropdown-item"
-                  to="/dream-pos/profile/user-profile"
-                >
-                  <i className="me-2" data-feather="user" /> My Profile
-                </Link>
-                <Link
-                  className="dropdown-item"
-                  to="/dream-pos/settings/generalsettings"
-                >
-                  <i className="me-2" data-feather="settings" />
-                  Settings
-                </Link>
-                <hr className="m-0" />
+              
                 <Link className="dropdown-item logout pb-0" to="/signIn">
                   <img src={Logout} className="me-2" alt="img" />
                   Logout
