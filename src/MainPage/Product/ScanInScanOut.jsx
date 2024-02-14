@@ -10,8 +10,7 @@ import UpdateDetailsModal from "./UpdateDetailsModal";
 
 const ScanInScanOut = () => {
   const [data, setData] = useState([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedLoad, setSelectedLoad] = useState(null);
+  const [detail, setDetail] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,8 +73,7 @@ const ScanInScanOut = () => {
             className="me-3 mb-2"
             style={{ border: "none", background: "none", cursor: "pointer" }}
             onClick={() => {
-              setSelectedLoad(record);
-              setIsModalVisible(true);
+              setDetail(record);
             }}
           >
             <BsUpcScan size="26" color="#0dcaf0" />
@@ -85,14 +83,13 @@ const ScanInScanOut = () => {
     },
   ];
 
-  const handleUpdatePalletsCount = async (loadId, newPalletsCount) => {
+  const handleUpdate = async (date, count) => {
     try {
       await adminApiInstance.post("/updateUsedLoad", {
-        load: loadId,
-        remainingPalletsCount: loadId.remainingPalletsCount,
-        usedPalletsCount: newPalletsCount,
+        load: date._id,
+        remainingPalletsCount: Number(date.remainingPalletsCount),
+        usedPalletsCount: count,
       });
-
       // Fetch updated data after the update
       const response = await adminApiInstance.get("/getLoads?type=scans");
       setData(response.data);
@@ -101,9 +98,8 @@ const ScanInScanOut = () => {
     }
   };
 
-  const handleCloseModal = () => {
-    setIsModalVisible(false);
-    setSelectedLoad(null);
+  const handleClose = () => {
+    setDetail(null);
   };
 
   return (
@@ -139,13 +135,11 @@ const ScanInScanOut = () => {
           </div>
         </div>
       </div>
-      {isModalVisible && selectedLoad && (
+      {detail && (
         <UpdateDetailsModal
-          visible={isModalVisible}
-          onCancel={handleCloseModal}
-          onUpdate={handleUpdatePalletsCount}
-          currentPalletsCount={selectedLoad.palletsCount}
-          selectedLoadId={selectedLoad._id}
+          onCancel={handleClose}
+          onUpdate={handleUpdate}
+          data={detail}
         />
       )}
     </>

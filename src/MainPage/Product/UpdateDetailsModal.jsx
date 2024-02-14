@@ -1,24 +1,24 @@
 import React, { useState } from "react";
 import { Modal, Button } from "antd";
 import PropTypes from "prop-types";
+import { toast } from "react-toastify";
 
 const UpdateDetailsModal = ({
-  visible,
   onCancel,
   onUpdate,
-  currentPalletsCount,
-  selectedLoadId,
+  data,
 }) => {
-  const [newPalletsCount, setNewPalletsCount] = useState(currentPalletsCount);
+  const [count, setCount] = useState(data?.palletsCount ?? 0);
 
   const handleUpdate = () => {
-    onUpdate(selectedLoadId, newPalletsCount);
+    if (Number(count) > Number(data?.palletsCount)) return toast.error("Pallet Count should be less than Pallets and Balance Out Pallets");
+    onUpdate(data, count);
     onCancel();
   };
 
   return (
     <Modal
-      visible={visible}
+      visible={true}
       title="Update Pallets Count"
       onCancel={onCancel}
       footer={[
@@ -30,15 +30,15 @@ const UpdateDetailsModal = ({
         </Button>,
       ]}
     >
-       <div style={{ marginBottom: '10px' }}>
+      <div style={{ marginBottom: '10px' }}>
         <label htmlFor="palletsCount">New Pallets Count:</label>
       </div>
       <div>
         <input
           type="number"
           id="palletsCount"
-          value={newPalletsCount}
-          onChange={(e) => setNewPalletsCount(parseInt(e.target.value, 10) || 0)}
+          value={count}
+          onChange={(e) => setCount(parseInt(e.target.value, 10) || 0)}
         />
       </div>
     </Modal>
@@ -46,11 +46,9 @@ const UpdateDetailsModal = ({
 };
 
 UpdateDetailsModal.propTypes = {
-  visible: PropTypes.bool.isRequired,
   onCancel: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
-  currentPalletsCount: PropTypes.number.isRequired,
-  selectedLoadId: PropTypes.string.isRequired,
+  data: PropTypes.object.isRequired,
 };
 
 export default UpdateDetailsModal;
