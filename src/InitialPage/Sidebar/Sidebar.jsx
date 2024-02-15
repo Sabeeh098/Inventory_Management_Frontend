@@ -166,23 +166,6 @@ const Sidebar = (props) => {
                           </Link>
                         </li>
                       )}
-                      <li
-                        className={
-                          pathname.includes("importproduct-product")
-                            ? "active"
-                            : ""
-                        }
-                      >
-                        <Link
-                          className={
-                            pathname.includes("importproduct-") ? "active" : ""
-                          }
-                          to="/dream-pos/product/importproduct-product"
-                        >
-                          <MdOutlineImportExport color="FFFF00" size={iconSize} />
-                          <span>Import Products</span>
-                        </Link>
-                      </li>
                     </ul>
                   </li>
                   {(role == "admin" || permissions.purchase) && (
