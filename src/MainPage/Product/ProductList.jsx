@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Table } from "antd";
 import "react-select2-wrapper/css/select2.css";
+import "./productList.css"
 import { adminApiInstance } from "../../api/axios";
 import { DeleteIcon, EyeIcon, Printer } from "../../EntryFile/imagePath"; 
 import GenerateBarcodePopUp from "./GenerateBarcodePopUp";
@@ -11,6 +12,7 @@ const ProductList = () => {
   const [loads, setLoads] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedLoad, setSelectedLoad] = useState(null);
+  // const [flag, setFlag] = useState(false);
 
   useEffect(() => {
     fetchLoads();
@@ -77,13 +79,15 @@ const ProductList = () => {
       title: "Actions",
       render: (text, record) => (
         <>
+        
           <Link className="me-3" to={`/dream-pos/product/product-details/${record._id}`}>
             <img src={EyeIcon} alt="img" />
           </Link>
           <img src={Printer} alt="Printer" onClick={() => handleBarcodeClick(record)} />
-          <Link className="confirm-text me-3" to="#" onClick={() => handleDelete(record._id)}>
+          <Link className="confirm-text me-3 lspace" to="#" onClick={() => handleDelete(record._id)}>
             <img src={DeleteIcon} alt="img" />
           </Link>
+      
         </>
       ),
     },
@@ -97,7 +101,7 @@ const ProductList = () => {
     selectedRowKeys,
     onChange: onSelectChange,
   };
-
+ 
   const onShowSizeChange = (current, pageSize) => {
     // Define your logic for handling page size change here
     console.log("Current page:", current, "Page size:", pageSize);

@@ -72,12 +72,12 @@ const Purchaseorder = () => {
   };
 
   const columns = [
-     {
-      title: "Added At",
-      dataIndex: "addedAt",
-      render: (text) => moment(text).format("YYYY-MM-DD"), // Format date as needed
-      sorter: (a, b) => moment(a.addedAt).unix() - moment(b.addedAt).unix(),
-    },
+    //  {
+    //   title: "Added At",
+    //   dataIndex: "addedAt",
+    //   render: (text) => moment(text).format("YYYY-MM-DD"), // Format date as needed
+    //   sorter: (a, b) => moment(a.addedAt).unix() - moment(b.addedAt).unix(),
+    // },
     {
       title: "Load Number",
       dataIndex: "loadNumber",
@@ -155,6 +155,7 @@ const Purchaseorder = () => {
                       </div>
                     </div>
                   </div>
+                  
                   <div className="col-lg-2 col-sm-6 col-12">
                     <div className="form-group">
                       <input
@@ -197,14 +198,16 @@ const Purchaseorder = () => {
                 return (
                   <div key={key}>
                     <h2 style={{ fontSize: '1rem', fontWeight: 'bold' }}>{`${weekRange}`} </h2>
-                    <Table
+                    <Table 
                       columns={columns}
                       dataSource={data[weekRange]}
                       rowKey={(record) => record.loadNumber}
+                       
                     />
                      <div style={{ display: 'flex' }}>
-        <p style={{ marginRight: '10px' }}>Total Load Cost: <span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}>{totalLoadCost}</span></p>
-        <p>Total Pallets: <span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}>{totalPallets}</span></p>
+        
+        <p className="pallet">Total Pallets: <span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}>{totalPallets}</span></p>
+        <p style={{ marginRight: '10px' }} className="loadCost">Total Load Cost: <span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}>{totalLoadCost}</span></p>
       </div>
                   </div>
                 );
