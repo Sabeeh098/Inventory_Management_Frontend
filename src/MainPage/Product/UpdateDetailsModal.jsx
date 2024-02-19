@@ -3,22 +3,20 @@ import { Modal, Button } from "antd";
 import PropTypes from "prop-types";
 import { toast } from "react-toastify";
 
-const UpdateDetailsModal = ({
-  onCancel,
-  onUpdate,
-  data,
-}) => {
-  const [count, setCount] = useState(data?.palletsCount ?? 0);
+const UpdateDetailsModal = ({ onCancel, onUpdate, data }) => {
+  const [count, setCount] = useState(0);
 
   const handleCountChange = (e) => {
     const value = e.target.value;
     // Remove leading zeros if the value is not empty or zero
-    const newValue = value === "" || parseInt(value, 10) === 0 ? value : parseInt(value, 10) || "";
+    const newValue =
+      value === "" || parseInt(value, 10) === 0 ? value : parseInt(value, 10) || "";
     setCount(newValue);
   };
 
   const handleUpdate = () => {
-    if (Number(count) > Number(data?.palletsCount)) return toast.error("Pallet Count should be less than Pallets and Balance Out Pallets");
+    if (Number(count) > Number(data?.palletsCount))
+      return toast.error("Pallet Count should be less than Pallets and Balance Out Pallets");
     onUpdate(data, count);
     onCancel();
   };
@@ -37,7 +35,7 @@ const UpdateDetailsModal = ({
         </Button>,
       ]}
     >
-      <div style={{ marginBottom: '10px' }}>
+      <div style={{ marginBottom: "10px" }}>
         <label htmlFor="palletsCount">New Pallets Count:</label>
       </div>
       <div>

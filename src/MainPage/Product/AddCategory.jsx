@@ -6,9 +6,12 @@ import { toast } from "react-toastify";
 
 const AddCategory = () => {
   const [scannedBarcode, setScannedBarcode] = useState(null);
+  console.log(scannedBarcode,"Scanned BArcode")
   const [loadDetails, setLoadDetails] = useState(null);
+  console.log(loadDetails,"Load details")
   const [isScannerConnected, setScannerConnected] = useState(false);
   const [allLoads, setAllLoads] = useState([]);
+  console.log(allLoads,"all loads")
   const [palletsCountToUse, setPalletsCountToUse] = useState(0);
   const barcodeRef = useRef(null);
 
@@ -231,7 +234,7 @@ const AddCategory = () => {
                     <li>
                       <h4>Category</h4>
                       <h6 className="manitorygreen">
-                        {loadDetails?.category || "Loading..."}
+                        {loadDetails?.category.name || "Loading..."}
                       </h6>
                     </li>
                     <li>

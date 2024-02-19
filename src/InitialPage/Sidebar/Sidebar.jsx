@@ -18,6 +18,7 @@ import { TbZoomScan } from "react-icons/tb";
 import { LuLogOut } from "react-icons/lu";
 import { BsDatabaseFillAdd } from "react-icons/bs";
 import { FaThList } from "react-icons/fa";
+import { MdCategory } from "react-icons/md";
 
 const Sidebar = (props) => {
   const { getItem } = useStorage();
@@ -25,6 +26,14 @@ const Sidebar = (props) => {
   const [role, setRole] = useState("");
   const [permissions, setPermissions] = useState("");
   const history = useHistory();
+const [hasPermission, setHasPermission] = useState(false);
+
+  useEffect(() => {
+    if (permissions && Object.keys(permissions).length > 0) {
+      setHasPermission(Object.keys(permissions).some((permission) => permission === "loads" || permission === "pallets" || permission === "purchase" || permission === "users" || permission === "reports"));
+    }
+  }, [permissions]);
+
 
   useEffect(() => {
     getItem("user").then((value) => {
@@ -79,14 +88,15 @@ const Sidebar = (props) => {
 
   return (
     <>
-      <div
-        className={`sidebar index-4 ${
-          pathname.includes("/index-three") ? "d-none" : ""
-        }`}
-        id="sidebar"
-      >
+     <div
+  className={`sidebar index-4 ${
+    pathname.includes("/index-three") ? "d-none" : ""
+  } ${!hasPermission ? "full-height" : ""}`}
+  id="sidebar"
+  style={{ height: !hasPermission ? "100vh" : "" }}
+>
         <Scrollbars>
-          <div className="slimScrollDiv">
+         <div className="slimScrollDiv" style={{ height: !hasPermission ? `calc(100vh - 50px)` : "" }}>
             <div className="sidebar-inner slimscroll">
               <div
                 id="sidebar-menu"
@@ -132,6 +142,23 @@ const Sidebar = (props) => {
                           </Link>
                         </li>
                       )}
+                      <li
+                      className={
+                        pathname.includes("addCategory")
+                          ? "active"
+                          : ""
+                      }
+                    >
+                      <Link
+                        className={
+                          pathname.includes("addCategory-") ? "active" : ""
+                        }
+                        to="/dream-pos/product/addCategory"
+                      >
+                        <MdCategory color="FFFF00" size={iconSize} />
+                        <span>Add Category</span>
+                      </Link>
+                    </li>
                       {(role == "admin" || permissions.loads) && (
                         <li
                           className={
@@ -170,7 +197,7 @@ const Sidebar = (props) => {
                   </li>
                   {(role == "admin" || permissions.purchase) && (
                     <li className="submenu-open">
-                      <h6 className="submenu-hdr">Purchases</h6>
+                      <h6 className="submenu-hdr">Report</h6>
                       <ul>
                         <li
                           className={
@@ -208,6 +235,40 @@ const Sidebar = (props) => {
                           >
                             <TbReport color="FFFF00" size={iconSize} />
                             <span>Pallet Out Report</span>
+                          </Link>
+                        </li>
+                        <li
+                          className={
+                            pathname.includes("InventoryIndicators")
+                              ? "active"
+                              : ""
+                          }
+                        >
+                          <Link
+                            to="/dream-pos/product/InventoryIndicators"
+                            className={
+                              pathname.includes("InventoryIndicators")
+                                ? "active"
+                                : ""
+                            }
+                          >
+                            <BsAppIndicator color="FFFF00" size={iconSize} />
+                            <span>Inventory Indicators</span>
+                          </Link>
+                        </li>
+                        <li
+                          className={
+                            pathname.includes("/ScanInScanOut") ? "active" : ""
+                          }
+                        >
+                          <Link
+                            to="/dream-pos/product/ScanInScanOut"
+                            className={
+                              pathname.includes("salesreport") ? "active" : ""
+                            }
+                          >
+                            <TbScanEye color="FFFF00" size={iconSize} />
+                            <span>Scan In & Scan Out</span>
                           </Link>
                         </li>
                       </ul>
@@ -250,47 +311,7 @@ const Sidebar = (props) => {
                       </ul>
                     </li>
                   )}
-                  {(role == "admin" || permissions.reports) && (
-                    <li className="submenu-open">
-                      <h6 className="submenu-hdr">Reports</h6>
-                      <ul>
-                        <li
-                          className={
-                            pathname.includes("InventoryIndicators")
-                              ? "active"
-                              : ""
-                          }
-                        >
-                          <Link
-                            to="/dream-pos/product/InventoryIndicators"
-                            className={
-                              pathname.includes("InventoryIndicators")
-                                ? "active"
-                                : ""
-                            }
-                          >
-                            <BsAppIndicator color="FFFF00" size={iconSize} />
-                            <span>Inventory Indicators</span>
-                          </Link>
-                        </li>
-                        <li
-                          className={
-                            pathname.includes("/ScanInScanOut") ? "active" : ""
-                          }
-                        >
-                          <Link
-                            to="/dream-pos/product/ScanInScanOut"
-                            className={
-                              pathname.includes("salesreport") ? "active" : ""
-                            }
-                          >
-                            <TbScanEye color="FFFF00" size={iconSize} />
-                            <span>Scan In & Scan Out</span>
-                          </Link>
-                        </li>
-                      </ul>
-                    </li>
-                  )}
+                
                   <li className="submenu-open">
                     <h6 className="submenu-hdr">Settings</h6>
                     <ul>

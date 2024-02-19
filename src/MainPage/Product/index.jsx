@@ -22,6 +22,7 @@ import Purchaseorder from './purchaseorder';
 import ScanInScanOut from './ScanInScanOut';
 import Inventory from './Inventory';
 import LoadReport from './LoadReport';
+import addCat from './addCat';
 
 const ProductRoute = ({ match }) => (
     <Switch>
@@ -32,6 +33,7 @@ const ProductRoute = ({ match }) => (
         <Route path={`${match.url}/printbarcode-pallets`} component={PrintBarcode} />
         <Route path={`${match.url}/add-User`} component={AddEmployee} />
         <Route path={`${match.url}/Users-List`} component={UserList} />
+        <Route path={`${match.url}/addCategory`} component={addCat} />
 
 
         <Route path={`${match.url}/purchaseorderreport`} component={Purchaseorder} />

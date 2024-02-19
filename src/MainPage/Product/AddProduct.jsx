@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { adminApiInstance } from "../../api/axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Barcode from "react-barcode";
 import html2canvas from "html2canvas";
-import { DeleteIcon } from "../../EntryFile/imagePath";
+import { DeleteIcon, PlusIcon } from "../../EntryFile/imagePath";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const AddProduct = () => {
   const [loadData, setLoadData] = useState({
@@ -19,6 +20,21 @@ const AddProduct = () => {
     isBrands: false,
     brands: [],
   });
+
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+      const fetchCategories = async () => {
+          try {
+              const response = await adminApiInstance.get("/categories");
+              setCategories(response.data);
+          } catch (error) {
+              console.error("Error fetching categories:", error);
+          }
+      };
+      fetchCategories();
+  }, []);
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -155,6 +171,15 @@ const AddProduct = () => {
             <h4>Load Add</h4>
             <h6>Create new load</h6>
           </div>
+           <div className="page-btn">
+              <Link
+                to="/dream-pos/product/addCategory"
+                className="btn btn-added"
+              >
+                <img src={PlusIcon} alt="img" className="me-1" />
+                Add New Category
+              </Link>
+            </div>
         </div>
         <div className="card">
           <div className="card-body">
@@ -196,18 +221,25 @@ const AddProduct = () => {
                     />
                   </div>
                 </div>
-                <div className="col-lg-4 col-sm-6 col-12">
-                  <div className="form-group">
-                    <label>Category</label>
-                    <input
-                      type="text"
-                      name="category"
-                      value={loadData.category}
-                      onChange={handleInputChange}
-                      className="form-control"
-                    />
-                  </div>
-                </div>
+               <div className="col-lg-4 col-sm-6 col-12">
+    <div className="form-group">
+        <label>Category</label>
+        <select
+            name="category"
+            value={loadData.category}
+            onChange={handleInputChange}
+            className="form-control"
+        >
+            <option value="">Select Category</option>
+            {categories.map(category => (
+                <option key={category._id} value={category._id}>
+                    {category.name}
+                </option>    
+            ))}
+        </select>
+    </div>
+</div>
+
                 <div className="col-lg-4 col-sm-6 col-12">
                   <div className="form-group">
                     <label>Load Date</label>
