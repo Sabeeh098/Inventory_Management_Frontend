@@ -286,7 +286,7 @@ const AddCategory = () => {
                   </ul>
                 </div>
               </div>
-              <div className="bar-code-view">
+              <div className="bar-code-view" style={{ width: '321px' }}> 
                 {scannedBarcode && <p>Scanned Barcode: {scannedBarcode}</p>}
                 {/* Display the brand image here if available */}
                 {loadDetails?.barcodeImage && (

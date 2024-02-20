@@ -68,7 +68,7 @@ const ProductDetails = () => {
                   <ul className="product-bar">
                     <li>
                       <h4>Category</h4>
-                      <h6>{product.category}</h6>
+                      <h6>{product.category.name}</h6>
                     </li>
                     <li>
                       <h4>Load Cost</h4>
