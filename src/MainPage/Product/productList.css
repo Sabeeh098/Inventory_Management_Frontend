@@ -2,9 +2,14 @@
 .lspace{
     margin-left: 12px;
 }
-.pallet{
-    margin-left: 29%;
+/* .pallet{
+    margin-left: 40%;
 }
 .loadCost{
-    margin-left: 12%;
+    margin-left: 8%; */
+/* } */
+.dropDown{
+    display: flex;
+   margin-left: 11%;
+   gap: 3%;
 }
