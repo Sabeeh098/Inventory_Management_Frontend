@@ -74,7 +74,7 @@ const LoadReport = () => {
 
   const columns = [
     {
-      title: "Added At",
+      title: "Process Date",
       dataIndex: "addedAt",
       render: (text) => moment(text).format("YYYY-MM-DD"), // Format date as needed
       sorter: (a, b) => moment(a.addedAt).unix() - moment(b.addedAt).unix(),
@@ -206,6 +206,7 @@ const LoadReport = () => {
                       dataSource={data[weekRange]}
                       rowKey={(record) => record.loadNumber}
                     />
+                    
                       <div style={{ display: 'flex' }}>
         <p style={{ marginRight: '10px' }}>Total Load Cost: <span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}>{totalLoadCost}</span></p>
         <p>Total Pallets: <span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}>{totalPallets}</span></p>

@@ -8,6 +8,7 @@ import { DeleteIcon, PlusIcon } from "../../EntryFile/imagePath";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 
+
 const AddProduct = () => {
   const [loadData, setLoadData] = useState({
     loadNumber: "",
@@ -223,7 +224,8 @@ const AddProduct = () => {
                 </div>
                <div className="col-lg-4 col-sm-6 col-12">
     <div className="form-group">
-        <label>Category</label>
+        <label>Category </label>
+         {/* <SearchableDropdown/> */}
         <select
             name="category"
             value={loadData.category}

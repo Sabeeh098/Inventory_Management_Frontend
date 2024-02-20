@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Table from "../../EntryFile/datatable";
+// import Table from "../../EntryFile/datatable";
 import Tabletop from "../../EntryFile/tabletop";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -8,6 +8,8 @@ import "react-select2-wrapper/css/select2.css";
 import moment from "moment";
 import { Calendar, search_whites } from "../../EntryFile/imagePath";
 import { adminApiInstance } from "../../api/axios";
+import ProductTable, { FilterBy, Summary } from "./ProductTable";
+
 
 const Purchaseorder = () => {
   const [startDate, setStartDate] = useState(new Date());
@@ -30,6 +32,7 @@ const Purchaseorder = () => {
           const weekStartDate = moment(item.addedAt).startOf('isoWeek');
           const weekEndDate = moment(item.addedAt).endOf('isoWeek');
           const weekRange = `${weekStartDate.format('M/D')}-${weekEndDate.format('M/D')}`;
+
           
           if (!acc[weekRange]) {
             acc[weekRange] = [];
@@ -62,7 +65,6 @@ const Purchaseorder = () => {
   const calculateTotalLoadCostAndPallets = (data) => {
     let totalLoadCost = 0;
     let totalPallets = 0;
-    
     data.forEach(item => {
       totalLoadCost += item.loadCost;
       totalPallets += item.palletsCount;
@@ -71,38 +73,38 @@ const Purchaseorder = () => {
     return { totalLoadCost, totalPallets };
   };
 
-  const columns = [
-    //  {
-    //   title: "Added At",
-    //   dataIndex: "addedAt",
-    //   render: (text) => moment(text).format("YYYY-MM-DD"), // Format date as needed
-    //   sorter: (a, b) => moment(a.addedAt).unix() - moment(b.addedAt).unix(),
-    // },
-    {
-      title: "Load Number",
-      dataIndex: "loadNumber",
-      sorter: (a, b) => a.loadNumber.length - b.loadNumber.length,
-    },
+  // const columns = [
+  //   //  {
+  //   //   title: "Added At",
+  //   //   dataIndex: "addedAt",
+  //   //   render: (text) => moment(text).format("YYYY-MM-DD"), // Format date as needed
+  //   //   sorter: (a, b) => moment(a.addedAt).unix() - moment(b.addedAt).unix(),
+  //   // },
+  //   {
+  //     title: "Load Number",
+  //     dataIndex: "loadNumber",
+  //     sorter: (a, b) => a.loadNumber.length - b.loadNumber.length,
+  //   },
   
-    {
-      title: "Total Pallets",
-      dataIndex: "palletsCount",
-      sorter: (a, b) => a.palletsCount - b.palletsCount,
-    },
-    {
-      title: "Load Cost",
-      dataIndex: "loadCost",
-      sorter: (a, b) => a.loadCost - b.loadCost,
-    },
-    {
-      title: "Per Pallets Cost",
-      dataIndex: "perPalletCost",
-      sorter: (a, b) => a.perPalletCost - b.perPalletCost,
-    },
+  //   {
+  //     title: "Total Pallets",
+  //     dataIndex: "palletsCount",
+  //     sorter: (a, b) => a.palletsCount - b.palletsCount,
+  //   },
+  //   {
+  //     title: "Load Cost",
+  //     dataIndex: "loadCost",
+  //     sorter: (a, b) => a.loadCost - b.loadCost,
+  //   },
+  //   {
+  //     title: "Per Pallets Cost",
+  //     dataIndex: "perPalletCost",
+  //     sorter: (a, b) => a.perPalletCost - b.perPalletCost,
+  //   },
    
    
    
-  ];
+  // ];
 
   return (
     <div className="page-wrapper">
@@ -124,9 +126,10 @@ const Purchaseorder = () => {
             {/* /Filter */}
             <div
               className={`card mb-0 ${inputfilter ? "toggleCls" : ""}`}
+
               id="filter_inputs"
-              style={{ display: inputfilter ? "block" : "none" }}
-            >
+              style={{ display: inputfilter ? "block" : "none" }}>
+            
               <div className="card-body pb-0">
                 <div className="row">
                   <div className="col-lg-2 col-sm-6 col-12">
@@ -192,22 +195,30 @@ const Purchaseorder = () => {
               </div>
             </div>
             {/* /Filter */}
+            <div className="dropDown">
+              <Summary/>
+              <FilterBy/>
+            </div>
             <div className="table-responsive">
               {Object.keys(data).map((weekRange, key) => {
                 const { totalLoadCost, totalPallets } = calculateTotalLoadCostAndPallets(data[weekRange]);
+                {console.log(data[weekRange])}
                 return (
                   <div key={key}>
-                    <h2 style={{ fontSize: '1rem', fontWeight: 'bold' }}>{`${weekRange}`} </h2>
-                    <Table 
+                   <h2 style={{ fontSize: '1rem', fontWeight: 'bold' }}>{weekRange}</h2>
+
+                    
+                    <ProductTable product = {data[weekRange]} totalLoad = {totalLoadCost} totalPall = {totalPallets}/>
+                    {/* <Table 
                       columns={columns}
                       dataSource={data[weekRange]}
-                      rowKey={(record) => record.loadNumber}
+                      // rowKey={(record) => record.loadNumber}
                        
-                    />
-                     <div style={{ display: 'flex' }}>
+                    /> */}
+                     <div style={{ display: 'flex', marginTop: '20px' }}>
         
-        <p className="pallet">Total Pallets: <span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}>{totalPallets}</span></p>
-        <p style={{ marginRight: '10px' }} className="loadCost">Total Load Cost: <span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}>{totalLoadCost}</span></p>
+        {/* <p className="pallet">Total Pallets: <span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}>{totalPallets}</span></p> */}
+        {/* <p style={{ marginRight: '10px' }} className="loadCost">Total Load Cost: <span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}>{totalLoadCost}</span></p> */}
       </div>
                   </div>
                 );
