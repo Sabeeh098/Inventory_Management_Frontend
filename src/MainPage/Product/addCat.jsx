@@ -1,24 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { adminApiInstance } from "../../api/axios";
+
 const AddCat = () => {
   const [categoryName, setCategoryName] = useState("");
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    // Fetch categories when the component mounts
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await adminApiInstance.get("/categories");
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
 
   const handleSubmit = async () => {
     try {
-      // Check if category name is not empty
       if (!categoryName.trim()) {
         alert("Category name cannot be empty");
         return;
       }
 
-      // Send category name to the backend
       const response = await adminApiInstance.post("/addCategory", {
         name: categoryName,
       });
       console.log("Category added:", response.data);
 
-      // Clear the input field after successful submission
       setCategoryName("");
+      // After adding the category, fetch categories again to update the table
+      fetchCategories();
     } catch (error) {
       console.error("Error adding category:", error);
       alert("Error adding category. Please try again.");
@@ -35,7 +50,7 @@ const AddCat = () => {
               <h6>Create new product Category</h6>
             </div>
           </div>
-          {/* /add */}
+          {/* Add form */}
           <div className="card">
             <div className="card-body">
               <div className="row">
@@ -61,7 +76,29 @@ const AddCat = () => {
               </div>
             </div>
           </div>
-          {/* /add */}
+          {/* Table for displaying categories */}
+          <div className="card mt-4">
+            <div className="card-body">
+              <h5 className="card-title">Categories</h5>
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th style={{ width: "10%" }}>Index</th>
+                    <th style={{ width: "90%" }}>Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {categories.map((category, index) => (
+                    <tr key={category.id}>
+                      <td>{index + 1}</td>
+                      <td>{category.name}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {/* End of table */}
         </div>
       </div>
     </>

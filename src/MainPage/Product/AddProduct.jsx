@@ -7,6 +7,8 @@ import html2canvas from "html2canvas";
 import { DeleteIcon, PlusIcon } from "../../EntryFile/imagePath";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import Select2 from 'react-select2-wrapper';
+import 'react-select2-wrapper/css/select2.css';
 
 
 const AddProduct = () => {
@@ -22,42 +24,47 @@ const AddProduct = () => {
     brands: [],
   });
 
-  const [categories, setCategories] = useState([]);
 
-  useEffect(() => {
-      const fetchCategories = async () => {
-          try {
-              const response = await adminApiInstance.get("/categories");
-              setCategories(response.data);
-          } catch (error) {
-              console.error("Error fetching categories:", error);
-          }
-      };
-      fetchCategories();
-  }, []);
+//   const options1 = [
+//     {id: 1, text: 'Choose Sub Category' },
+//     {id: 2, text: 'Fruits'},
+// ]
+const [categories, setCategories] = useState([]);
 
+useEffect(() => {
+    const fetchCategories = async () => {
+        try {
+            const response = await adminApiInstance.get("/categories");
+            setCategories(response.data);
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+        }
+    };
+    fetchCategories();
+}, []);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    if (name == "loadCost") {
-      setLoadData({
-        ...loadData,
-        [name]: value,
-        perPalletCost: (loadData.palletsCount !== 0
-          ? value / loadData.palletsCount
-          : 0
-        ).toFixed(2),
-      });
-    } else if (name == "palletsCount") {
-      setLoadData({
-        ...loadData,
-        [name]: value,
-        perPalletCost: (value !== 0 ? loadData.loadCost / value : 0).toFixed(2),
-      });
-    } else {
-      setLoadData({ ...loadData, [name]: value });
-    }
-  };
+const handleInputChange = (e) => {
+  const { name, value } = e.target;
+  if (name == "loadCost") {
+    setLoadData({
+      ...loadData,
+      [name]: value,
+      perPalletCost: (loadData.palletsCount !== 0
+        ? value / loadData.palletsCount
+        : 0
+      ).toFixed(2), 
+    });
+  } else if (name == "palletsCount") {
+    setLoadData({
+      ...loadData,
+      [name]: value,
+      perPalletCost: (value !== 0 ? loadData.loadCost / value : 0).toFixed(2),
+    });
+  } else {
+    setLoadData({ ...loadData, [name]: value });
+  }
+};
+
 
   const handleBrandChange = (index, field, e) => {
     const updatedBrands = [...loadData.brands];
@@ -222,25 +229,24 @@ const AddProduct = () => {
                     />
                   </div>
                 </div>
-               <div className="col-lg-4 col-sm-6 col-12">
-    <div className="form-group">
-        <label>Category </label>
-         {/* <SearchableDropdown/> */}
-        <select
-            name="category"
-            value={loadData.category}
-            onChange={handleInputChange}
-            className="form-control"
-        >
-            <option value="">Select Category</option>
-            {categories.map(category => (
-                <option key={category._id} value={category._id}>
-                    {category.name}
-                </option>    
-            ))}
-        </select>
-    </div>
-</div>
+                <div className="col-lg-3 col-sm-6 col-12">
+                  <div className="form-group">
+                    <label>Sub Category</label>
+                    <Select2
+  className="select"
+  data={categories.map(category => ({
+    id: category._id,
+    text: category.name
+  }))}
+  options={{
+    placeholder: 'Choose Sub Category',
+  }}
+  value={loadData.category} // Set the selected value
+  onChange={(e) => setLoadData({ ...loadData, category: e.target.value })}
+/>
+
+                  </div>
+                </div>
 
                 <div className="col-lg-4 col-sm-6 col-12">
                   <div className="form-group">
@@ -410,4 +416,4 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default AddProduct
