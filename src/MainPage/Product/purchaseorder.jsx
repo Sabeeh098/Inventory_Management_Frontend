@@ -8,7 +8,7 @@ import "react-select2-wrapper/css/select2.css";
 import moment from "moment";
 import { Calendar, search_whites } from "../../EntryFile/imagePath";
 import { adminApiInstance } from "../../api/axios";
-import ProductTable, { FilterBy, Summary } from "./ProductTable";
+import ProductTable, { BasicDateRangePicker, FilterBy, Summary } from "./ProductTable";
 
 
 const Purchaseorder = () => {
@@ -198,6 +198,7 @@ const Purchaseorder = () => {
             <div className="dropDown">
               <Summary/>
               <FilterBy/>
+              <BasicDateRangePicker/>
             </div>
             <div className="table-responsive">
               {Object.keys(data).map((weekRange, key) => {

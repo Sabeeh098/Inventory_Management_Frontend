@@ -3,6 +3,13 @@ import Table from 'react-bootstrap/Table';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import PropTypes from 'prop-types';
+import 'react-calendar/dist/Calendar.css';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers-pro';
+import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs';
+import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
+
+
 
 export function Summary() {
   return (
@@ -25,6 +32,18 @@ export function FilterBy() {
     </DropdownButton>
   );
 }
+
+
+export function BasicDateRangePicker() {
+  return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <DemoContainer components={['DateRangePicker']}>
+        <DateRangePicker localeText={{ start: 'Check-in', end: 'Check-out' }} />
+      </DemoContainer>
+    </LocalizationProvider>
+  );
+}
+
 
 const ProductTable = ({ product, totalLoad, totalPall }) => {
   console.log(totalLoad, totalPall);

@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import { LocalizationProvider } from '@mui/x-date-pickers-pro';
+import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs';
 
 import SignIn from './SignIn';
 import ForgetPassword from './ForgetPassword';
@@ -33,6 +35,8 @@ export default function App() {
   }
 
   return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+     
     <Switch>
       <Route path="/signIn" component={SignIn} />
       <Route path="/forgetPassword" component={ForgetPassword} />
@@ -44,5 +48,6 @@ export default function App() {
       <Route path="/pos" component={Pos} />
       <Route path="/index-three" component={HomeThree} />
     </Switch>
+    </LocalizationProvider>
   );
 }
