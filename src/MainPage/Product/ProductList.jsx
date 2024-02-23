@@ -67,8 +67,8 @@ const ProductList = () => {
     {
       title: "Category",
       dataIndex: "category",
-      render: (category) => category.name, 
-      sorter: (a, b) => a.category.name.localeCompare(b.category.name),
+      render: (category) => category ? category.name : "",
+      sorter: (a, b) => a.category && b.category ? a.category.name.localeCompare(b.category.name) : 0,
     },
     {
       title: "Pallets Count",
