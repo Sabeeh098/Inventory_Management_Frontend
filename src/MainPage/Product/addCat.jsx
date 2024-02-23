@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { adminApiInstance } from "../../api/axios";
+import { DeleteIcon, EditIcon } from "../../EntryFile/imagePath"; 
+import EditCat from "./EditCat";
+
 
 const AddCat = () => {
   const [categoryName, setCategoryName] = useState("");
   const [categories, setCategories] = useState([]);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editCategoryId, setEditCategoryId] = useState(null);
 
   useEffect(() => {
     // Fetch categories when the component mounts
@@ -38,6 +44,22 @@ const AddCat = () => {
       console.error("Error adding category:", error);
       alert("Error adding category. Please try again.");
     }
+  };
+
+  const handleDelete = async (categoryId) => {
+    try {
+      await adminApiInstance.delete(`/categories/${categoryId}`);
+      // After deleting the category, fetch categories again to update the table
+      fetchCategories();
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      alert("Error deleting category. Please try again.");
+    }
+  };
+
+  const handleEdit = (categoryId) => {
+    setEditCategoryId(categoryId);
+    setShowEditModal(true);
   };
 
   return (
@@ -84,14 +106,31 @@ const AddCat = () => {
                 <thead>
                   <tr>
                     <th style={{ width: "10%" }}>Index</th>
-                    <th style={{ width: "90%" }}>Name</th>
+                    <th style={{ width: "70%" }}>Name</th>
+                    <th style={{ width: "20%" }}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {categories.map((category, index) => (
-                    <tr key={category.id}>
+                    <tr key={category._id}>
                       <td>{index + 1}</td>
                       <td>{category.name}</td>
+                      <td>
+                        <Link
+                          className="confirm-text me-3 lspace"
+                          to="#"
+                          onClick={() => handleDelete(category._id)}
+                        >
+                          <img src={DeleteIcon} alt="Delete" />
+                        </Link>
+                        <Link
+                          className="me-3"
+                          to="#"
+                          onClick={() => handleEdit(category._id)}
+                        >
+                          <img src={EditIcon} alt="Edit" />
+                        </Link>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -101,6 +140,13 @@ const AddCat = () => {
           {/* End of table */}
         </div>
       </div>
+      {showEditModal && (
+        <EditCat
+          categoryId={editCategoryId}
+          onClose={() => setShowEditModal(false)}
+          fetchCategories={fetchCategories}
+        />
+      )}
     </>
   );
 };
