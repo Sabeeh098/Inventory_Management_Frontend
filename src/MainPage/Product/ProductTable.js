@@ -12,12 +12,60 @@
 //   );
 // }
 import Table from 'react-bootstrap/Table';
-import { Link } from "react-router-dom";
-import {  EyeIcon } from "../../EntryFile/imagePath";
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import 'react-calendar/dist/Calendar.css';
+import { EyeIcon } from '../../EntryFile/imagePath';
+import { Link } from 'react-router-dom/cjs/react-router-dom';
+// import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+// import { LocalizationProvider } from '@mui/x-date-pickers-pro';
+// import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs';
+// import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 
 
- const ProductTable = () => {
-    
+
+export function Summary() {
+  return (
+    <DropdownButton id="dropdown-basic-button" title="Summary">
+      <Dropdown.Item href="#/action-1">Today</Dropdown.Item>
+      <Dropdown.Item href="#/action-2">Yesterday</Dropdown.Item>
+      <Dropdown.Item href="#/action-3">This week</Dropdown.Item>
+      <Dropdown.Item href="#/action-3">Last Week</Dropdown.Item>
+    </DropdownButton>
+  );
+}
+
+export function FilterBy() {
+  return (
+    <DropdownButton id="dropdown-basic-button" title="FilterBy">
+      <Dropdown.Item href="#/action-1">Load Number</Dropdown.Item>
+      <Dropdown.Item href="#/action-2">Category</Dropdown.Item>
+      <Dropdown.Item href="#/action-3">Brand</Dropdown.Item>
+      <Dropdown.Item href="#/action-3">sku</Dropdown.Item>
+    </DropdownButton>
+  );
+}
+
+
+// export function BasicDateRangePicker() {
+//   return (
+//     <LocalizationProvider dateAdapter={AdapterDayjs}>
+//       <DemoContainer components={['DateRangePicker']}>
+//         <DateRangePicker localeText={{ start: 'Check-in', end: 'Check-out' }} />
+//       </DemoContainer>
+//     </LocalizationProvider>
+//   );
+// }
+
+
+const ProductTable = () => {
+  // console.log(totalLoad, totalPall);
+  // Check if product is not undefined and has at least one item
+  
+
+  // Accessing properties of the first element in the product array
+  
+
   return (
     <>
        <div className='purchaseTable'>
