@@ -2,14 +2,64 @@
 .lspace{
     margin-left: 12px;
 }
-/* .pallet{
-    margin-left: 40%;
-}
-.loadCost{
-    margin-left: 8%; */
-/* } */
 .dropDown{
     display: flex;
    margin-left: 11%;
    gap: 3%;
 }
+.wholeComp{
+   margin-left: 20%;
+   margin-right: 2%;
+   margin-top: 5%;
+}
+.Porder{
+    margin-top: 3%;
+    margin-bottom: 3%;
+}
+.twoDropdown{
+    display: flex;
+    gap: 2%;
+    margin-bottom: 2%;
+    margin-top: 5%;
+    
+    
+}
+.Pdate{
+    margin-left: 4px;
+
+}
+.Thead{
+    background-color: #6960EC;
+}
+.palletReport{
+    margin-top: 5%;
+    margin-left: 20%;
+}
+.palletTable{
+    margin-left: 20%;
+    margin-right: 1%;
+    margin-top: 4%;
+}
+.daterangepicker{
+    height: fit-content;
+    background-color: rgb(212, 212, 212);
+    cursor: pointer;
+}
+.inputFilterBY{
+    margin-top: 3px;
+}
+.inputF{
+    padding: 5px;
+    border-radius: 4px;
+    color: white;
+}
+.inputF:hover{
+   background-color: rgb(212, 212, 212);
+}
+
+
+
+
+
+
+

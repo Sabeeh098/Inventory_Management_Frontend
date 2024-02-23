@@ -12,6 +12,7 @@ import DefaultLayout from './Sidebar/DefaultLayout';
 import Error404 from '../MainPage/ErrorPage/Error404';
 import Error500 from '../MainPage/ErrorPage/Error500';
 import HomeThree from '../MainPage/Home/home3';
+// import PurchaseOrder1 from '../MainPage/Product/PurchaseOrder1';
 
 export default function App() {
   const location = useLocation();
@@ -47,6 +48,7 @@ export default function App() {
       <Route path="/error-500" component={Error500} />
       <Route path="/pos" component={Pos} />
       <Route path="/index-three" component={HomeThree} />
+     
     </Switch>
     // </LocalizationProvider>
   );
