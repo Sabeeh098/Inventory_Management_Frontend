@@ -18,11 +18,12 @@ import PrintBarcode from './PrintBarcode';
 import ProductDetails from './productDetails';
 import AddEmployee from './AddEmployee';
 import UserList from './UserList';
-import Purchaseorder from './purchaseorder';
+// import Purchaseorder from './purchaseorder';
 import ScanInScanOut from './ScanInScanOut';
 import Inventory from './Inventory';
 import LoadReport from './LoadReport';
 import addCat from './addCat';
+import PurchaseOrder1 from './PurchaseOrder1';
 
 const ProductRoute = ({ match }) => (
     <Switch>
@@ -36,7 +37,7 @@ const ProductRoute = ({ match }) => (
         <Route path={`${match.url}/addCategory`} component={addCat} />
 
 
-        <Route path={`${match.url}/purchaseorderreport`} component={Purchaseorder} />
+        <Route path={`${match.url}/purchaseorderreport`} component={PurchaseOrder1} />
         <Route path={`${match.url}/Load-Report`} component={LoadReport} />
         <Route path={`${match.url}/ScanInScanOut`} component={ScanInScanOut} />
         <Route path={`${match.url}/InventoryIndicators`} component={Inventory} />

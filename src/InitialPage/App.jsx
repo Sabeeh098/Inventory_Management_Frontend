@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
-import { LocalizationProvider } from '@mui/x-date-pickers-pro';
-import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs';
+
 
 import SignIn from './SignIn';
 import ForgetPassword from './ForgetPassword';
@@ -12,6 +11,7 @@ import DefaultLayout from './Sidebar/DefaultLayout';
 import Error404 from '../MainPage/ErrorPage/Error404';
 import Error500 from '../MainPage/ErrorPage/Error500';
 import HomeThree from '../MainPage/Home/home3';
+// import PurchaseOrder1 from '../MainPage/Product/PurchaseOrder1';
 
 export default function App() {
   const location = useLocation();
@@ -35,7 +35,7 @@ export default function App() {
   }
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    
      
     <Switch>
       <Route path="/signIn" component={SignIn} />
@@ -47,7 +47,8 @@ export default function App() {
       <Route path="/error-500" component={Error500} />
       <Route path="/pos" component={Pos} />
       <Route path="/index-three" component={HomeThree} />
+      {/* <Route path = '/purchase1' component={PurchaseOrder1}/> */}
     </Switch>
-    </LocalizationProvider>
+   
   );
 }
