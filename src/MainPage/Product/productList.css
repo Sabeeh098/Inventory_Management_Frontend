@@ -2,6 +2,9 @@
 .lspace{
     margin-left: 12px;
 }
+.palletMedia{
+    padding: 2rem;
+}
 .dropDown{
     display: flex;
    margin-left: 11%;
@@ -11,6 +14,7 @@
    margin-left: 20%;
    margin-right: 2%;
    margin-top: 5%;
+   padding: 2rem;
 }
 .Porder{
     margin-top: auto;
@@ -151,6 +155,7 @@
         margin-top: 23%;
     }
 }
+
 
 
 

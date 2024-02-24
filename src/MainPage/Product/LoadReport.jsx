@@ -7,6 +7,7 @@ import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import { enGB } from 'date-fns/locale'
 
 const LoadReport = () => {
     
@@ -66,6 +67,7 @@ const LoadReport = () => {
   direction="horizontal"
   preventSnapRefocus={true}
   calendarFocus="backwards"
+  locale={enGB}
 />}
 </div>
        <ProductTable/>
