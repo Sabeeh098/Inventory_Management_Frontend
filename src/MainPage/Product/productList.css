@@ -58,7 +58,105 @@
    background-color: rgb(212, 212, 212);
 }
 
+@media screen and (max-width: 1200px){
+    .wholeComp{
+        margin-left: 25%;
+    }
+}
+@media screen and (max-width: 1040px){
+    .wholeComp{
+        margin-left: 29%;
+        margin-top: 7%;
+    }
+}
+@media screen and (max-width: 992px){
+    .wholeComp{
+        margin-left: 2%;
+        margin-right: 6%;
+    }
+}
+@media screen and (max-width: 771px){
+    .wholeComp{
+        margin-top: 10%;
+    }
+}
+@media screen and (max-width: 550px){
+    .wholeComp{
+        margin-top: 14%;
+    }
+}
+@media screen and (max-width: 400px){
+    .wholeComp{
+        margin-top: 18%;
+    }
+}
+@media screen and (max-width: 550px){
+    .purchaseTable{
+        margin-right: 3%;
+    }
+}
+@media screen and (max-width: 484px){
+    .purchaseTable{
+        margin-right: 5%;
+    }
+}
 
+@media screen and (max-width: 1200px){
+    .palletMedia{
+        margin-left: 7%;
+        margin-top: 5%;
+    }
+}
+@media screen and (max-width: 1030px){
+    .palletMedia{
+        margin-left: 9%;
+        margin-top: 6%;
+    }
+}
+@media screen and (max-width: 991px){
+    .palletMedia{
+        margin-left: 0%;
+        margin-top: 10%;
+        margin-right: 6;
+    }
+}
+@media screen and (max-width: 991px){
+    .palletTable{
+        margin-left: 1%;
+       
+    }
+}
+@media screen and (max-width: 991px){
+    .palletReport{
+        
+        margin-left: 1%;
+    }
+}
+
+@media screen and (max-width: 608px){
+    .palletMedia{
+        margin-left: 0%;
+        margin-top: 14%;
+    }
+}
+@media screen and (max-width: 422px){
+    .palletMedia{
+     
+        margin-top: 18%;
+    }
+}
+@media screen and (max-width: 334px){
+    .palletMedia{
+     
+        margin-top: 23%;
+    }
+}
+
+
+
+
+
+  
   
  
 

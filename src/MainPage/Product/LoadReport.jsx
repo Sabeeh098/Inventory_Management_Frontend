@@ -27,6 +27,7 @@ const LoadReport = () => {
 
   return (
     <> 
+    <div className='palletMedia'>
           <div className="palletReport">
             <h3>Pallet out report</h3>
             <h5>Manage your Pallet out report</h5>
@@ -69,7 +70,7 @@ const LoadReport = () => {
 </div>
        <ProductTable/>
       </div>
-     
+    </div>
     </>
     
   )
