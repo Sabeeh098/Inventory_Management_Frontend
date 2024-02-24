@@ -13,7 +13,7 @@
    margin-top: 5%;
 }
 .Porder{
-    margin-top: 3%;
+    margin-top: auto;
     margin-bottom: 3%;
 }
 .twoDropdown{
@@ -51,12 +51,16 @@
 .inputF{
     padding: 5px;
     border-radius: 4px;
-    color: white;
+    color: black;
 }
 
 .inputF:hover{
    background-color: rgb(212, 212, 212);
 }
+
+
+  
+ 
 
 
 
