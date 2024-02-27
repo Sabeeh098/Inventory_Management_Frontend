@@ -5,8 +5,8 @@ import { TfiPrinter } from "react-icons/tfi";
 import BulkBarcode from "./BulkBarocde"; 
 import "./printStyles.css"; 
 
-const BrandDetails = ({ item }) => {
-  console.log(item,"item")
+const BrandDetails = ({ item,loadNumber }) => {
+  
   const [barcodeOnly, setBarcodeOnly] = useState(false);
   const [bulkBarcodeModalVisible, setBulkBarcodeModalVisible] = useState(false);
   const brandDetailsRef = React.useRef();
@@ -23,6 +23,12 @@ const BrandDetails = ({ item }) => {
     <>
       <div className="productdetails print_single" ref={brandDetailsRef} style={{ width: "100%"}}>
         <ul className="product-bar">
+          <li>
+            <h4>Load Number</h4>
+            <h6>{loadNumber}</h6>
+            {/* <h2>Brand Details</h2>
+      <p>Load Number: {loadNumber}</p> */}
+          </li>
           <li>
             <h4>Brand Name</h4>
             <h6>{item.brandName}</h6>
@@ -101,7 +107,9 @@ BrandDetails.propTypes = {
     totalPrice: PropTypes.number.isRequired,
     skuCode: PropTypes.string.isRequired,
     barcodeImage: PropTypes.string.isRequired,
+    
   }).isRequired,
+  loadNumber: PropTypes.string.isRequired, 
 };
   
 export default BrandDetails;
