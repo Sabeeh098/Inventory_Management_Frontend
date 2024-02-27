@@ -45,14 +45,18 @@
     justify-content: flex-start; /* Add this line */
   }
 
-  .bar-code-image {
+  .barcode2 {
     width: 100%;
     max-width: 200px;
-    border: 5px black; 
+
   padding: 1px;
     height: auto;
     margin-left: 0; /* Remove margin-left */
-    align-self: flex-start; /* Align to the left side */
+   
+    border: 1px solid #ccbcbc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .page-break {

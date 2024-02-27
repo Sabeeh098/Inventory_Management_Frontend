@@ -20,7 +20,7 @@ const BrandDetails = ({ item }) => {
 
   return (
     <>
-      <div className="productdetails print_single" ref={brandDetailsRef}>
+      <div className="productdetails print_single" ref={brandDetailsRef} style={{ width: "100%"}}>
         <ul className="product-bar">
           <li>
             <h4>Brand Name</h4>
@@ -43,7 +43,7 @@ const BrandDetails = ({ item }) => {
             <h6>{item.skuCode}</h6>
           </li>
         </ul>
-        <div className="bar-code-image" ref={brandDetailsRef}>
+        <div className="barcode_view" ref={brandDetailsRef} style={{display:"flex", alignItems:"center", justifyContent:"center", border:"1px solid #dfdfdf"}}>
           <img src={item.barcodeImage} alt="barcode" />
         </div>
       </div>
@@ -102,5 +102,5 @@ BrandDetails.propTypes = {
     barcodeImage: PropTypes.string.isRequired,
   }).isRequired,
 };
-
+  
 export default BrandDetails;

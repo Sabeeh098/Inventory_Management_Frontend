@@ -53,7 +53,7 @@ const ProductDetails = () => {
               <div
                 className="card-body print_single"
                 ref={loadDetailsRef}
-                style={{ listStyle: "none", padding: 0 }}
+                style={{ listStyle: "none", padding: 0, width: "fit-content" }}
               >
                 {product.barcodeImage && (
                   <div
@@ -138,25 +138,30 @@ const ProductDetails = () => {
               )}
             </div>
           </div>
+
+          {product.brands && (
           <div className="col-lg-4 col-sm-12">
-            {product.brands && (
               <div className="card">
                 <div className="card-body">
                   <div className="slider-product-details">
                     {product.brands.map((item, key) => (
-                      <div key={key} id={`brand-details-${item.skuCode}`}>
+                     <div key={key} id={`brand-details-${item.skuCode}`}>
                         <BrandDetails item={item} />
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
-            )}
           </div>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default ProductDetails;
+export default ProductDetails
+
+
+
+ 

@@ -24,6 +24,7 @@ import Inventory from './Inventory';
 import LoadReport from './LoadReport';
 import addCat from './addCat';
 import PurchaseOrder1 from './PurchaseOrder1';
+import PurchaseOrder from './PurchaseOrder';
 
 const ProductRoute = ({ match }) => (
     <Switch>
@@ -35,7 +36,7 @@ const ProductRoute = ({ match }) => (
         <Route path={`${match.url}/add-User`} component={AddEmployee} />
         <Route path={`${match.url}/Users-List`} component={UserList} />
         <Route path={`${match.url}/addCategory`} component={addCat} />
-
+        <Route path= {`${match.url}/reportDetail`} component={PurchaseOrder}/>
 
         <Route path={`${match.url}/purchaseorderreport`} component={PurchaseOrder1} />
         <Route path={`${match.url}/Load-Report`} component={LoadReport} />
