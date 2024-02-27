@@ -6,6 +6,7 @@ import BulkBarcode from "./BulkBarocde";
 import "./printStyles.css"; 
 
 const BrandDetails = ({ item }) => {
+  console.log(item,"item")
   const [barcodeOnly, setBarcodeOnly] = useState(false);
   const [bulkBarcodeModalVisible, setBulkBarcodeModalVisible] = useState(false);
   const brandDetailsRef = React.useRef();
