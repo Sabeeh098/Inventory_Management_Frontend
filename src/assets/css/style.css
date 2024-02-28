@@ -10251,11 +10251,36 @@ span.select2-container.select2-container--default.select2-container--open {
     padding: 10px !important;
   }
 }
+
 @media print {
   .print_single_barcode {
     margin: 10px auto !important;
   }
-  .multi_print{
-    display: flex;
+
+  .multi_print {
+    display: block;
+    padding: 0;
+    margin: 0;
   }
+
+  .multi_print .print_single {
+    display: inline-block !important;
+    padding: 0 !important;
+    margin: 1% !important;
+    width: 31% !important;
+  }
+
+  .multi_print_only {
+    display: block;
+    padding: 0;
+    margin: 0;
+  }
+
+  .multi_print_only .barcode_view {
+    display: inline-block !important;
+    padding: 0 !important;
+    margin: 1% !important;
+    width: 31% !important;
+  }
+
 }

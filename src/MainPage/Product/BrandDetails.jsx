@@ -9,10 +9,20 @@ const BrandDetails = ({ item, loadNumber }) => {
   const [barcodeOnly, setBarcodeOnly] = useState(false);
   const [bulkBarcodeModalVisible, setBulkBarcodeModalVisible] = useState(false);
   const [numCopies, setNumCopies] = useState(1); // State to track number of copies
+  const brandRef = React.useRef();
   const brandDetailsRef = React.useRef();
 
   const handlePrintBrand = useReactToPrint({
     content: () => {
+      if (barcodeOnly) {
+        const tableStat = brandRef.current.cloneNode(true)
+        const PrintElem = document.createElement('div');
+        PrintElem.className = 'multi_print_only';
+        for (let i = 0; i < numCopies; i++) {
+          PrintElem.appendChild(tableStat.cloneNode(true));
+        }
+        return PrintElem;
+      }
       const tableStat = brandDetailsRef.current.cloneNode(true);
       const PrintElem = document.createElement('div');
       PrintElem.className = 'multi_print';
@@ -20,13 +30,14 @@ const BrandDetails = ({ item, loadNumber }) => {
         PrintElem.appendChild(tableStat.cloneNode(true));
       }
       return PrintElem;
+
     }
   });
 
 
-  const handlePrintBarcodeOnly = () => {
-    setBulkBarcodeModalVisible(true);
-  };
+  // const handlePrintBarcodeOnly = () => {
+  //   setBulkBarcodeModalVisible(true);
+  // };
 
   return (
     <>
@@ -62,6 +73,7 @@ const BrandDetails = ({ item, loadNumber }) => {
           </li>
         </ul>
         <div
+          ref={brandRef}
           className="barcode_view"
           style={{
             display: "flex",
@@ -97,7 +109,8 @@ const BrandDetails = ({ item, loadNumber }) => {
         <label style={{ marginLeft: "5px" }}>Copies</label>
         <div style={{ marginLeft: "auto" }}>
           <button
-            onClick={barcodeOnly ? handlePrintBarcodeOnly : handlePrintBrand}
+            onClick={handlePrintBrand}
+            // onClick={barcodeOnly ? handlePrintBarcodeOnly : handlePrintBrand}
             style={{
               border: "1px solid #3498db",
               borderRadius: "5px",
