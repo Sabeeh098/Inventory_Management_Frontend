@@ -332,7 +332,8 @@ const handleInputChange = (e) => {
                             />
                           </div>
                           <div className="flex-grow-1 m-2" >
-                          <input
+                            <input
+
                               type="text"
                               name={`brands[${index}].palletNumbers`}
                               value={`${index + 1}-${loadData.palletsCount}`}
@@ -341,6 +342,7 @@ const handleInputChange = (e) => {
                             />
                           </div>
                           <div className="flex-grow-1 m-2">
+
                           <input
                               type="number"
                               name={`brands[${index}].totalPallet`}
@@ -353,7 +355,7 @@ const handleInputChange = (e) => {
                             />
                           </div>
                           <div className="flex-grow-1 m-2">
-                          <input
+                            <input
                               type="number"
                               name={`brands[${index}].totalPrice`}
                               value={brand.totalPrice}
@@ -362,7 +364,9 @@ const handleInputChange = (e) => {
                             />
                           </div>
                           <div className="flex-grow-1 m-2">
-                          <input
+
+                            <input
+
                               type="text"
                               name={`brands[${index}].skuCode`}
                               value={brand.skuCode}
@@ -374,7 +378,7 @@ const handleInputChange = (e) => {
                             />
                           </div>
                           <div className="flex-grow-1 m-2">
-                          <div id={`barcode_${index}`}>
+                            <div id={`barcode_${index}`}>
                               <Barcode value={loadData.brands[index].skuCode} />
                             </div>
                           </div>
