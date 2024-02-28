@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 
 
 const PalletOutReport = ({ data }) => {
+  const totalPalletsOut = data.reduce((total, item) => total + item.palletsOut, 0);
+  const loadCostTotal = data.reduce((total, item) => total + item.loadCost, 0);
+
   return (
     <>
       <div className='purchaseTable'>
@@ -13,8 +16,8 @@ const PalletOutReport = ({ data }) => {
               <th style={{backgroundColor: '#6A5ACD', color: 'white'}}>Load Number</th>
               <th style={{backgroundColor: '#6A5ACD', color: 'white'}}>Total Pallets</th>
               <th style={{backgroundColor: '#6A5ACD', color: 'white'}}>Pallets Out</th>
-              <th style={{backgroundColor: '#6A5ACD', color: 'white'}}>Per Pallets Cost</th>
-              <th style={{backgroundColor: '#6A5ACD', color: 'white'}}>Load Cost</th>
+              <th style={{backgroundColor: '#6A5ACD', color: 'white'}}>Per Pallets Cost($)</th>
+              <th style={{backgroundColor: '#6A5ACD', color: 'white'}}>Load Cost($)</th>
             </tr>
           </thead>
           <tbody>
@@ -30,9 +33,9 @@ const PalletOutReport = ({ data }) => {
             <tr>
               <td><p className="pallet">Grand Total: <span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}></span></p></td>
               <td></td>
-              <td><p className="pallet"> <span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}>TotalValue</span></p></td>
+              <td><p className="pallet"> <span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}>{totalPalletsOut}</span></p></td>
               <td></td>
-              <td> <p style={{ marginRight: '10px' }} className="loadCost"> <span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}>TotalValue</span></p></td>
+              <td> <p style={{ marginRight: '10px' }} className="loadCost"> <span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}>${loadCostTotal}</span></p></td>
             </tr>
           </tbody>
         </Table>

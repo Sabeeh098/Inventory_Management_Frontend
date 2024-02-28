@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+
 import './productList.css';
+import PalletOutReport from './PalletOutReport';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css';
 import { DateRangePicker } from 'react-date-range';
 import { adminApiInstance } from '../../api/axios';
 import { enGB } from 'date-fns/locale'; 
-import PalletOutReport from './PalletOutReport';
 
 const LoadReport = () => {
   const [datePicker, setDatepicker] = useState(false);
@@ -20,11 +21,37 @@ const LoadReport = () => {
       key: 'selection'
     }
   ]);
+  const [showSearchInput, setShowSearchInput] = useState(false); 
+  const [categories, setCategories] = useState([]); 
 
   const dateRangePickerRef = useRef();
+  const searchInputRef = useRef(); 
+  const categoryDropdownRef = useRef(); 
+
+  useEffect(() => {
+    getAllCategories();
+  }, []);
+
+  const getAllCategories = async () => {
+    try {
+      const response = await adminApiInstance.get("/categories");
+      setCategories(response.data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
+  const handleCategorySelect = async (categoryId) => {
+    try {
+      const response = await adminApiInstance.post("/fetchReportByCategory", { categoryId });
+      console.log(response.data,"Verundooo");
+      setTableData(response.data);
+    } catch (error) {
+      console.error('Error fetching report data:', error);
+    }
+  };
 
   const handleDateRangeChange = async (ranges) => {
-    // Convert selected dates to UTC format
     const startDateUTC = ranges.selection.startDate.toISOString();
     const endDateUTC = ranges.selection.endDate.toISOString();
     const utcRanges = {
@@ -43,8 +70,11 @@ const LoadReport = () => {
   };
 
   const handleClickOutside = (event) => {
+    if (searchInputRef.current && !searchInputRef.current.contains(event.target)) {
+      setShowSearchInput(false); 
+    }
     if (dateRangePickerRef.current && !dateRangePickerRef.current.contains(event.target)) {
-      setDatepicker(false);
+      setDatepicker(false); 
     }
   };
 
@@ -60,8 +90,8 @@ const LoadReport = () => {
   }, []);
 
   useEffect(() => {
-    fetchData(selectedOption); // Fetch data initially with default option
-  }, [selectedOption]); // Re-fetch data when option changes
+    fetchData(selectedOption); 
+  }, [selectedOption]); 
 
   const fetchData = async (option) => {
     try {
@@ -87,15 +117,18 @@ const LoadReport = () => {
 
   const handleOptionChange = (option) => {
     setSelectedOption(option);
+    setShowSearchInput(false); 
+  };
+
+  const toggleSearchInput = () => {
+    setShowSearchInput(!showSearchInput);
   };
 
   const formatWeeklyDate = (startDate, endDate) => {
-    // Extracting month and day for start and end dates
     const startMonth = startDate.getMonth() + 1;
     const startDay = startDate.getDate();
     const endMonth = endDate.getMonth() + 1;
     const endDay = endDate.getDate();
-    // Constructing the formatted string
     return `${startMonth}/${startDay}-${endMonth}/${endDay}`;
   };
 
@@ -103,8 +136,8 @@ const LoadReport = () => {
     <>
       <div className="wholeComp">
         <div className="Porder">
-          <h3>Pallet out report</h3>
-          <h5>Manage your Pallet out report</h5>
+          <h3>Purchase order report</h3>
+          <h5>Manage your Purchase order report</h5>
         </div>
         <div className="twoDropdown">
           <DropdownButton title="Summary" className="drop5">
@@ -114,13 +147,21 @@ const LoadReport = () => {
           </DropdownButton>
 
           <DropdownButton id="dropdown-basic-button" title="FilterBy">
-            <Dropdown.Item href="#/action-2">
+            <Dropdown.Item href="#/action-2" onClick={toggleSearchInput}>
               Category
             </Dropdown.Item>
           </DropdownButton>
-          <div className="inputFilterBY">
-            {/* Here you can add your input field for daily data if needed */}
-          </div>
+
+          {showSearchInput && (
+            <div ref={categoryDropdownRef}>
+              <select className="inputFilterBY" onChange={(e) => handleCategorySelect(e.target.value)}>
+                <option value="">Select category</option>
+                {categories.map(category => (
+                  <option key={category._id} value={category._id}>{category.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div className="daterangepicker d-flex" onClick={datePickerFnc}>
             <div className="m-1 px-2 py-1 bg-light">
@@ -142,7 +183,7 @@ const LoadReport = () => {
                 direction="horizontal"
                 preventSnapRefocus={true}
                 calendarFocus="backwards"
-                locale={enGB} 
+                locale={enGB}
               />
             </div>
           )}
@@ -159,3 +200,4 @@ const LoadReport = () => {
 };
 
 export default LoadReport;
+ 

@@ -46,7 +46,7 @@ const ProductTable = ({ data }) => {
             <td><p className="pallet">Grand Total: <span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}></span></p></td>
             <td></td>
             <td></td>
-            <td><p className="pallet"> <span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}>${totalLoadCost}</span></p></td>
+            <td><p className="pallet"><span style={{ display: 'inline-block', border: '1px solid #ccc', padding: '4px', borderRadius: '5px', backgroundColor: '#f0f0f0' }}>${totalLoadCost}</span></p></td>
             <td></td>
           </tr>
         </tbody>
