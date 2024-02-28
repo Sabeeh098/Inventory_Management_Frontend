@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+
 import './productList.css';
 import ProductTable from './ProductTable';
 import 'react-date-range/dist/styles.css'; // main css file
@@ -21,10 +22,39 @@ const PurchaseOrder1 = () => {
     }
   ]);
   const [showSearchInput, setShowSearchInput] = useState(false); // State to manage visibility of search input
+  // const [categoryDropdownVisible, setCategoryDropdownVisible] = useState(false); // State to manage visibility of category dropdown
+  const [categories, setCategories] = useState([]); // State to store fetched categories
+  console.log(categories,"Categories");
 
   const dateRangePickerRef = useRef();
   const searchInputRef = useRef(); // Reference to the search input field
+  const categoryDropdownRef = useRef(); // Reference to the category dropdown
 
+  useEffect(() => {
+    // Fetch categories when the component mounts
+    getAllCategories();
+  }, []);
+
+  const getAllCategories = async () => {
+    try {
+      const response = await adminApiInstance.get("/categories");
+      setCategories(response.data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
+  const handleCategorySelect = async (categoryId) => {
+    try {
+     
+      const response = await adminApiInstance.post("/fetchReportByCategory", { categoryId });
+      // Set the fetched data to the tableData state
+      console.log(response.data,"Verundooo");
+      setTableData(response.data);
+    } catch (error) {
+      console.error('Error fetching report data:', error);
+    }
+  };
   const handleDateRangeChange = async (ranges) => {
     // Convert selected dates to UTC format
     const startDateUTC = ranges.selection.startDate.toISOString();
@@ -53,6 +83,10 @@ const PurchaseOrder1 = () => {
     if (dateRangePickerRef.current && !dateRangePickerRef.current.contains(event.target)) {
       setDatepicker(false); // Close date range picker
     }
+    // // Check if clicked element is not the category dropdown
+    // if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target)) {
+    //   setCategoryDropdownVisible(false); // Close category dropdown
+    // }
   };
 
   const datePickerFnc = () => {
@@ -101,6 +135,8 @@ const PurchaseOrder1 = () => {
     setShowSearchInput(!showSearchInput);
   };
 
+  // Removed unused function toggleCategoryDropdown
+
   const formatWeeklyDate = (startDate, endDate) => {
     // Extracting month and day for start and end dates
     const startMonth = startDate.getMonth() + 1;
@@ -130,11 +166,15 @@ const PurchaseOrder1 = () => {
               Category
             </Dropdown.Item>
           </DropdownButton>
-          {showSearchInput && (
-            <div className="inputFilterBY" ref={searchInputRef}>
-              <input type="text" placeholder="Search by category" />
-            </div>
-          )}
+
+          <div ref={categoryDropdownRef}>
+  <select className="inputFilterBY" onChange={(e) => handleCategorySelect(e.target.value)}>
+    <option value="">Select category</option>
+    {categories.map(category => (
+      <option key={category._id} value={category._id}>{category.name}</option>
+    ))}
+  </select>
+</div>
 
           <div className="daterangepicker d-flex" onClick={datePickerFnc}>
             <div className="m-1 px-2 py-1 bg-light">
@@ -156,7 +196,7 @@ const PurchaseOrder1 = () => {
                 direction="horizontal"
                 preventSnapRefocus={true}
                 calendarFocus="backwards"
-                locale={enGB} 
+                locale={enGB}
               />
             </div>
           )}

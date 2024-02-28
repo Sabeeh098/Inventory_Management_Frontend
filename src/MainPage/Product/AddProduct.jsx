@@ -231,7 +231,7 @@ const handleInputChange = (e) => {
                 </div>
                 <div className="col-lg-3 col-sm-6 col-12">
                   <div className="form-group">
-                    <label>Sub Category</label>
+                    <label>Category</label>
                     <Select2
   className="select"
   data={categories.map(category => ({
@@ -239,7 +239,7 @@ const handleInputChange = (e) => {
     text: category.name
   }))}
   options={{
-    placeholder: 'Choose Sub Category',
+    placeholder: 'Choose Category',
   }}
   value={loadData.category} // Set the selected value
   onChange={(e) => setLoadData({ ...loadData, category: e.target.value })}

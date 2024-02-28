@@ -2,17 +2,18 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useReactToPrint } from "react-to-print";
 import { TfiPrinter } from "react-icons/tfi";
-import BulkBarcode from "./BulkBarocde"; 
-import "./printStyles.css"; 
+import BulkBarcode from "./BulkBarocde";
+import "./printStyles.css";
 
-const BrandDetails = ({ item,loadNumber }) => {
-  
+const BrandDetails = ({ item, loadNumber }) => {
   const [barcodeOnly, setBarcodeOnly] = useState(false);
   const [bulkBarcodeModalVisible, setBulkBarcodeModalVisible] = useState(false);
+  const [numCopies, setNumCopies] = useState(1); // State to track number of copies
   const brandDetailsRef = React.useRef();
 
   const handlePrintBrand = useReactToPrint({
     content: () => (barcodeOnly ? null : brandDetailsRef.current),
+    copyCount: numCopies, // Specify the number of copies to print
   });
 
   const handlePrintBarcodeOnly = () => {
@@ -21,13 +22,15 @@ const BrandDetails = ({ item,loadNumber }) => {
 
   return (
     <>
-      <div className="productdetails print_single" ref={brandDetailsRef} style={{ width: "100%"}}>
+      <div
+        className="productdetails print_single"
+        ref={brandDetailsRef}
+        style={{ width: "100%" }}
+      >
         <ul className="product-bar">
           <li>
             <h4>Load Number</h4>
             <h6>{loadNumber}</h6>
-            {/* <h2>Brand Details</h2>
-      <p>Load Number: {loadNumber}</p> */}
           </li>
           <li>
             <h4>Brand Name</h4>
@@ -50,7 +53,15 @@ const BrandDetails = ({ item,loadNumber }) => {
             <h6>{item.skuCode}</h6>
           </li>
         </ul>
-        <div className="barcode_view" ref={brandDetailsRef} style={{display:"flex", alignItems:"center", justifyContent:"center", border:"1px solid #dfdfdf"}}>
+        <div
+          className="barcode_view"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "1px solid #dfdfdf",
+          }}
+        >
           <img src={item.barcodeImage} alt="barcode" />
         </div>
       </div>
@@ -68,6 +79,15 @@ const BrandDetails = ({ item,loadNumber }) => {
           type="checkbox"
         />
         <label style={{ marginLeft: "5px" }}>Print Barcode Only</label>
+        {/* Input field to specify the number of copies */}
+        <input
+          type="number"
+          min="1"
+          value={numCopies}
+          onChange={(e) => setNumCopies(parseInt(e.target.value))}
+          style={{ marginLeft: "10px", width: "50px" }}
+        />
+        <label style={{ marginLeft: "5px" }}>Copies</label>
         <div style={{ marginLeft: "auto" }}>
           <button
             onClick={barcodeOnly ? handlePrintBarcodeOnly : handlePrintBrand}
@@ -88,11 +108,10 @@ const BrandDetails = ({ item,loadNumber }) => {
           </button>
         </div>
       </div>
-      {/* Render the BulkBarcode directly without Modal */}
       {bulkBarcodeModalVisible && (
-        <BulkBarcode 
-          barcodeImage={item.barcodeImage} 
-          onClose={() => setBulkBarcodeModalVisible(false)} 
+        <BulkBarcode
+          barcodeImage={item.barcodeImage}
+          onClose={() => setBulkBarcodeModalVisible(false)}
         />
       )}
     </>
@@ -107,9 +126,8 @@ BrandDetails.propTypes = {
     totalPrice: PropTypes.number.isRequired,
     skuCode: PropTypes.string.isRequired,
     barcodeImage: PropTypes.string.isRequired,
-    
   }).isRequired,
-  loadNumber: PropTypes.string.isRequired, 
+  loadNumber: PropTypes.string.isRequired,
 };
-  
+
 export default BrandDetails;
