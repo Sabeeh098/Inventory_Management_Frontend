@@ -12,9 +12,17 @@ const BrandDetails = ({ item, loadNumber }) => {
   const brandDetailsRef = React.useRef();
 
   const handlePrintBrand = useReactToPrint({
-    content: () => (barcodeOnly ? null : brandDetailsRef.current),
-    copyCount: numCopies, // Specify the number of copies to print
+    content: () => {
+      const tableStat = brandDetailsRef.current.cloneNode(true);
+      const PrintElem = document.createElement('div');
+      PrintElem.className = 'multi_print';
+      for (let i = 0; i < numCopies; i++) {
+        PrintElem.appendChild(tableStat.cloneNode(true));
+      }
+      return PrintElem;
+    }
   });
+
 
   const handlePrintBarcodeOnly = () => {
     setBulkBarcodeModalVisible(true);
@@ -78,8 +86,7 @@ const BrandDetails = ({ item, loadNumber }) => {
           onChange={() => setBarcodeOnly(!barcodeOnly)}
           type="checkbox"
         />
-        <label style={{ marginLeft: "5px" }}>Print Barcode Only</label>
-        {/* Input field to specify the number of copies */}
+        <label style={{ marginLeft: "5px" }}>Barcode Only</label>
         <input
           type="number"
           min="1"
