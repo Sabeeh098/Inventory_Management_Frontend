@@ -278,7 +278,7 @@ const AddCategory = () => {
                       <li>
                         <h4>Brand Name</h4>
                         <h6 className="manitoryblue">
-                          {loadDetails?.brands[0]?.brand ||
+                          {loadDetails?.brands[0]?.brandbrandName ||
                             "Brand not available"}
                         </h6>
                       </li>

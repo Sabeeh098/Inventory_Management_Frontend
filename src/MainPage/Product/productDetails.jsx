@@ -144,11 +144,11 @@ const ProductDetails = () => {
               <div className="card">
                 <div className="card-body">
                   <div className="slider-product-details">
-                    {product.brands.map((item, key) => (
-                      <div key={key} id={`brand-details-${item.skuCode}`}>
-                        <BrandDetails item={item} />
-                      </div>
-                    ))}
+                  {product.brands.map((item, key) => (
+  <div key={key} id={`brand-details-${item.skuCode}`}>
+    <BrandDetails item={item} loadNumber={product.loadNumber} />
+  </div>
+))}
                   </div>
                 </div>
               </div>
@@ -160,4 +160,8 @@ const ProductDetails = () => {
   );
 };
 
-export default ProductDetails;
+export default ProductDetails
+
+
+
+ 

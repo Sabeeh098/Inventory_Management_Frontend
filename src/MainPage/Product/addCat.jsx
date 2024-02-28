@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { adminApiInstance } from "../../api/axios";
-import { DeleteIcon, EditIcon } from "../../EntryFile/imagePath"; 
+import { DeleteIcon, EditIcon } from "../../EntryFile/imagePath";
 import EditCat from "./EditCat";
-
 
 const AddCat = () => {
   const [categoryName, setCategoryName] = useState("");
   const [categories, setCategories] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editCategoryId, setEditCategoryId] = useState(null);
+  const [selectedCategories, setSelectedCategories] = useState([]);
 
   useEffect(() => {
     // Fetch categories when the component mounts
@@ -57,9 +57,39 @@ const AddCat = () => {
     }
   };
 
-  const handleEdit = (categoryId) => {
+  const handleEdit = (categoryId, categoryName) => {
     setEditCategoryId(categoryId);
+    setCategoryName(categoryName); // Set the category name in the state
     setShowEditModal(true);
+  };
+
+  const handleCheckboxChange = (event, categoryId) => {
+    const isChecked = event.target.checked;
+    if (isChecked) {
+      setSelectedCategories((prevSelected) => [...prevSelected, categoryId]);
+    } else {
+      setSelectedCategories((prevSelected) =>
+        prevSelected.filter((id) => id !== categoryId)
+      );
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    try {
+      // Send selected category IDs to the backend
+      await adminApiInstance.post("/deleteSelectedCategories", {
+        categoryIds: selectedCategories,
+      });
+
+      // After deleting the categories, fetch categories again to update the table
+      fetchCategories();
+
+      // Clear selected categories
+      setSelectedCategories([]);
+    } catch (error) {
+      console.error("Error deleting categories:", error);
+      alert("Error deleting categories. Please try again.");
+    }
   };
 
   return (
@@ -101,18 +131,39 @@ const AddCat = () => {
           {/* Table for displaying categories */}
           <div className="card mt-4">
             <div className="card-body">
-              <h5 className="card-title">Categories</h5>
+              <h5 className="card-title">
+                Categories{" "}
+                {selectedCategories.length > 0 && (
+                  <Link
+                    className="confirm-text me-3 lspace"
+                    to="#"
+                    onClick={handleDeleteSelected}
+                  >
+                    <img src={DeleteIcon} alt="Delete" />
+                  </Link>
+                )}
+              </h5>
               <table className="table">
                 <thead>
                   <tr>
+                    <th style={{ width: "5%" }}>Checkbox</th>
                     <th style={{ width: "10%" }}>Index</th>
-                    <th style={{ width: "70%" }}>Name</th>
+                    <th style={{ width: "60%" }}>Name</th>
                     <th style={{ width: "20%" }}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {categories.map((category, index) => (
                     <tr key={category._id}>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={selectedCategories.includes(category._id)}
+                          onChange={(e) =>
+                            handleCheckboxChange(e, category._id)
+                          }
+                        />
+                      </td>
                       <td>{index + 1}</td>
                       <td>{category.name}</td>
                       <td>
@@ -126,7 +177,7 @@ const AddCat = () => {
                         <Link
                           className="me-3"
                           to="#"
-                          onClick={() => handleEdit(category._id)}
+                          onClick={() => handleEdit(category._id, category.name)}
                         >
                           <img src={EditIcon} alt="Edit" />
                         </Link>
@@ -143,6 +194,7 @@ const AddCat = () => {
       {showEditModal && (
         <EditCat
           categoryId={editCategoryId}
+          categoryName={categoryName} // Pass the category name as prop
           onClose={() => setShowEditModal(false)}
           fetchCategories={fetchCategories}
         />

@@ -191,7 +191,7 @@ const handleInputChange = (e) => {
         </div>
         <div className="card">
           <div className="card-body">
-            <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
               <div className="row">
                 <div className="col-lg-4 col-sm-6 col-12">
                   <div className="form-group">
@@ -333,6 +333,7 @@ const handleInputChange = (e) => {
                           </div>
                           <div className="flex-grow-1 m-2" >
                             <input
+
                               type="text"
                               name={`brands[${index}].palletNumbers`}
                               value={`${index + 1}-${loadData.palletsCount}`}
@@ -341,7 +342,8 @@ const handleInputChange = (e) => {
                             />
                           </div>
                           <div className="flex-grow-1 m-2">
-                            <input
+
+                          <input
                               type="number"
                               name={`brands[${index}].totalPallet`}
                               value={brand.totalPallet}
@@ -362,7 +364,9 @@ const handleInputChange = (e) => {
                             />
                           </div>
                           <div className="flex-grow-1 m-2">
+
                             <input
+
                               type="text"
                               name={`brands[${index}].skuCode`}
                               value={brand.skuCode}

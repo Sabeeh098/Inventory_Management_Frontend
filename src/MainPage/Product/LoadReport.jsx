@@ -1,81 +1,161 @@
-import React from 'react';
-import {useState} from 'react'
-import ProductTable from "./ProductTable";
-import { DateRangePicker } from 'react-date-range';
-import { addDays } from 'date-fns';
-import 'react-date-range/dist/styles.css'; // main css file
-import 'react-date-range/dist/theme/default.css'; // theme css file
+import React, { useState, useEffect, useRef } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
-import { enGB } from 'date-fns/locale'
+import './productList.css';
+import 'react-date-range/dist/styles.css'; // main css file
+import 'react-date-range/dist/theme/default.css';
+import { DateRangePicker } from 'react-date-range';
+import { adminApiInstance } from '../../api/axios';
+import { enGB } from 'date-fns/locale'; 
+import PalletOutReport from './PalletOutReport';
 
 const LoadReport = () => {
-    
   const [datePicker, setDatepicker] = useState(false);
-
- const datePickerFnc = () => {
-    
-  setDatepicker(!datePicker);
- }
-
-  const [state, setState] = useState([
+  const [selectedOption, setSelectedOption] = useState('Weekly');
+  const [tableData, setTableData] = useState([]);
+  const [dateRange, setDateRange] = useState([
     {
       startDate: new Date(),
-      endDate: addDays(new Date(), 7),
+      endDate: new Date(),
       key: 'selection'
     }
   ]);
 
-  return (
-    <> 
-    <div className='palletMedia'>
-          <div className="palletReport">
-            <h3>Pallet out report</h3>
-            <h5>Manage your Pallet out report</h5>
-          </div>
-      <div className="palletTable">
-      <div className='twoDropdown'> 
-      <DropdownButton  title="Summary" className='drop5'>
-        <Dropdown.Item href="#/action-1">Daily</Dropdown.Item>
-        <Dropdown.Item href="#/action-2">Weekly</Dropdown.Item>
-        <Dropdown.Item href="#/action-3">Monthly</Dropdown.Item>
-      </DropdownButton>
-   
-    <DropdownButton id="dropdown-basic-button" title="FilterBy">
-      <Dropdown.Item href="#/action-1">Load Number</Dropdown.Item>
-      <Dropdown.Item href="#/action-2">Category</Dropdown.Item>
-      <Dropdown.Item href="#/action-3">Brand</Dropdown.Item>
-      <Dropdown.Item href="#/action-3">sku</Dropdown.Item>
-    </DropdownButton>
+  const dateRangePickerRef = useRef();
 
-<div className=' daterangepicker d-flex' onClick={datePickerFnc}>
-    
-  <div className='m-1 px-2 py-1 bg-light'>
-    <p>02-11-24</p>
-  </div>
-  <div className='m-1 px-2 py-1 bg-light' >
-    <p>03-12-24</p>
-  </div>
-</div>
- 
-    { datePicker && <DateRangePicker
-  onChange={item => setState([item.selection])}
-  showSelectionPreview={true}
-  moveRangeOnFirstSelection={false}
-  months={1}
-  ranges={state}
-  direction="horizontal"
-  preventSnapRefocus={true}
-  calendarFocus="backwards"
-  locale={enGB}
-/>}
-</div>
-       <ProductTable/>
+  const handleDateRangeChange = async (ranges) => {
+    // Convert selected dates to UTC format
+    const startDateUTC = ranges.selection.startDate.toISOString();
+    const endDateUTC = ranges.selection.endDate.toISOString();
+    const utcRanges = {
+      startDate: startDateUTC,
+      endDate: endDateUTC,
+      key: 'selection'
+    };
+  
+    setDateRange([ranges.selection]);
+    try {
+      const response = await adminApiInstance.post("/fetchDataForDateRange", utcRanges);
+      setTableData(response.data);
+    } catch (error) {
+      console.error('Error fetching data for the selected date range:', error);
+    }
+  };
+
+  const handleClickOutside = (event) => {
+    if (dateRangePickerRef.current && !dateRangePickerRef.current.contains(event.target)) {
+      setDatepicker(false);
+    }
+  };
+
+  const datePickerFnc = () => {
+    setDatepicker(!datePicker);
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    fetchData(selectedOption); // Fetch data initially with default option
+  }, [selectedOption]); // Re-fetch data when option changes
+
+  const fetchData = async (option) => {
+    try {
+      let response;
+      switch(option) {
+        case 'Daily':
+          response = await adminApiInstance.get('/dailyData');
+          break;
+        case 'Weekly':
+          response = await adminApiInstance.get('/fetchWeekly');
+          break;
+        case 'Monthly':
+          response = await adminApiInstance.get("/monthlyData");
+          break;
+        default:
+          break;
+      }
+      setTableData(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const handleOptionChange = (option) => {
+    setSelectedOption(option);
+  };
+
+  const formatWeeklyDate = (startDate, endDate) => {
+    // Extracting month and day for start and end dates
+    const startMonth = startDate.getMonth() + 1;
+    const startDay = startDate.getDate();
+    const endMonth = endDate.getMonth() + 1;
+    const endDay = endDate.getDate();
+    // Constructing the formatted string
+    return `${startMonth}/${startDay}-${endMonth}/${endDay}`;
+  };
+
+  return (
+    <>
+      <div className="wholeComp">
+        <div className="Porder">
+          <h3>Pallet out report</h3>
+          <h5>Manage your Pallet out report</h5>
+        </div>
+        <div className="twoDropdown">
+          <DropdownButton title="Summary" className="drop5">
+            <Dropdown.Item href="#/action-1" onClick={() => handleOptionChange('Daily')}>Daily</Dropdown.Item>
+            <Dropdown.Item href="#/action-2" onClick={() => handleOptionChange('Weekly')}>Weekly</Dropdown.Item>
+            <Dropdown.Item href="#/action-3" onClick={() => handleOptionChange('Monthly')}>Monthly</Dropdown.Item>
+          </DropdownButton>
+
+          <DropdownButton id="dropdown-basic-button" title="FilterBy">
+            <Dropdown.Item href="#/action-2">
+              Category
+            </Dropdown.Item>
+          </DropdownButton>
+          <div className="inputFilterBY">
+            {/* Here you can add your input field for daily data if needed */}
+          </div>
+
+          <div className="daterangepicker d-flex" onClick={datePickerFnc}>
+            <div className="m-1 px-2 py-1 bg-light">
+              <p>{dateRange[0].startDate.toLocaleDateString()}</p>
+            </div>
+            <div className="m-1 px-2 py-1 bg-light">
+              <p>{dateRange[0].endDate.toLocaleDateString()}</p>
+            </div>
+          </div>
+
+          {datePicker && (
+            <div ref={dateRangePickerRef}>
+              <DateRangePicker
+                onChange={handleDateRangeChange}
+                showSelectionPreview={true}
+                moveRangeOnFirstSelection={false}
+                months={1}
+                ranges={dateRange}
+                direction="horizontal"
+                preventSnapRefocus={true}
+                calendarFocus="backwards"
+                locale={enGB} 
+              />
+            </div>
+          )}
+        </div>
+
+        {selectedOption === 'Weekly' && (
+          <h4 className="Pdate">{formatWeeklyDate(dateRange[0].startDate, dateRange[0].endDate)}</h4>
+        )}
+
+        <PalletOutReport data={tableData} />
       </div>
-    </div>
     </>
-    
-  )
-}
+  );
+};
 
 export default LoadReport;
