@@ -316,10 +316,10 @@ const handleInputChange = (e) => {
                     {loadData.brands.map((brand, index) => (
                       <div
                         key={index}
-                        className="d-flex justify-content-between mb-2"
+                        className="d-flex flex-column justify-content-between mb-2"
                       >
                         <>
-                          <div className="flex-grow-1 me-2">
+                          <div className="flex-grow-1 m-2">
                             <input
                               type="text"
                               name={`brands[${index}].brandName`}
@@ -331,7 +331,7 @@ const handleInputChange = (e) => {
                               placeholder={`Brand Name`}
                             />
                           </div>
-                          <div className="flex-grow-1 me-2">
+                          <div className="flex-grow-1 m-2" >
                             <input
                               type="text"
                               name={`brands[${index}].palletNumbers`}
@@ -340,7 +340,7 @@ const handleInputChange = (e) => {
                               placeholder={`Pallet Number`}
                             />
                           </div>
-                          <div className="flex-grow-1 me-2">
+                          <div className="flex-grow-1 m-2">
                             <input
                               type="number"
                               name={`brands[${index}].totalPallet`}
@@ -352,7 +352,7 @@ const handleInputChange = (e) => {
                               placeholder={`Total Pallet`}
                             />
                           </div>
-                          <div className="flex-grow-1 me-2">
+                          <div className="flex-grow-1 m-2">
                             <input
                               type="number"
                               name={`brands[${index}].totalPrice`}
@@ -361,7 +361,7 @@ const handleInputChange = (e) => {
                               placeholder={`Total Price`}
                             />
                           </div>
-                          <div className="flex-grow-1 me-2">
+                          <div className="flex-grow-1 m-2">
                             <input
                               type="text"
                               name={`brands[${index}].skuCode`}
@@ -373,7 +373,7 @@ const handleInputChange = (e) => {
                               placeholder={`SKU Code`}
                             />
                           </div>
-                          <div className="flex-grow-1 me-2">
+                          <div className="flex-grow-1 m-2">
                             <div id={`barcode_${index}`}>
                               <Barcode value={loadData.brands[index].skuCode} />
                             </div>
