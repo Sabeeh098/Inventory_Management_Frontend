@@ -45,8 +45,8 @@ const ScanInScanOut = () => {
     {
       title: "Category",
       dataIndex: "category",
-      render: (category) => category.name, 
-      sorter: (a, b) => a.category.name.localeCompare(b.category.name),
+      render: (category) => category?.name, 
+      sorter: (a, b) => a.category?.name.localeCompare(b.category?.name),
       width: "125px",
     },
     {
