@@ -3,14 +3,14 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 
 import './productList.css';
-import PalletOutReport from './PalletOutReport';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css';
 import { DateRangePicker } from 'react-date-range';
 import { adminApiInstance } from '../../api/axios';
 import { enGB } from 'date-fns/locale'; 
+import PalletOutReport from './PalletOutReport';
 
-const LoadReport = () => {
+const PurchaseOrder1 = () => {
   const [datePicker, setDatepicker] = useState(false);
   const [selectedOption, setSelectedOption] = useState('Weekly');
   const [tableData, setTableData] = useState([]);
@@ -23,6 +23,9 @@ const LoadReport = () => {
   ]);
   const [showSearchInput, setShowSearchInput] = useState(false); 
   const [categories, setCategories] = useState([]); 
+  const [loadNumber, setLoadNumber] = useState('');
+  const [brand, setBrand] = useState('');
+  const [sku, setSku] = useState('');
 
   const dateRangePickerRef = useRef();
   const searchInputRef = useRef(); 
@@ -44,7 +47,6 @@ const LoadReport = () => {
   const handleCategorySelect = async (categoryId) => {
     try {
       const response = await adminApiInstance.post("/fetchReportByCategory", { categoryId });
-      console.log(response.data,"Verundooo");
       setTableData(response.data);
     } catch (error) {
       console.error('Error fetching report data:', error);
@@ -106,6 +108,9 @@ const LoadReport = () => {
         case 'Monthly':
           response = await adminApiInstance.get("/monthlyData");
           break;
+        case 'Yearly':
+          response = await adminApiInstance.get("/yearlyData");
+          break;
         default:
           break;
       }
@@ -117,11 +122,11 @@ const LoadReport = () => {
 
   const handleOptionChange = (option) => {
     setSelectedOption(option);
-    setShowSearchInput(false); 
-  };
-
-  const toggleSearchInput = () => {
-    setShowSearchInput(!showSearchInput);
+    if (option === 'Category' || option === 'Brand' || option === 'Load Number' || option === 'SKU') {
+      setShowSearchInput(true); 
+    } else {
+      setShowSearchInput(false);
+    }
   };
 
   const formatWeeklyDate = (startDate, endDate) => {
@@ -132,27 +137,77 @@ const LoadReport = () => {
     return `${startMonth}/${startDay}-${endMonth}/${endDay}`;
   };
 
+  const handleLoadNumberChange = (event) => {
+    setLoadNumber(event.target.value);
+  };
+
+  const handleBrandChange = (event) => {
+    setBrand(event.target.value);
+  };
+
+  const handleSkuChange = (event) => {
+    setSku(event.target.value);
+  };
+
+  const handleLoadNumberSubmit = async () => {
+    try {
+      const response = await adminApiInstance.post("/fetchReportByLoadNumber", { loadNumber });
+      setTableData(response.data);
+    } catch (error) {
+      console.error('Error fetching report data by load number:', error);
+    }
+  };
+
+  const handleBrandSubmit = async () => {
+    try {
+     
+      const response = await adminApiInstance.post("/fetchReportByBrand", { brand });
+      setTableData(response.data);
+    } catch (error) {
+      console.error('Error fetching report data by brand:', error);
+    }
+  };
+
+  const handleSkuSubmit = async () => {
+    try {
+      const response = await adminApiInstance.post("/fetchReportBySku", { sku });
+      setTableData(response.data);
+    } catch (error) {
+      console.error('Error fetching report data by SKU:', error);
+    }
+  };
+
   return (
     <>
       <div className="wholeComp">
         <div className="Porder">
-          <h3>Purchase order report</h3>
-          <h5>Manage your Purchase order report</h5>
+          <h3>Pallet Out Report</h3>
+          <h5>Manage your Pallet Out Report</h5>
         </div>
         <div className="twoDropdown">
           <DropdownButton title="Summary" className="drop5">
             <Dropdown.Item href="#/action-1" onClick={() => handleOptionChange('Daily')}>Daily</Dropdown.Item>
             <Dropdown.Item href="#/action-2" onClick={() => handleOptionChange('Weekly')}>Weekly</Dropdown.Item>
             <Dropdown.Item href="#/action-3" onClick={() => handleOptionChange('Monthly')}>Monthly</Dropdown.Item>
+            <Dropdown.Item href="#/action-3" onClick={() => handleOptionChange('Yearly')}>Yearly</Dropdown.Item>
           </DropdownButton>
 
           <DropdownButton id="dropdown-basic-button" title="FilterBy">
-            <Dropdown.Item href="#/action-2" onClick={toggleSearchInput}>
+            <Dropdown.Item href="#/action-2" onClick={() => handleOptionChange('Load Number')}>
+              Load Number
+            </Dropdown.Item>
+            <Dropdown.Item href="#/action-2" onClick={() => handleOptionChange('Category')}>
               Category
+            </Dropdown.Item>
+            <Dropdown.Item href="#/action-2" onClick={() => handleOptionChange('Brand')}>
+              Brand
+            </Dropdown.Item>
+            <Dropdown.Item href="#/action-2" onClick={() => handleOptionChange('SKU')}>
+              SKU
             </Dropdown.Item>
           </DropdownButton>
 
-          {showSearchInput && (
+          {showSearchInput && selectedOption === 'Category' && (
             <div ref={categoryDropdownRef}>
               <select className="inputFilterBY" onChange={(e) => handleCategorySelect(e.target.value)}>
                 <option value="">Select category</option>
@@ -160,6 +215,28 @@ const LoadReport = () => {
                   <option key={category._id} value={category._id}>{category.name}</option>
                 ))}
               </select>
+            </div>
+          )}
+
+          {showSearchInput && (selectedOption === 'Load Number' || selectedOption === 'Brand' || selectedOption === 'SKU') && (
+            <div>
+              <input 
+                type="text" 
+                placeholder={selectedOption === 'Load Number' ? 'Enter Load Number' : selectedOption === 'Brand' ? 'Enter Brand' : 'Enter SKU'} 
+                value={selectedOption === 'Load Number' ? loadNumber : selectedOption === 'Brand' ? brand : sku} 
+                onChange={selectedOption === 'Load Number' ? handleLoadNumberChange : selectedOption === 'Brand' ? handleBrandChange : handleSkuChange}
+                onKeyPress={(event) => {
+                  if (event.key === 'Enter') {
+                    if (selectedOption === 'Load Number') {
+                      handleLoadNumberSubmit();
+                    } else if (selectedOption === 'Brand') {
+                      handleBrandSubmit();
+                    } else {
+                      handleSkuSubmit();
+                    }
+                  }
+                }} 
+              />
             </div>
           )}
 
@@ -199,5 +276,4 @@ const LoadReport = () => {
   );
 };
 
-export default LoadReport;
- 
+export default PurchaseOrder1;

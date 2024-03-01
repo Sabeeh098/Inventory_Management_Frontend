@@ -23,6 +23,9 @@ const PurchaseOrder1 = () => {
   ]);
   const [showSearchInput, setShowSearchInput] = useState(false); 
   const [categories, setCategories] = useState([]); 
+  const [loadNumber, setLoadNumber] = useState('');
+  const [brand, setBrand] = useState('');
+  const [sku, setSku] = useState('');
 
   const dateRangePickerRef = useRef();
   const searchInputRef = useRef(); 
@@ -44,7 +47,6 @@ const PurchaseOrder1 = () => {
   const handleCategorySelect = async (categoryId) => {
     try {
       const response = await adminApiInstance.post("/fetchReportByCategory", { categoryId });
-      console.log(response.data,"Verundooo");
       setTableData(response.data);
     } catch (error) {
       console.error('Error fetching report data:', error);
@@ -106,6 +108,9 @@ const PurchaseOrder1 = () => {
         case 'Monthly':
           response = await adminApiInstance.get("/monthlyData");
           break;
+        case 'Yearly':
+          response = await adminApiInstance.get("/yearlyData");
+          break;
         default:
           break;
       }
@@ -117,11 +122,11 @@ const PurchaseOrder1 = () => {
 
   const handleOptionChange = (option) => {
     setSelectedOption(option);
-    setShowSearchInput(false); 
-  };
-
-  const toggleSearchInput = () => {
-    setShowSearchInput(!showSearchInput);
+    if (option === 'Category' || option === 'Brand' || option === 'Load Number' || option === 'SKU') {
+      setShowSearchInput(true); 
+    } else {
+      setShowSearchInput(false);
+    }
   };
 
   const formatWeeklyDate = (startDate, endDate) => {
@@ -130,6 +135,46 @@ const PurchaseOrder1 = () => {
     const endMonth = endDate.getMonth() + 1;
     const endDay = endDate.getDate();
     return `${startMonth}/${startDay}-${endMonth}/${endDay}`;
+  };
+
+  const handleLoadNumberChange = (event) => {
+    setLoadNumber(event.target.value);
+  };
+
+  const handleBrandChange = (event) => {
+    setBrand(event.target.value);
+  };
+
+  const handleSkuChange = (event) => {
+    setSku(event.target.value);
+  };
+
+  const handleLoadNumberSubmit = async () => {
+    try {
+      const response = await adminApiInstance.post("/fetchReportByLoadNumber", { loadNumber });
+      setTableData(response.data);
+    } catch (error) {
+      console.error('Error fetching report data by load number:', error);
+    }
+  };
+
+  const handleBrandSubmit = async () => {
+    try {
+     
+      const response = await adminApiInstance.post("/fetchReportByBrand", { brand });
+      setTableData(response.data);
+    } catch (error) {
+      console.error('Error fetching report data by brand:', error);
+    }
+  };
+
+  const handleSkuSubmit = async () => {
+    try {
+      const response = await adminApiInstance.post("/fetchReportBySku", { sku });
+      setTableData(response.data);
+    } catch (error) {
+      console.error('Error fetching report data by SKU:', error);
+    }
   };
 
   return (
@@ -144,15 +189,25 @@ const PurchaseOrder1 = () => {
             <Dropdown.Item href="#/action-1" onClick={() => handleOptionChange('Daily')}>Daily</Dropdown.Item>
             <Dropdown.Item href="#/action-2" onClick={() => handleOptionChange('Weekly')}>Weekly</Dropdown.Item>
             <Dropdown.Item href="#/action-3" onClick={() => handleOptionChange('Monthly')}>Monthly</Dropdown.Item>
+            <Dropdown.Item href="#/action-3" onClick={() => handleOptionChange('Yearly')}>Yearly</Dropdown.Item>
           </DropdownButton>
 
           <DropdownButton id="dropdown-basic-button" title="FilterBy">
-            <Dropdown.Item href="#/action-2" onClick={toggleSearchInput}>
+            <Dropdown.Item href="#/action-2" onClick={() => handleOptionChange('Load Number')}>
+              Load Number
+            </Dropdown.Item>
+            <Dropdown.Item href="#/action-2" onClick={() => handleOptionChange('Category')}>
               Category
+            </Dropdown.Item>
+            <Dropdown.Item href="#/action-2" onClick={() => handleOptionChange('Brand')}>
+              Brand
+            </Dropdown.Item>
+            <Dropdown.Item href="#/action-2" onClick={() => handleOptionChange('SKU')}>
+              SKU
             </Dropdown.Item>
           </DropdownButton>
 
-          {showSearchInput && (
+          {showSearchInput && selectedOption === 'Category' && (
             <div ref={categoryDropdownRef}>
               <select className="inputFilterBY" onChange={(e) => handleCategorySelect(e.target.value)}>
                 <option value="">Select category</option>
@@ -160,6 +215,28 @@ const PurchaseOrder1 = () => {
                   <option key={category._id} value={category._id}>{category.name}</option>
                 ))}
               </select>
+            </div>
+          )}
+
+          {showSearchInput && (selectedOption === 'Load Number' || selectedOption === 'Brand' || selectedOption === 'SKU') && (
+            <div>
+              <input 
+                type="text" 
+                placeholder={selectedOption === 'Load Number' ? 'Enter Load Number' : selectedOption === 'Brand' ? 'Enter Brand' : 'Enter SKU'} 
+                value={selectedOption === 'Load Number' ? loadNumber : selectedOption === 'Brand' ? brand : sku} 
+                onChange={selectedOption === 'Load Number' ? handleLoadNumberChange : selectedOption === 'Brand' ? handleBrandChange : handleSkuChange}
+                onKeyPress={(event) => {
+                  if (event.key === 'Enter') {
+                    if (selectedOption === 'Load Number') {
+                      handleLoadNumberSubmit();
+                    } else if (selectedOption === 'Brand') {
+                      handleBrandSubmit();
+                    } else {
+                      handleSkuSubmit();
+                    }
+                  }
+                }} 
+              />
             </div>
           )}
 
@@ -200,4 +277,3 @@ const PurchaseOrder1 = () => {
 };
 
 export default PurchaseOrder1;
- 
