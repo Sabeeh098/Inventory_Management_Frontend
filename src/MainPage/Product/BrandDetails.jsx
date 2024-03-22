@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./printStyles.css";
 
-const BrandDetails = ({ item, loadNumber }) => {
+const BrandDetails = ({ item, loadNumber, category }) => {
   const [barcodeOnly, setBarcodeOnly] = useState(false);
   const [numCopies, setNumCopies] = useState(1);
   const [allowPrinting, setAllowPrinting] = useState(true);
@@ -73,6 +73,10 @@ const BrandDetails = ({ item, loadNumber }) => {
           <li>
             <h4>Load Number</h4>
             <h6>{loadNumber}</h6>
+          </li>
+          <li>
+            <h4>Category</h4>
+            <h6>{category}</h6>
           </li>
           <li>
             <h4>Brand Name</h4>
@@ -164,7 +168,8 @@ BrandDetails.propTypes = {
     skuCode: PropTypes.string.isRequired,
     barcodeImage: PropTypes.string.isRequired
   }).isRequired,
-  loadNumber: PropTypes.string.isRequired
+  loadNumber: PropTypes.string.isRequired,
+  category: PropTypes.string.isRequired
 };
 
 export default BrandDetails;

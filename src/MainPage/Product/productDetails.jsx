@@ -1,26 +1,19 @@
-/* eslint-disable react/no-unescaped-entities */
-import React, { useEffect, useState } from "react";
-import "owl.carousel/dist/assets/owl.carousel.css";
-import "owl.carousel/dist/assets/owl.theme.default.css";
+import React, { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
 import { adminApiInstance } from "../../api/axios";
-import { useParams } from "react-router-dom/cjs/react-router-dom";
-import BrandDetails from "./BrandDetails";
-import { TfiPrinter } from "react-icons/tfi";
 import { useReactToPrint } from "react-to-print";
+import { TfiPrinter } from "react-icons/tfi";
+import BrandDetails from "./BrandDetails";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [barcodeOnly, setBarcodeOnly] = useState(false);
-  const loadDetailsRef = React.useRef();
-  const loadBarcodeRef = React.useRef();
+  const [numCopies, setNumCopies] = useState(1);
+  const loadDetailsRef = useRef();
+  const loadBarcodeRef = useRef();
 
-  const handlePrintBrand = useReactToPrint({
-    content: () =>
-      barcodeOnly ? loadBarcodeRef.current : loadDetailsRef.current,
-  });
   useEffect(() => {
-    // Fetch the product details based on the loadId
     fetchProductDetails();
   }, [id]);
 
@@ -33,8 +26,44 @@ const ProductDetails = () => {
     }
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+
+  const handlePrintBrand = useReactToPrint({
+    content: () => {
+      if (barcodeOnly) {
+        const PrintElem = document.createElement("div");
+        PrintElem.className = "multi_print_only";
+        for (let i = 0; i < numCopies; i++) {
+          PrintElem.appendChild(loadBarcodeRef.current.cloneNode(true));
+        }
+        return PrintElem;
+      } else {
+        const PrintElem = document.createElement("div");
+        PrintElem.className = "multi_print";
+        for (let i = 0; i < numCopies; i++) {
+          PrintElem.appendChild(loadDetailsRef.current.cloneNode(true));
+        }
+        return PrintElem;
+      }
+    }
+  });
+
+  const handleClickPrint = () => {
+    if (numCopies > product.totalPallet) {
+      console.error("Please enter copies less than or equal to total pallet count.");
+    } else {
+      handlePrintBrand();
+    }
+  };
+
   if (!product) {
-    // Handle the case where product details are not available
     return <p>Loading...</p>;
   }
 
@@ -50,20 +79,7 @@ const ProductDetails = () => {
         <div className="row">
           <div className="col-lg-8 col-sm-12">
             <div className="card">
-              <div
-                className="card-body print_single"
-                ref={loadDetailsRef}
-                style={{ listStyle: "none", padding: 0, width: "fit-content" }}
-              >
-                {product.barcodeImage && (
-                  <div
-                    className="bar-code-view print_single_barcode"
-                    ref={loadBarcodeRef}
-                  >
-                    <img src={product.barcodeImage} alt="barcode" />
-                  </div>
-                )} 
-
+              <div className="card-body print_single" ref={loadDetailsRef}>
                 <div className="productdetails">
                   <ul className="product-bar">
                     <li>
@@ -76,7 +92,7 @@ const ProductDetails = () => {
                     </li>
                     <li>
                       <h4>Load Date</h4>
-                      <h6>{product.loadDate}</h6>
+                      <h6>{formatDate(product.loadDate)}</h6>
                     </li>
                     <li>
                       <h4>Load Number</h4>
@@ -94,40 +110,42 @@ const ProductDetails = () => {
                       <h4>SKU Number</h4>
                       <h6>{product.skuNumber}</h6>
                     </li>
-                    {/* Add other product details here */}
                   </ul>
                 </div>
+                {product.barcodeImage && (
+                  <div
+                    className="bar-code-view print_single_barcode"
+                    ref={loadBarcodeRef}
+                  >
+                    <img src={product.barcodeImage} alt="barcode" />
+                  </div>
+                )}
               </div>
               {product.barcodeImage && (
-                <div
-                  style={{
-                    marginTop: "10px",
-                    display: "flex",
-                    padding: "0 10px",
-                    alignItems: "center",
-                  }}
-                >
+                <div style={{ marginTop: "10px", display: "flex", padding: "0 10px", alignItems: "center" }}>
+                  <input checked={barcodeOnly} onChange={() => setBarcodeOnly(!barcodeOnly)} type="checkbox" />
+                  <label style={{ marginLeft: "5px" }}>Print Barcode Only</label>
                   <input
-                    checked={barcodeOnly}
-                    onChange={() => setBarcodeOnly(!barcodeOnly)}
-                    type="checkbox"
+                    type="number"
+                    min="1"
+                    value={numCopies}
+                    onChange={(e) => setNumCopies(parseInt(e.target.value))}
+                    style={{ marginLeft: "10px", width: "50px" }}
                   />
-                  <label style={{ marginLeft: "5px" }}>
-                    Print Barcode Only
-                  </label>
+                  <label style={{ marginLeft: "5px" }}>Copies</label>
                   <div style={{ marginLeft: "auto" }}>
                     <button
-                      onClick={handlePrintBrand}
+                      onClick={handleClickPrint}
                       style={{
-                        border: "1px solid #3498db", // Add border with color
-                        borderRadius: "5px", // Add border-radius for rounded corners
-                        background: "#3498db", // Set background color
-                        color: "#fff", // Set text color
-                        cursor: "pointer", // Set cursor to pointer
+                        border: "1px solid #3498db",
+                        borderRadius: "5px",
+                        background: "#3498db",
+                        color: "#fff",
+                        cursor: "pointer",
                         display: "flex",
-                        alignItems: "center", // Align the icon vertically
+                        alignItems: "center",
                         padding: "5px 10px",
-                        marginBottom: "5px",
+                        marginBottom: "5px"
                       }}
                     >
                       <TfiPrinter style={{ marginRight: "5px" }} />
@@ -138,21 +156,25 @@ const ProductDetails = () => {
               )}
             </div>
           </div>
-
           {product.brands && (
-          <div className="col-lg-4 col-sm-12">
+            <div className="col-lg-4 col-sm-12">
               <div className="card">
                 <div className="card-body">
                   <div className="slider-product-details">
-                  {product.brands.map((item, key) => (
-  <div key={key} id={`brand-details-${item.skuCode}`}>
-    <BrandDetails item={item} loadNumber={product.loadNumber} />
-  </div>
-))}
+                    {product.brands.map((item, key) => (
+                      <div key={key} id={`brand-details-${item.skuCode}`}>
+                        <BrandDetails
+                          item={item}
+                          loadNumber={product.loadNumber}
+                          category={product.category?.name}
+                          ref={loadBarcodeRef}
+                        />
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
-          </div>
+            </div>
           )}
         </div>
       </div>
@@ -160,8 +182,4 @@ const ProductDetails = () => {
   );
 };
 
-export default ProductDetails
-
-
-
- 
+export default ProductDetails;
