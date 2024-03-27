@@ -2,32 +2,30 @@ import React, { useState, useEffect } from "react";
 import Table from "../../EntryFile/datatable";
 
 import "react-datepicker/dist/react-datepicker.css";
-import { Excel, Pdf, Printer } from "../../EntryFile/imagePath";
+
 import "react-select2-wrapper/css/select2.css";
 import { adminApiInstance } from "../../api/axios";
 
 const Inventory = () => {
   const [loads, setLoads] = useState([]);
-
-  useEffect(() => {
-    fetchLoads();
-  }, []);
-
   const fetchLoads = async () => {
     try {
       const response = await adminApiInstance.get("/getLoads?type=indicators");
-      
-     
+      console.log(response.data,"Dataa");
       const filteredLoads = response.data.filter(
         (item) => item.palletsCount <= 5 && item.remainingPalletsCount <= 5
-      );
-  
+        );
+        console.log(filteredLoads,"Dataa Verruundo?");
       setLoads(filteredLoads);
-      console.log(filteredLoads, "filtered data");
+    
     } catch (error) {
       console.error("Error fetching loads:", error);
     }
   };
+
+  useEffect(() => {
+    fetchLoads();
+  }, []);
   
 
   const columns = [
@@ -84,37 +82,7 @@ const Inventory = () => {
           <div className="card-body">
             <div className="table-top">
               <div className="search-set"></div>
-              <div className="wordset">
-                <ul>
-                  <li>
-                    <a
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      title="pdf"
-                    >
-                      <img src={Pdf} alt="img" />
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      title="excel"
-                    >
-                      <img src={Excel} alt="img" />
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      title="print"
-                    >
-                      <img src={Printer} alt="img" />
-                    </a>
-                  </li>
-                </ul>
-              </div>
+              
             </div>
             <div className="table-responsive">
               <Table
