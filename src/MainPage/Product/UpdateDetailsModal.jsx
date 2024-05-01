@@ -21,10 +21,17 @@ const UpdateDetailsModal = ({ onCancel, onUpdate, data }) => {
     onCancel();
   };
 
+  const today = new Date().toLocaleDateString();
+
   return (
     <Modal
       visible={true}
-      title="Update Pallets Count"
+      title={
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <span style={{ flex: 1 }}>Update Pallets Count</span>
+          <span style={{ flex: 0.5 }}>{today}</span>
+        </div>
+      }
       onCancel={onCancel}
       footer={[
         <Button key="cancel" onClick={onCancel}>
