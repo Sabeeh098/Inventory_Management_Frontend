@@ -54,13 +54,31 @@ const PurchaseOrder1 = () => {
   };
 
   const handleDateRangeChange = async (ranges) => {
-    const startDateUTC = ranges.selection.startDate.toISOString();
-    const endDateUTC = ranges.selection.endDate.toISOString();
+    const startDate = new Date(ranges.selection.startDate);
+    const endDate = new Date(ranges.selection.endDate);
+  
+    // Adjust dates for timezone offset
+    const timezoneOffset = startDate.getTimezoneOffset();
+    startDate.setMinutes(startDate.getMinutes() - timezoneOffset);
+    endDate.setMinutes(endDate.getMinutes() - timezoneOffset);
+    
+    console.log('Adjusted start date for timezone offset:', startDate);
+    console.log('Adjusted end date for timezone offset:', endDate);
+    
+    const startDateUTC = startDate.toISOString();
+    const endDateUTC = endDate.toISOString();
+    console.log('Start date in UTC:', startDateUTC);
+    console.log('End date in UTC:', endDateUTC);
+  
     const utcRanges = {
       startDate: startDateUTC,
       endDate: endDateUTC,
       key: 'selection'
     };
+  
+    // Console log the adjusted UTC dates
+    console.log('Adjusted UTC start date:', startDateUTC);
+    console.log('Adjusted UTC end date:', endDateUTC);
   
     setDateRange([ranges.selection]);
     try {
@@ -70,6 +88,8 @@ const PurchaseOrder1 = () => {
       console.error('Error fetching data for the selected date range:', error);
     }
   };
+  
+  
 
   const handleClickOutside = (event) => {
     if (searchInputRef.current && !searchInputRef.current.contains(event.target)) {
@@ -243,6 +263,7 @@ const PurchaseOrder1 = () => {
           <div className="daterangepicker d-flex" onClick={datePickerFnc}>
             <div className="m-1 px-2 py-1 bg-light">
               <p>{dateRange[0].startDate.toLocaleDateString()}</p>
+              
             </div>
             <div className="m-1 px-2 py-1 bg-light">
               <p>{dateRange[0].endDate.toLocaleDateString()}</p>
