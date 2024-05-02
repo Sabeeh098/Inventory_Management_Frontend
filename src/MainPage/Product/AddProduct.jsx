@@ -95,7 +95,7 @@ const handleInputChange = (e) => {
     } catch (error) {
       console.error("Error converting barcode to image:", error);
     }
-  };
+  }; 
 
   const addBrandField = () => {
     setLoadData((prevData) => ({
